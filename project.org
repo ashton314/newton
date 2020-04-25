@@ -1,0 +1,55 @@
+#+TITLE: Newton
+#+AUTHOR: Ashton Wiersdorf
+
+* Domain Model
+
+Questions
+
+| Field      | Type     |
+|------------+----------|
+| id         | uuid     |
+| class_id   | uuid     |
+| text       | string   |
+| tags       | [string] |
+
+See [[https://stackoverflow.com/questions/39643454/postgres-check-if-array-field-contains-value#][here]] for how to query based on an array value.
+
+Answers
+
+| Field           | Type    |
+|-----------------+---------|
+| question_id     | uuid    |
+| text            | string  |
+| points_marked   | int     |
+| points_unmarked | int     |
+
+Comment
+
+| Field           | Type    |
+|-----------------+---------|
+| question_id     | uuid    |
+| text            | string  |
+| user_id         | uuid    |
+| resolved        | bool    |
+
+Tags
+
+| Field      | Type     |
+|------------+----------|
+| class_id   | uuid     |
+| name       | string   |
+| color      | string   |
+
+Tests
+
+Users
+
+Roles
+
+Permissions
+
+Departments
+
+Class
+
+A class is like "CALC 121" or "CALC 122"; questions belong to a class.
