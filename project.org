@@ -3,53 +3,128 @@
 
 * Domain Model
 
-Questions
+*** Questions
 
-| Field      | Type     |
-|------------+----------|
-| id         | uuid     |
-| class_id   | uuid     |
-| text       | string   |
-| tags       | [string] |
+| Field          | Type     |
+|----------------+----------|
+| id             | uuid     |
+| class_id       | uuid     |
+| text           | string   |
+| tags           | [string] |
+| type           | enum     |
+| last_edit_hash | string   |
+| archived       | bool     |
+
+Questions are scoped to a particular class. The class provides the notion of a workspace, to which multiple users can belong.
+
+Question =type= is one of:
+ - multiple-choice
+ - free-response
+ - fill-blank
+
+The =archived= field allows us to soft-delete questions.
 
 See [[https://stackoverflow.com/questions/39643454/postgres-check-if-array-field-contains-value#][here]] for how to query based on an array value.
 
-Answers
+*** History
 
-| Field           | Type    |
-|-----------------+---------|
-| question_id     | uuid    |
-| text            | string  |
-| points_marked   | int     |
-| points_unmarked | int     |
+| Field       | Type   |
+|-------------+--------|
+| question_id | uuid   |
+| text        | string |
+| hash        | string |
 
-Comment
+We'll build this later as a way to record the changes to a question.
 
-| Field           | Type    |
-|-----------------+---------|
-| question_id     | uuid    |
-| text            | string  |
-| user_id         | uuid    |
-| resolved        | bool    |
+*** Answers
 
-Tags
+| Field           | Type   |
+|-----------------+--------|
+| question_id     | uuid   |
+| text            | string |
+| display         | bool   |
+| points_marked   | int    |
+| points_unmarked | int    |
 
-| Field      | Type     |
-|------------+----------|
-| class_id   | uuid     |
-| name       | string   |
-| color      | string   |
+Setting =display= to ~false~ would let you record an answer for a fill-in-the-blank (or a free-response question) but not have it render in the final document.
 
-Tests
+*** Comment
 
-Users
+| Field       | Type   |
+|-------------+--------|
+| question_id | uuid   |
+| text        | string |
+| user_id     | uuid   |
+| resolved    | bool   |
 
-Roles
+This provides a way for collaborators to discuss changes.
 
-Permissions
+*** Tags
 
-Departments
+| Field    | Type   |
+|----------+--------|
+| class_id | uuid   |
+| name     | string |
+| color    | string |
 
-Class
+*** Tests
+
+*** Users
+
+| Field    | Type            |
+|----------+-----------------|
+| name     | string          |
+| username | string          |
+| password | string (hashed) |
+
+*** UserClassRoles
+
+| Field    | Type |
+|----------+------|
+| user_id  | uuid |
+| class_id | uuid |
+| role_id  | uuid |
+
+Users have per-class roles
+
+*** Roles
+
+| Field | Type   |
+|-------+--------|
+| name  | string |
+
+Has many [[Permissions]]
+
+*** Permissions
+
+| Field       | Type     |
+|-------------+----------|
+| role_id     | uuid     |
+| questions   | [string] |
+| tags        | [string] |
+| answers     | [string] |
+| comments    | [string] |
+| users       | [string] |
+| permissions | [string] |
+| roles       | [string] |
+
+I think we'll keep an array of strings with values of:
+
+ - read_any
+ - read_class
+ - modify_any
+ - modify_class
+ - create_any
+ - create_class
+ - delete_any
+ - delete_class
+
+The strings are in the form of =/(?<permission>[^_]+)_(?<scope>[^_]+)/=.
+
+*** Class
+
+| Field | Type   |
+|-------+--------|
+| name  | string |
 
 A class is like "CALC 121" or "CALC 122"; questions belong to a class.
