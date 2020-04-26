@@ -69,6 +69,32 @@ This provides a way for collaborators to discuss changes.
 
 *** Tests
 
+| Field      | Type   |
+|------------+--------|
+| class_id   | uuid   |
+| name       | string |
+| open_date  | date   |
+| close_date | date   |
+
+
+*** TestQuestions
+
+| Field       | Type |
+|-------------+------|
+| test_id     | uuid |
+| question_id | uuid |
+| order       | int  |
+
+
+*** Statistics
+
+| Field         | Type |
+|---------------+------|
+| question_id   | uuid |
+| test_id       | uuid |
+| count_taken   | int  |
+| count_correct | int  |
+
 *** Users
 
 | Field    | Type            |
