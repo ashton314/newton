@@ -3,6 +3,7 @@ defmodule NewtonWeb.QuestionLive.Index do
 
   alias Newton.Test
   alias Newton.Test.Question
+  alias NewtonWeb.QuestionLive.QuestionCard
 
   @impl true
   def mount(_params, _session, socket) do
