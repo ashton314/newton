@@ -18,6 +18,11 @@ config :newton, NewtonWeb.Endpoint,
   pubsub_server: Newton.PubSub,
   live_view: [signing_salt: "67q+lGQv"]
 
+config :newton, :generators,
+  migration: true,
+  binary_id: true,
+  sample_binary_id: "11111111-1111-1111-1111-111111111111"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

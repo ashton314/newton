@@ -18,6 +18,48 @@ defmodule NewtonWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
+
+    # Class CRUD
+    live "/classes", ClassLive.Index, :index
+    live "/classes/new", ClassLive.Index, :new
+    live "/classes/:id/edit", ClassLive.Index, :edit
+    live "/classes/:id", ClassLive.Show, :show
+    live "/classes/:id/show/edit", ClassLive.Show, :edit
+
+    # User CRUD
+    live "/users", UserLive.Index, :index
+    live "/users/new", UserLive.Index, :new
+    live "/users/:id/edit", UserLive.Index, :edit
+    live "/users/:id", UserLive.Show, :show
+    live "/users/:id/show/edit", UserLive.Show, :edit
+
+    # Question CRUD
+    live "/questions", QuestionLive.Index, :index
+    live "/questions/new", QuestionLive.Index, :new
+    live "/questions/:id/edit", QuestionLive.Index, :edit
+    live "/questions/:id", QuestionLive.Show, :show
+    live "/questions/:id/show/edit", QuestionLive.Show, :edit
+
+    # Comment CRUD
+    live "/comments", CommentLive.Index, :index
+    live "/comments/new", CommentLive.Index, :new
+    live "/comments/:id/edit", CommentLive.Index, :edit
+    live "/comments/:id", CommentLive.Show, :show
+    live "/comments/:id/show/edit", CommentLive.Show, :edit
+
+    # Tag CRUD
+    live "/tags", TagLive.Index, :index
+    live "/tags/new", TagLive.Index, :new
+    live "/tags/:id/edit", TagLive.Index, :edit
+    live "/tags/:id", TagLive.Show, :show
+    live "/tags/:id/show/edit", TagLive.Show, :edit
+
+    # Answer CRUD
+    live "/answers", AnswerLive.Index, :index
+    live "/answers/new", AnswerLive.Index, :new
+    live "/answers/:id/edit", AnswerLive.Index, :edit
+    live "/answers/:id", AnswerLive.Show, :show
+    live "/answers/:id/show/edit", AnswerLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

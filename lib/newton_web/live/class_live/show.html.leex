@@ -1,0 +1,22 @@
+<h1>Show Class</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, NewtonWeb.ClassLive.FormComponent,
+    id: @class.id,
+    title: @page_title,
+    action: @live_action,
+    class: @class,
+    return_to: Routes.class_show_path(@socket, :show, @class) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @class.name %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.class_show_path(@socket, :edit, @class), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.class_index_path(@socket, :index) %></span>

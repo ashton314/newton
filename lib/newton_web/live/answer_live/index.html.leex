@@ -1,0 +1,41 @@
+<h1>Listing Answers</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, NewtonWeb.AnswerLive.FormComponent,
+    id: @answer.id || :new,
+    title: @page_title,
+    action: @live_action,
+    answer: @answer,
+    return_to: Routes.answer_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Text</th>
+      <th>Display</th>
+      <th>Points marked</th>
+      <th>Points unmarked</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="answers">
+    <%= for answer <- @answers do %>
+      <tr id="answer-<%= answer.id %>">
+        <td><%= answer.text %></td>
+        <td><%= answer.display %></td>
+        <td><%= answer.points_marked %></td>
+        <td><%= answer.points_unmarked %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.answer_show_path(@socket, :show, answer) %></span>
+          <span><%= live_patch "Edit", to: Routes.answer_index_path(@socket, :edit, answer) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: answer.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Answer", to: Routes.answer_index_path(@socket, :new) %></span>

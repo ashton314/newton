@@ -1,0 +1,37 @@
+<h1>Show Answer</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, NewtonWeb.AnswerLive.FormComponent,
+    id: @answer.id,
+    title: @page_title,
+    action: @live_action,
+    answer: @answer,
+    return_to: Routes.answer_show_path(@socket, :show, @answer) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Text:</strong>
+    <%= @answer.text %>
+  </li>
+
+  <li>
+    <strong>Display:</strong>
+    <%= @answer.display %>
+  </li>
+
+  <li>
+    <strong>Points marked:</strong>
+    <%= @answer.points_marked %>
+  </li>
+
+  <li>
+    <strong>Points unmarked:</strong>
+    <%= @answer.points_unmarked %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.answer_show_path(@socket, :edit, @answer), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.answer_index_path(@socket, :index) %></span>

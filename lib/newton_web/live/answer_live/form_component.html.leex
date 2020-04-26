@@ -1,0 +1,26 @@
+<h2><%= @title %></h2>
+
+<%= f = form_for @changeset, "#",
+  id: "answer-form",
+  phx_target: @myself,
+  phx_change: "validate",
+  phx_submit: "save" %>
+
+  <%= label f, :text %>
+  <%= text_input f, :text %>
+  <%= error_tag f, :text %>
+
+  <%= label f, :display %>
+  <%= checkbox f, :display %>
+  <%= error_tag f, :display %>
+
+  <%= label f, :points_marked %>
+  <%= number_input f, :points_marked %>
+  <%= error_tag f, :points_marked %>
+
+  <%= label f, :points_unmarked %>
+  <%= number_input f, :points_unmarked %>
+  <%= error_tag f, :points_unmarked %>
+
+  <%= submit "Save", phx_disable_with: "Saving..." %>
+</form>

@@ -1,0 +1,35 @@
+<h1>Listing Classes</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, NewtonWeb.ClassLive.FormComponent,
+    id: @class.id || :new,
+    title: @page_title,
+    action: @live_action,
+    class: @class,
+    return_to: Routes.class_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="classes">
+    <%= for class <- @classes do %>
+      <tr id="class-<%= class.id %>">
+        <td><%= class.name %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.class_show_path(@socket, :show, class) %></span>
+          <span><%= live_patch "Edit", to: Routes.class_index_path(@socket, :edit, class) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: class.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Class", to: Routes.class_index_path(@socket, :new) %></span>

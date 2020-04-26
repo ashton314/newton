@@ -1,0 +1,37 @@
+<h1>Listing Comments</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, NewtonWeb.CommentLive.FormComponent,
+    id: @comment.id || :new,
+    title: @page_title,
+    action: @live_action,
+    comment: @comment,
+    return_to: Routes.comment_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Text</th>
+      <th>Resolved</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="comments">
+    <%= for comment <- @comments do %>
+      <tr id="comment-<%= comment.id %>">
+        <td><%= comment.text %></td>
+        <td><%= comment.resolved %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.comment_show_path(@socket, :show, comment) %></span>
+          <span><%= live_patch "Edit", to: Routes.comment_index_path(@socket, :edit, comment) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: comment.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Comment", to: Routes.comment_index_path(@socket, :new) %></span>
