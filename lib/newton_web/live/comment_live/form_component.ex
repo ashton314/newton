@@ -1,11 +1,11 @@
 defmodule NewtonWeb.CommentLive.FormComponent do
   use NewtonWeb, :live_component
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @impl true
   def update(%{comment: comment} = assigns, socket) do
-    changeset = Test.change_comment(comment)
+    changeset = Problem.change_comment(comment)
 
     {:ok,
      socket
@@ -17,7 +17,7 @@ defmodule NewtonWeb.CommentLive.FormComponent do
   def handle_event("validate", %{"comment" => comment_params}, socket) do
     changeset =
       socket.assigns.comment
-      |> Test.change_comment(comment_params)
+      |> Problem.change_comment(comment_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :changeset, changeset)}
@@ -28,7 +28,7 @@ defmodule NewtonWeb.CommentLive.FormComponent do
   end
 
   defp save_comment(socket, :edit, comment_params) do
-    case Test.update_comment(socket.assigns.comment, comment_params) do
+    case Problem.update_comment(socket.assigns.comment, comment_params) do
       {:ok, _comment} ->
         {:noreply,
          socket
@@ -41,7 +41,7 @@ defmodule NewtonWeb.CommentLive.FormComponent do
   end
 
   defp save_comment(socket, :new, comment_params) do
-    case Test.create_comment(comment_params) do
+    case Problem.create_comment(comment_params) do
       {:ok, _comment} ->
         {:noreply,
          socket

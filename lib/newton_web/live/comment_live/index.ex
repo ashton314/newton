@@ -1,8 +1,8 @@
 defmodule NewtonWeb.CommentLive.Index do
   use NewtonWeb, :live_view
 
-  alias Newton.Test
-  alias Newton.Test.Comment
+  alias Newton.Problem
+  alias Newton.Problem.Comment
 
   @impl true
   def mount(_params, _session, socket) do
@@ -17,7 +17,7 @@ defmodule NewtonWeb.CommentLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Comment")
-    |> assign(:comment, Test.get_comment!(id))
+    |> assign(:comment, Problem.get_comment!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -34,13 +34,13 @@ defmodule NewtonWeb.CommentLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    comment = Test.get_comment!(id)
-    {:ok, _} = Test.delete_comment(comment)
+    comment = Problem.get_comment!(id)
+    {:ok, _} = Problem.delete_comment(comment)
 
     {:noreply, assign(socket, :comments, fetch_comments())}
   end
 
   defp fetch_comments do
-    Test.list_comments()
+    Problem.list_comments()
   end
 end

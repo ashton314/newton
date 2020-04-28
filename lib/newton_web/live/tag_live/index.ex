@@ -1,8 +1,8 @@
 defmodule NewtonWeb.TagLive.Index do
   use NewtonWeb, :live_view
 
-  alias Newton.Test
-  alias Newton.Test.Tag
+  alias Newton.Problem
+  alias Newton.Problem.Tag
 
   @impl true
   def mount(_params, _session, socket) do
@@ -17,7 +17,7 @@ defmodule NewtonWeb.TagLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Tag")
-    |> assign(:tag, Test.get_tag!(id))
+    |> assign(:tag, Problem.get_tag!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -34,13 +34,13 @@ defmodule NewtonWeb.TagLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    tag = Test.get_tag!(id)
-    {:ok, _} = Test.delete_tag(tag)
+    tag = Problem.get_tag!(id)
+    {:ok, _} = Problem.delete_tag(tag)
 
     {:noreply, assign(socket, :tags, fetch_tags())}
   end
 
   defp fetch_tags do
-    Test.list_tags()
+    Problem.list_tags()
   end
 end

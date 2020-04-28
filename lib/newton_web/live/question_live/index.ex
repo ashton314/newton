@@ -1,8 +1,8 @@
 defmodule NewtonWeb.QuestionLive.Index do
   use NewtonWeb, :live_view
 
-  alias Newton.Test
-  alias Newton.Test.Question
+  alias Newton.Problem
+  alias Newton.Problem.Question
   alias NewtonWeb.QuestionLive.QuestionCard
 
   @impl true
@@ -18,7 +18,7 @@ defmodule NewtonWeb.QuestionLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Question")
-    |> assign(:question, Test.get_question!(id))
+    |> assign(:question, Problem.get_question!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -35,13 +35,13 @@ defmodule NewtonWeb.QuestionLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    question = Test.get_question!(id)
-    {:ok, _} = Test.delete_question(question)
+    question = Problem.get_question!(id)
+    {:ok, _} = Problem.delete_question(question)
 
     {:noreply, assign(socket, :questions, fetch_questions())}
   end
 
   defp fetch_questions do
-    Test.list_questions()
+    Problem.list_questions()
   end
 end

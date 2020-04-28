@@ -1,4 +1,4 @@
-defmodule Newton.Test.Question do
+defmodule Newton.Problem.Question do
   use Ecto.Schema
   import Ecto.Changeset
 

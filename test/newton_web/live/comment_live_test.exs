@@ -3,14 +3,14 @@ defmodule NewtonWeb.CommentLiveTest do
 
   import Phoenix.LiveViewTest
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @create_attrs %{resolved: true, text: "some text"}
   @update_attrs %{resolved: false, text: "some updated text"}
   @invalid_attrs %{resolved: nil, text: nil}
 
   defp fixture(:comment) do
-    {:ok, comment} = Test.create_comment(@create_attrs)
+    {:ok, comment} = Problem.create_comment(@create_attrs)
     comment
   end
 

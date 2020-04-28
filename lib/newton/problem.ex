@@ -1,12 +1,12 @@
-defmodule Newton.Test do
+defmodule Newton.Problem do
   @moduledoc """
-  The Test context.
+  The Problem context.
   """
 
   import Ecto.Query, warn: false
   alias Newton.Repo
 
-  alias Newton.Test.Question
+  alias Newton.Problem.Question
 
   @doc """
   Returns the list of questions.
@@ -102,7 +102,7 @@ defmodule Newton.Test do
     Question.changeset(question, attrs)
   end
 
-  alias Newton.Test.Answer
+  alias Newton.Problem.Answer
 
   @doc """
   Returns the list of answers.
@@ -198,7 +198,7 @@ defmodule Newton.Test do
     Answer.changeset(answer, attrs)
   end
 
-  alias Newton.Test.Comment
+  alias Newton.Problem.Comment
 
   @doc """
   Returns the list of comments.
@@ -294,7 +294,7 @@ defmodule Newton.Test do
     Comment.changeset(comment, attrs)
   end
 
-  alias Newton.Test.Tag
+  alias Newton.Problem.Tag
 
   @doc """
   Returns the list of tags.

@@ -3,14 +3,14 @@ defmodule NewtonWeb.AnswerLiveTest do
 
   import Phoenix.LiveViewTest
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @create_attrs %{display: true, points_marked: 42, points_unmarked: 42, text: "some text"}
   @update_attrs %{display: false, points_marked: 43, points_unmarked: 43, text: "some updated text"}
   @invalid_attrs %{display: nil, points_marked: nil, points_unmarked: nil, text: nil}
 
   defp fixture(:answer) do
-    {:ok, answer} = Test.create_answer(@create_attrs)
+    {:ok, answer} = Problem.create_answer(@create_attrs)
     answer
   end
 

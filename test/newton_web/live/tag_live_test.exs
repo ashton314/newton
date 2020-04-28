@@ -3,14 +3,14 @@ defmodule NewtonWeb.TagLiveTest do
 
   import Phoenix.LiveViewTest
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @create_attrs %{color: "some color", name: "some name"}
   @update_attrs %{color: "some updated color", name: "some updated name"}
   @invalid_attrs %{color: nil, name: nil}
 
   defp fixture(:tag) do
-    {:ok, tag} = Test.create_tag(@create_attrs)
+    {:ok, tag} = Problem.create_tag(@create_attrs)
     tag
   end
 

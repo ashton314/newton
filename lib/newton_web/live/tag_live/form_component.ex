@@ -1,11 +1,11 @@
 defmodule NewtonWeb.TagLive.FormComponent do
   use NewtonWeb, :live_component
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @impl true
   def update(%{tag: tag} = assigns, socket) do
-    changeset = Test.change_tag(tag)
+    changeset = Problem.change_tag(tag)
 
     {:ok,
      socket
@@ -17,7 +17,7 @@ defmodule NewtonWeb.TagLive.FormComponent do
   def handle_event("validate", %{"tag" => tag_params}, socket) do
     changeset =
       socket.assigns.tag
-      |> Test.change_tag(tag_params)
+      |> Problem.change_tag(tag_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :changeset, changeset)}
@@ -28,7 +28,7 @@ defmodule NewtonWeb.TagLive.FormComponent do
   end
 
   defp save_tag(socket, :edit, tag_params) do
-    case Test.update_tag(socket.assigns.tag, tag_params) do
+    case Problem.update_tag(socket.assigns.tag, tag_params) do
       {:ok, _tag} ->
         {:noreply,
          socket
@@ -41,7 +41,7 @@ defmodule NewtonWeb.TagLive.FormComponent do
   end
 
   defp save_tag(socket, :new, tag_params) do
-    case Test.create_tag(tag_params) do
+    case Problem.create_tag(tag_params) do
       {:ok, _tag} ->
         {:noreply,
          socket

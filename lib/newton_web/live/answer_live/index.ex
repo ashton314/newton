@@ -1,8 +1,8 @@
 defmodule NewtonWeb.AnswerLive.Index do
   use NewtonWeb, :live_view
 
-  alias Newton.Test
-  alias Newton.Test.Answer
+  alias Newton.Problem
+  alias Newton.Problem.Answer
 
   @impl true
   def mount(_params, _session, socket) do
@@ -17,7 +17,7 @@ defmodule NewtonWeb.AnswerLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Answer")
-    |> assign(:answer, Test.get_answer!(id))
+    |> assign(:answer, Problem.get_answer!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -34,13 +34,13 @@ defmodule NewtonWeb.AnswerLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    answer = Test.get_answer!(id)
-    {:ok, _} = Test.delete_answer(answer)
+    answer = Problem.get_answer!(id)
+    {:ok, _} = Problem.delete_answer(answer)
 
     {:noreply, assign(socket, :answers, fetch_answers())}
   end
 
   defp fetch_answers do
-    Test.list_answers()
+    Problem.list_answers()
   end
 end

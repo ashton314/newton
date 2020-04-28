@@ -1,11 +1,11 @@
 defmodule NewtonWeb.AnswerLive.FormComponent do
   use NewtonWeb, :live_component
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @impl true
   def update(%{answer: answer} = assigns, socket) do
-    changeset = Test.change_answer(answer)
+    changeset = Problem.change_answer(answer)
 
     {:ok,
      socket
@@ -17,7 +17,7 @@ defmodule NewtonWeb.AnswerLive.FormComponent do
   def handle_event("validate", %{"answer" => answer_params}, socket) do
     changeset =
       socket.assigns.answer
-      |> Test.change_answer(answer_params)
+      |> Problem.change_answer(answer_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :changeset, changeset)}
@@ -28,7 +28,7 @@ defmodule NewtonWeb.AnswerLive.FormComponent do
   end
 
   defp save_answer(socket, :edit, answer_params) do
-    case Test.update_answer(socket.assigns.answer, answer_params) do
+    case Problem.update_answer(socket.assigns.answer, answer_params) do
       {:ok, _answer} ->
         {:noreply,
          socket
@@ -41,7 +41,7 @@ defmodule NewtonWeb.AnswerLive.FormComponent do
   end
 
   defp save_answer(socket, :new, answer_params) do
-    case Test.create_answer(answer_params) do
+    case Problem.create_answer(answer_params) do
       {:ok, _answer} ->
         {:noreply,
          socket

@@ -1,7 +1,7 @@
 defmodule NewtonWeb.TagLive.Show do
   use NewtonWeb, :live_view
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,7 +13,7 @@ defmodule NewtonWeb.TagLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:tag, Test.get_tag!(id))}
+     |> assign(:tag, Problem.get_tag!(id))}
   end
 
   defp page_title(:show), do: "Show Tag"

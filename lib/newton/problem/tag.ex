@@ -1,4 +1,4 @@
-defmodule Newton.Test.Tag do
+defmodule Newton.Problem.Tag do
   use Ecto.Schema
   import Ecto.Changeset
 

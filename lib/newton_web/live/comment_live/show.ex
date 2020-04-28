@@ -1,7 +1,7 @@
 defmodule NewtonWeb.CommentLive.Show do
   use NewtonWeb, :live_view
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,7 +13,7 @@ defmodule NewtonWeb.CommentLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:comment, Test.get_comment!(id))}
+     |> assign(:comment, Problem.get_comment!(id))}
   end
 
   defp page_title(:show), do: "Show Comment"

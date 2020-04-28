@@ -3,7 +3,7 @@ defmodule NewtonWeb.QuestionLiveTest do
 
   import Phoenix.LiveViewTest
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @create_attrs %{
     archived: true,
@@ -24,7 +24,7 @@ defmodule NewtonWeb.QuestionLiveTest do
   @invalid_attrs %{archived: true, last_edit_hash: nil, tags: nil, text: nil, type: nil}
 
   defp fixture(:question) do
-    {:ok, question} = Test.create_question(@create_attrs)
+    {:ok, question} = Problem.create_question(@create_attrs)
     question
   end
 

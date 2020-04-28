@@ -1,7 +1,7 @@
 defmodule NewtonWeb.AnswerLive.Show do
   use NewtonWeb, :live_view
 
-  alias Newton.Test
+  alias Newton.Problem
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,7 +13,7 @@ defmodule NewtonWeb.AnswerLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:answer, Test.get_answer!(id))}
+     |> assign(:answer, Problem.get_answer!(id))}
   end
 
   defp page_title(:show), do: "Show Answer"
