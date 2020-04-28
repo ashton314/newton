@@ -1,0 +1,36 @@
+<header>
+  <section>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-dark">
+      <a class="navbar-brand" href="#" alt="But we really know it was Leibniz who did the cool calculus first.">Newton</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <!-- <li class="nav-item active"> -->
+          <!--   <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a> -->
+          <!-- </li> -->
+          <li class="nav-item">
+            <%= link "Question Listing", to: Routes.question_index_path(@socket, :index), class: "nav-link" %>
+          </li>
+          <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+          <li class="nav-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@socket, :home), class: "nav-link" %></li>
+          <% end %>
+        </ul>
+      </div>
+    </nav>
+  </section>
+</header>
+
+<main role="main" class="container">
+  <p class="alert alert-info" role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
+
+  <p class="alert alert-danger" role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+
+  <%= @inner_content %>
+</main>

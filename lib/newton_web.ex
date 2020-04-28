@@ -44,7 +44,7 @@ defmodule NewtonWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {NewtonWeb.LayoutView, "live.html"}
+        layout: {NewtonWeb.LayoutView, "live_navbar.html"}
 
       unquote(view_helpers())
     end

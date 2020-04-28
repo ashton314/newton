@@ -4,7 +4,10 @@ defmodule NewtonWeb.QuestionLive.QuestionCard do
   def render(assigns) do
     ~L"""
     <div class="card question-card">
-        <h3><%= @question.name %></h3>
+        <div class="card-body">
+            <h3 class="card-title"><%= @question.name %></h3>
+            <%= @question.text %>
+        </div>
     </div>
     """
   end

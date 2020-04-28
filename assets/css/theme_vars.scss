@@ -1,0 +1,53 @@
+@media (prefers-color-scheme: light) {
+    :root {
+        --color-background: #fefefe;
+        --color-text: #121212;
+        --color-text-muted: #aaa;
+        --color-border: #888;
+    }
+}
+
+:root {
+    --color-background: #212121;
+    --color-background-sidebar: #303030;
+    --color-background-sidebar-selected: #434245;
+    --color-background-titlebar: #38393b;
+    --color-background-textfield: #646566;
+    --color-text: #dedede;
+    --color-text-muted: #aaa;
+    --color-border: #888;
+}
+
+// Option flags
+$enable-gradients: true;
+$enable-shadows: true;
+
+// Twiddly bits
+$border-radius: .2rem;
+
+// Colors
+$white: #fff;
+
+$body-bg: #212121;
+$body-color: #dedede;
+
+// Navbar
+$navbar-dark-color: rgba($white, .7);
+$navbar-dark-hover-color: rgba($white, .9);
+$navbar-padding-y: 20px;
+$navbar-padding-x: 30px;
+
+// Cards
+$card-bg: lighten($body-bg, 10%);
+
+// .card {
+//     box-shadow: 2px 2px 5px #181818, 
+//                 -2px -2px 5px #2a2a2a;
+// }
+
+// --color-background-sidebar: #303030;
+// --color-background-sidebar-selected: #434245;
+// --color-background-titlebar: #38393b;
+// --color-background-textfield: #646566;
+// --color-text-muted: #aaa;
+// --color-border: #888;
