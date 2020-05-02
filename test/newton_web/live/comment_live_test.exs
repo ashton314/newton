@@ -20,6 +20,7 @@ defmodule NewtonWeb.CommentLiveTest do
   end
 
   describe "Index" do
+    @describetag :skip
     setup [:create_comment]
 
     test "lists all comments", %{conn: conn, comment: comment} do
@@ -33,7 +34,7 @@ defmodule NewtonWeb.CommentLiveTest do
       {:ok, index_live, _html} = live(conn, Routes.comment_index_path(conn, :index))
 
       assert index_live |> element("a", "New Comment") |> render_click() =~
-        "New Comment"
+               "New Comment"
 
       assert_patch(index_live, Routes.comment_index_path(conn, :new))
 
@@ -55,7 +56,7 @@ defmodule NewtonWeb.CommentLiveTest do
       {:ok, index_live, _html} = live(conn, Routes.comment_index_path(conn, :index))
 
       assert index_live |> element("#comment-#{comment.id} a", "Edit") |> render_click() =~
-        "Edit Comment"
+               "Edit Comment"
 
       assert_patch(index_live, Routes.comment_index_path(conn, :edit, comment))
 
@@ -82,6 +83,7 @@ defmodule NewtonWeb.CommentLiveTest do
   end
 
   describe "Show" do
+    @describetag :skip
     setup [:create_comment]
 
     test "displays comment", %{conn: conn, comment: comment} do
@@ -95,7 +97,7 @@ defmodule NewtonWeb.CommentLiveTest do
       {:ok, show_live, _html} = live(conn, Routes.comment_show_path(conn, :show, comment))
 
       assert show_live |> element("a", "Edit") |> render_click() =~
-        "Edit Comment"
+               "Edit Comment"
 
       assert_patch(show_live, Routes.comment_show_path(conn, :edit, comment))
 

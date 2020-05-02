@@ -34,6 +34,7 @@ defmodule NewtonWeb.QuestionLiveTest do
   end
 
   describe "Index" do
+    @describetag :skip
     setup [:create_question]
 
     test "lists all questions", %{conn: conn, question: question} do
@@ -96,6 +97,7 @@ defmodule NewtonWeb.QuestionLiveTest do
   end
 
   describe "Show" do
+    @describetag :skip
     setup [:create_question]
 
     test "displays question", %{conn: conn, question: question} do

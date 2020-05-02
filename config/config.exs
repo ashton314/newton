@@ -5,7 +5,7 @@
 # is restricted to this project.
 
 # General application configuration
-use Mix.Config
+import Config
 
 config :newton,
   ecto_repos: [Newton.Repo]
@@ -22,6 +22,9 @@ config :newton, :generators,
   migration: true,
   binary_id: true,
   sample_binary_id: "11111111-1111-1111-1111-111111111111"
+
+# LatexRenderer configuration
+config :newton, LatexRenderer, cache: "/tmp/latex_renderer/cache"
 
 # Configures Elixir's Logger
 config :logger, :console,
