@@ -17,7 +17,7 @@ defmodule Newton.Application do
       NewtonWeb.Endpoint,
       # Start a worker by calling: Newton.Worker.start_link(arg)
       # {Newton.Worker, arg}
-      {DynamicSupervisor, strategy: :one_for_one, name: LatexRenderer.RenderTaskSupervisor}
+      {DynamicSupervisor, strategy: :one_for_one, name: LatexRendering.Supervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

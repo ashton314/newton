@@ -27,13 +27,28 @@ defmodule LatexRenderer do
   the latex string) return the path to the file.
   """
   def retrieve_from_token(token, suffix \\ "pdf") do
-    base_dir = Application.fetch_env!(:newton, LatexRenderer) |> Keyword.get(:cache)
+    base_dir = Application.fetch_env!(:newton, :latex_cache)
 
     if token =~ ~r/^[a-z0-9]+$/ && suffix =~ ~r/^[a-z]+$/ do
       {:ok, Path.join([base_dir, token, "#{@filename_base}.#{suffix}"])}
     else
       {:error, :bad_token}
     end
+  end
+
+  @spec format_string_async(
+          str :: String.t(),
+          callback :: ({:ok, String.t()} | {:error, String.t()} -> any())
+        ) :: Supervisor.on_start()
+  def format_string_async(str, callback) do
+    DynamicSupervisor.start_child(
+      LatexRendering.Supervisor,
+      {Task,
+       fn ->
+         Logger.debug("[LatexRenderer] spawned render task #{inspect(self())}")
+         callback.(format_string(str))
+       end}
+    )
   end
 
   @doc """
@@ -61,7 +76,7 @@ defmodule LatexRenderer do
 
   def create_tmp(data) do
     # Ensure we have a directory
-    base_dir = Application.fetch_env!(:latex_renderer, :cache)
+    base_dir = Application.fetch_env!(:newton, :latex_cache)
 
     unless File.dir?(base_dir) do
       File.mkdir!(base_dir)
@@ -94,7 +109,10 @@ defmodule LatexRenderer do
     base_file = Path.basename(file, ".tex")
     Logger.debug("Running xelatex on #{path}")
 
-    with {_logs, 0} <- System.cmd("xelatex", ["-halt-on-error", "-output-directory=#{dir}", path]) do
+    latex_program = Application.fetch_env!(:newton, :latex_program)
+
+    with {_logs, 0} <-
+           System.cmd(latex_program, ["-halt-on-error", "-output-directory=#{dir}", path]) do
       # Cleanup
       for ext <- ~w(aux log out) do
         File.rm(Path.join(dir, "#{base_file}.#{ext}"))
@@ -104,6 +122,8 @@ defmodule LatexRenderer do
     else
       {reason, err} when is_integer(err) ->
         Logger.error("Couldn't format #{path}: Exit status #{err}: #{inspect(reason)}")
+        # Remove directory of failed render
+        File.rm_rf(dir)
         {:error, reason}
     end
   end

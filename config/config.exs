@@ -24,7 +24,9 @@ config :newton, :generators,
   sample_binary_id: "11111111-1111-1111-1111-111111111111"
 
 # LatexRenderer configuration
-config :newton, LatexRenderer, cache: "/tmp/latex_renderer/cache"
+config :newton,
+  latex_cache: "/tmp/latex_renderer/cache",
+  latex_program: "xelatex"
 
 # Configures Elixir's Logger
 config :logger, :console,
