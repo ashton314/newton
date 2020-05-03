@@ -1,0 +1,13 @@
+\documentclass[14pt]{standalone}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[pass,paperwidth=6in,paperheight=5in]{geometry}
+%\graphicspath{{../}}
+\begin{document}
+%\begin{minipage}{400px}
+
+<%= contents %>
+
+%\end{minipage}
+\end{document}

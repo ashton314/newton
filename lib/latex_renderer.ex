@@ -79,7 +79,7 @@ defmodule LatexRenderer do
     base_dir = Application.fetch_env!(:newton, :latex_cache)
 
     unless File.dir?(base_dir) do
-      File.mkdir!(base_dir)
+      File.mkdir_p!(base_dir)
     end
 
     # Generate a new unique path

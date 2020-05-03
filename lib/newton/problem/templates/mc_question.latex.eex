@@ -1,0 +1,9 @@
+\element{multiple}{
+\begin{mcquestion}{<%= disp(question.name) %>}
+    <%= question.text %>
+ \begin{choices}
+ \correctchoice{Correct}
+ \wrongchoice{Wrong}
+ \end{choices}
+ \end{mcquestion}
+}

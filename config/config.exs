@@ -25,7 +25,7 @@ config :newton, :generators,
 
 # LatexRenderer configuration
 config :newton,
-  latex_cache: "/tmp/latex_renderer/cache",
+  latex_cache: "priv/static/images/latex_renderer/cache",
   latex_program: "xelatex"
 
 # Configures Elixir's Logger
