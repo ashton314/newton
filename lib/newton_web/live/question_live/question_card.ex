@@ -7,7 +7,7 @@ defmodule NewtonWeb.QuestionLive.QuestionCard do
       <div class="card-body">
         <div class="row justify-content-between px-3">
           <h3 class="card-title d-inline-block"><%= @question.name %></h3>
-            <%= live_patch "Edit", to: Routes.question_index_path(@socket, :edit, @question), class: "btn btn-outline-success" %>
+            <%= live_patch "Edit", to: Routes.question_index_path(@socket, :edit, @question), class: "btn btn-outline-success", role: "button" %>
           </div>
           <%= @question.text %>
       </div>

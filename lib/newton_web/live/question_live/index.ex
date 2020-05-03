@@ -17,12 +17,16 @@ defmodule NewtonWeb.QuestionLive.Index do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
+    |> assign(:preview_state, nil)
+    |> assign(:preview_contents, nil)
     |> assign(:page_title, "Edit Question")
     |> assign(:question, Problem.get_question!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
+    |> assign(:preview_state, nil)
+    |> assign(:preview_contents, nil)
     |> assign(:page_title, "New Question")
     |> assign(:question, %Question{})
   end
@@ -31,6 +35,28 @@ defmodule NewtonWeb.QuestionLive.Index do
     socket
     |> assign(:page_title, "Listing Questions")
     |> assign(:question, nil)
+  end
+
+  # Handle edits
+  @impl true
+  def handle_info({:preview_ready, :ok, token}, socket) do
+    send_update(NewtonWEb.QuestionLive.FormComponent, id: socket.assigns.question.id)
+
+    socket =
+      socket
+      |> assign(:preview_state, :ok)
+      |> assign(:preview_contents, token)
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:preview_ready, :error, err_message}, socket) do
+    socket =
+      socket
+      |> assign(:preview_state, :error)
+      |> assign(:preview_contents, err_message)
+
+    {:noreply, socket}
   end
 
   @impl true

@@ -7,25 +7,52 @@
   phx_change: "validate",
   phx_submit: "save" %>
 
-<div class="form-group">
-  <%= text_input f, :name, class: "form-control", placeholder: "Question name" %>
-  <%= error_tag f, :name %>
-</div>
+<div class="row">
+    <div class="col col-md-3">
 
-<div class="form-group">
-  <%= text_input f, :text, class: "form-control", placeholder: "Question text" %>
-  <%= error_tag f, :text %>
+        <div class="form-group">
+            <%= text_input f, :name, class: "form-control", placeholder: "Question name" %>
+            <%= error_tag f, :name %>
+        </div>
+
+        <div class="form-group">
+            <%= select f, :type, [{"Multiple Choice", "multiple_choice"}, {"Free Response", "free_response"}, {"Fill-in-the-Blank", "fill_in_blank"}], class: "custom-select" %>
+            <%= error_tag f, :type %>
+        </div>
+
+        <div class="form-group">
+            <%= textarea f, :text, class: "form-control", placeholder: "Question text", rows: 5, phx_debounce: 2000 %>
+            <%= error_tag f, :text %>
+        </div>
+
+    </div>
+
+    <div class="col">
+        <%= case @preview_state do %>
+            <% :ok -> %>
+                <h4>Preview</h4>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <embed src="<%= Routes.static_path(@socket, "/images/latex_renderer/cache/#{@preview_contents}/question_preview.pdf") %>" class="embed-responsive-item" type="application/pdf"></embed>
+                </div>
+                <div class="text-muted">
+                    If you are using Firefox and cannot see a preview, there's a bug in Firefox when displaying embedded PDFs.
+                    Go to Settings &gt; Applications &gt; PDF and set to "Preview in Firefox". See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1500404">this issue</a>.
+                </div>
+            <% :error -> %>
+                <h4>Error</h4>
+                <pre>
+                    <%= @preview_contents %>
+                </pre>
+            <% nil -> %>
+                <h4>No preview yet</h4>
+        <% end %>
+    </div>
+
 </div>
 
   <%# label f, :tags %>
   <%# multiple_select f, :tags, ["Option 1": "option1", "Option 2": "option2"] %>
   <%# error_tag f, :tags %>
-
-<div class="form-group">
-  <%= label f, :type %>
-  <%= select f, :type, [{"Multiple Choice", "multiple_choice"}, {"Free Response", "free_response"}, {"Fill-in-the-Blank", "fill_in_blank"}], class: "custom-select" %>
-  <%= error_tag f, :type %>
-</div>
 
   <%# label f, :archived %>
   <%# checkbox f, :archived %>
@@ -33,5 +60,5 @@
 
   <br>
 
-  <%= submit "Save", phx_disable_with: "Saving..." %>
+  <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary" %>
 </form>
