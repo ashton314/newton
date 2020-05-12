@@ -96,3 +96,10 @@
 .alert:empty {
   display: none;
 }
+
+.latex-error {
+    background-color: lighten($card-bg, 10%);
+    padding: 1em;
+    max-height: 300px;
+    overflow-y: scroll;
+}

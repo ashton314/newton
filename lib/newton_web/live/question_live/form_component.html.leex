@@ -21,7 +21,7 @@
         </div>
 
         <div class="form-group">
-            <%= textarea f, :text, class: "form-control", placeholder: "Question text", rows: 5, phx_debounce: 500 %>
+            <%= textarea f, :text, class: "form-control", placeholder: "Question text", rows: 5, phx_debounce: 1000 %>
             <%= error_tag f, :text %>
         </div>
 
@@ -31,8 +31,8 @@
         <%= case @preview_state do %>
             <% :ok -> %>
                 <h4>Preview</h4>
-                <div class="embed-responsive embed-responsive-16by9">
-                    <embed src="<%= Routes.static_path(@socket, "/images/latex_renderer/cache/#{@preview_contents}/question_preview.pdf") %>" class="embed-responsive-item" type="application/pdf"></embed>
+                <div class="embed-responsive embed-responsive-21by9">
+                    <embed crossorigin="anonymous" src="<%= Routes.static_path(@socket, "/images/latex_renderer/cache/#{@preview_contents}/question_preview.pdf") %>" class="embed-responsive-item" type="application/pdf"></embed>
                 </div>
                 <small class="text-muted">
                     If you are using Firefox and cannot see a preview, there's a bug in Firefox when displaying embedded PDFs.
@@ -40,7 +40,7 @@
                 </small>
             <% :error -> %>
                 <h4>Error</h4>
-                <pre>
+                <pre class="latex-error embed-responsive-21by9">
                     <%= @preview_contents %>
                 </pre>
             <% nil -> %>
