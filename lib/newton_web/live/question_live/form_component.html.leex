@@ -21,7 +21,7 @@
         </div>
 
         <div class="form-group">
-            <%= textarea f, :text, class: "form-control", placeholder: "Question text", rows: 5, phx_debounce: 2000 %>
+            <%= textarea f, :text, class: "form-control", placeholder: "Question text", rows: 5, phx_debounce: 500 %>
             <%= error_tag f, :text %>
         </div>
 
@@ -34,10 +34,10 @@
                 <div class="embed-responsive embed-responsive-16by9">
                     <embed src="<%= Routes.static_path(@socket, "/images/latex_renderer/cache/#{@preview_contents}/question_preview.pdf") %>" class="embed-responsive-item" type="application/pdf"></embed>
                 </div>
-                <div class="text-muted">
+                <small class="text-muted">
                     If you are using Firefox and cannot see a preview, there's a bug in Firefox when displaying embedded PDFs.
                     Go to Settings &gt; Applications &gt; PDF and set to "Preview in Firefox". See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1500404">this issue</a>.
-                </div>
+                </small>
             <% :error -> %>
                 <h4>Error</h4>
                 <pre>

@@ -5,64 +5,63 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
   @impl true
   def update(
-        %{question: question, preview_contents: prev_cont, preview_state: prev_state} = assigns,
+        %{id: id, preview_contents: prev_cont, preview_state: prev_state} = assigns,
         socket
       ) do
-    changeset = Problem.change_question(question)
-
     IO.inspect(assigns, label: "assigns in update 1")
+
+    question = Problem.get_question!(id)
 
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:changeset, changeset)
+     |> assign(:changeset, Map.get(socket.assigns, :changeset, Problem.change_question(question)))
      |> assign(:preview_contents, prev_cont)
      |> assign(:preview_state, prev_state)}
   end
 
-  def update(%{question: question} = assigns, socket) do
-    changeset = Problem.change_question(question)
-
-    IO.inspect(assigns, label: "assigns in update 2")
-
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign(:changeset, changeset)
-     |> assign(:preview_contents, nil)
-     |> assign(:preview_state, nil)}
-  end
-
   @impl true
   def handle_event("validate", %{"question" => question_params}, socket) do
-    # changeset =
-    #   socket.assigns.question
-    #   |> Problem.change_question(question_params)
-    #   |> Map.put(:action, :validate)
+    changeset =
+      socket.assigns.question
+      |> Problem.change_question(question_params)
+      |> Map.put(:action, :validate)
 
-    # # text = question_params["text"]
-    # validated_question = Ecto.Changeset.apply_changes(socket.assigns.changeset)
-    # IO.inspect(validated_question, label: "validated_question")
+    socket = assign(socket, changeset: changeset)
+
+    # text = question_params["text"]
+    validated_question = Ecto.Changeset.apply_changes(socket.assigns.changeset)
+    IO.inspect(validated_question, label: "validated_question")
 
     me = self()
 
-    case Problem.update_question(socket.assigns.question, question_params) do
-      {:ok, updated_question} ->
-        Problem.Render.render_question_preview(
-          updated_question,
-          fn
-            {:ok, tok} -> send(me, {:preview_ready, :ok, tok})
-            {:error, mess} -> send(me, {:preview_ready, :error, mess})
-          end
-        )
+    Problem.Render.render_question_preview(
+      validated_question,
+      fn
+        {:ok, tok} -> send(me, {:preview_ready, :ok, tok})
+        {:error, mess} -> send(me, {:preview_ready, :error, mess})
+      end
+    )
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "Question updated successfully")}
+    {:noreply, socket}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
-    end
+    # case Problem.update_question(socket.assigns.question, question_params) do
+    #   {:ok, updated_question} ->
+    #     Problem.Render.render_question_preview(
+    #       updated_question,
+    #       fn
+    #         {:ok, tok} -> send(me, {:preview_ready, :ok, tok})
+    #         {:error, mess} -> send(me, {:preview_ready, :error, mess})
+    #       end
+    #     )
+
+    #     {:noreply,
+    #      socket
+    #      |> put_flash(:info, "Question updated successfully")}
+
+    #   {:error, %Ecto.Changeset{} = changeset} ->
+    #     {:noreply, assign(socket, :changeset, changeset)}
+    # end
   end
 
   def handle_event("save", %{"question" => question_params}, socket) do
