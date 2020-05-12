@@ -5,6 +5,20 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
   @impl true
   def update(
+        %{id: :new, preview_contents: prev_cont, preview_state: prev_state} = assigns,
+        socket
+      ) do
+    {:ok, question} = Problem.create_question()
+
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(:changeset, Map.get(socket.assigns, :changeset, Problem.change_question(question)))
+     |> assign(:preview_contents, prev_cont)
+     |> assign(:preview_state, prev_state)}
+  end
+
+  def update(
         %{id: id, preview_contents: prev_cont, preview_state: prev_state} = assigns,
         socket
       ) do
