@@ -8,9 +8,9 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
         %{id: id, preview_contents: prev_cont, preview_state: prev_state} = assigns,
         socket
       ) do
-    IO.inspect(assigns, label: "assigns in update 1")
-
     question = Problem.get_question!(id)
+
+    # if is_nil(prev_state) && question.text != "", do: request_render(question)
 
     {:ok,
      socket
@@ -29,43 +29,28 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
     socket = assign(socket, changeset: changeset)
 
-    # text = question_params["text"]
     validated_question = Ecto.Changeset.apply_changes(socket.assigns.changeset)
     IO.inspect(validated_question, label: "validated_question")
 
+    request_render(validated_question)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("save", %{"question" => question_params}, socket) do
+    save_question(socket, socket.assigns.action, question_params)
+  end
+
+  defp request_render(question) do
     me = self()
 
     Problem.Render.render_question_preview(
-      validated_question,
+      question,
       fn
         {:ok, tok} -> send(me, {:preview_ready, :ok, tok})
         {:error, mess} -> send(me, {:preview_ready, :error, mess})
       end
     )
-
-    {:noreply, socket}
-
-    # case Problem.update_question(socket.assigns.question, question_params) do
-    #   {:ok, updated_question} ->
-    #     Problem.Render.render_question_preview(
-    #       updated_question,
-    #       fn
-    #         {:ok, tok} -> send(me, {:preview_ready, :ok, tok})
-    #         {:error, mess} -> send(me, {:preview_ready, :error, mess})
-    #       end
-    #     )
-
-    #     {:noreply,
-    #      socket
-    #      |> put_flash(:info, "Question updated successfully")}
-
-    #   {:error, %Ecto.Changeset{} = changeset} ->
-    #     {:noreply, assign(socket, :changeset, changeset)}
-    # end
-  end
-
-  def handle_event("save", %{"question" => question_params}, socket) do
-    save_question(socket, socket.assigns.action, question_params)
   end
 
   defp save_question(socket, :edit, question_params) do
