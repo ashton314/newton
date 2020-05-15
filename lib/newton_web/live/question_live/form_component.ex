@@ -8,7 +8,14 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
         %{id: :new, preview_contents: prev_cont, preview_state: prev_state} = assigns,
         socket
       ) do
-    {:ok, question} = Problem.create_question(%{text: "Math is $\\int\\cup\\prod$"})
+    # This blows up and just keeps inserting questions into the DB when it tries to render a preview---yikes!
+    {:ok, question} =
+      Problem.create_question(%{
+        text: "Math is $\\int\\cup\\prod$",
+        # name: "New question",
+        type: "multiple_choice"
+      })
+
     question = Problem.preload_assocs(question)
 
     {:ok,
