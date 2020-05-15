@@ -8,6 +8,10 @@ defmodule Newton.Problem do
 
   alias Newton.Problem.Question
 
+  def preload_assocs(%Question{} = q, opts \\ []) do
+    Repo.preload(q, [:answers, :comments], opts)
+  end
+
   @doc """
   Returns the list of questions.
   """

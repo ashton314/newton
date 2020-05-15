@@ -8,12 +8,15 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
         %{id: :new, preview_contents: prev_cont, preview_state: prev_state} = assigns,
         socket
       ) do
-    {:ok, question} = Problem.create_question()
+    {:ok, question} = Problem.create_question(%{text: "Math is $\\int\\cup\\prod$"})
+    question = Problem.preload_assocs(question)
 
     {:ok,
      socket
      |> assign(assigns)
      |> assign(:changeset, Map.get(socket.assigns, :changeset, Problem.change_question(question)))
+     |> assign(:comments, question.comments)
+     |> assign(:answers, question.answers)
      |> assign(:preview_contents, prev_cont)
      |> assign(:preview_state, prev_state)}
   end
@@ -22,7 +25,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
         %{id: id, preview_contents: prev_cont, preview_state: prev_state} = assigns,
         socket
       ) do
-    question = Problem.get_question!(id)
+    question = Problem.get_question!(id) |> Problem.preload_assocs()
 
     # if is_nil(prev_state) && question.text != "", do: request_render(question)
 
@@ -30,6 +33,8 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:changeset, Map.get(socket.assigns, :changeset, Problem.change_question(question)))
+     |> assign(:comments, question.comments)
+     |> assign(:answers, question.answers)
      |> assign(:preview_contents, prev_cont)
      |> assign(:preview_state, prev_state)}
   end
