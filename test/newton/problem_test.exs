@@ -277,4 +277,28 @@ defmodule Newton.ProblemTest do
       assert %Ecto.Changeset{} = Problem.change_tag(tag)
     end
   end
+
+  describe "question with assocs" do
+    alias Newton.Problem
+    alias Newton.Problem.{Question, Comment, Answer}
+
+    test "new question with a comment" do
+      assert {:ok, %Question{comments: [%Comment{}], answers: [%Answer{}, %Answer{}]} = q} =
+               Problem.create_question(%{
+                 name: "Some name",
+                 text: "Sample body text",
+                 type: "multiple_choice",
+                 comments: [%{resolved: false, text: "I'm not happy Bob."}],
+                 answers: [
+                   %{points_marked: 1, text: "good answer"},
+                   %{points_marked: 0, text: "bad answer"}
+                 ]
+               })
+
+      assert {:ok, a1} = Problem.create_answer(%{question_id: q.id, text: "different answer"})
+
+      q2 = Repo.preload(q, :answers, force: true)
+      assert Enum.count(q2.answers) == 3
+    end
+  end
 end
