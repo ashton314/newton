@@ -22,6 +22,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:changeset, Map.get(socket.assigns, :changeset, Problem.change_question(question)))
+     |> assign(:answer_changeset, answer_changeset())
      |> assign(:comments, question.comments)
      |> assign(:answers, question.answers)
      |> assign(:preview_contents, prev_cont)
@@ -34,16 +35,17 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
       ) do
     question = Problem.get_question!(id) |> Problem.preload_assocs()
 
-    # if is_nil(prev_state) && question.text != "", do: request_render(question)
+    if is_nil(prev_state) && question.text != "", do: request_render(question)
 
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:changeset, Map.get(socket.assigns, :changeset, Problem.change_question(question)))
-     |> assign(:comments, question.comments)
-     |> assign(:answers, question.answers)
-     |> assign(:preview_contents, prev_cont)
-     |> assign(:preview_state, prev_state)}
+     |> assign_new(:changeset, fn -> Problem.change_question(question) end)
+     |> assign_new(:answer_changeset, fn -> answer_changeset() end)
+     |> assign_new(:comments, fn -> question.comments end)
+     |> assign_new(:answers, fn -> question.answers end)
+     |> assign_new(:preview_contents, fn -> prev_cont end)
+     |> assign_new(:preview_state, fn -> prev_state end)}
   end
 
   @impl true
@@ -63,8 +65,46 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     {:noreply, socket}
   end
 
+  def handle_event("validate-answer", %{"new_answer" => new_answer}, socket) do
+    {:noreply, assign(socket, :answer_changeset, answer_changeset(new_answer))}
+  end
+
+  def handle_event("append-answer", %{"new_answer" => new_answer}, socket) do
+    answer_cs = Problem.Answer.changeset(%Problem.Answer{}, new_answer)
+
+    if answer_cs.valid? do
+      new_answer = Ecto.Changeset.apply_changes(answer_cs)
+
+      socket =
+        socket
+        |> update(:answers, fn answers -> answers ++ [new_answer] end)
+        |> assign(:answer_changeset, answer_changeset())
+
+      {:noreply, socket}
+    else
+      error_changeset =
+        Ecto.Changeset.add_error(socket.assigns.answer_changeset, :text, "Can't be blank")
+
+      {:noreply, assign(socket, :answer_changeset, error_changeset)}
+    end
+  end
+
   def handle_event("save", %{"question" => question_params}, socket) do
     save_question(socket, socket.assigns.action, question_params)
+  end
+
+  def handle_event("mark-correct", val, socket) do
+    IO.inspect(val, label: "val")
+
+    {:noreply, socket}
+  end
+
+  defp answer_changeset(props \\ %{}) do
+    types = %{text: :string, is_correct: :boolean}
+
+    {%{}, types}
+    |> Ecto.Changeset.cast(props, Map.keys(types))
+    |> Ecto.Changeset.validate_required([:text])
   end
 
   defp request_render(question) do

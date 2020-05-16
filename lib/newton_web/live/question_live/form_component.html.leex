@@ -54,17 +54,56 @@
 
 <div class="row mt-3">
     <div class="col">
+        <h4>Answers</h4>
+
+        <%= if Enum.count(@answers) == 0 do %>
+            <p class="text-muted">(No answers)</p>
+        <% end %>
+
+        <%= for a <- @answers do %>
+            <div class="question-answer row my-1">
+                <div class="col-auto">
+                    <button class="btn btn-sm btn-outline-success" phx-target="<%= @myself %>" phx-click="mark-correct" phx-value-answer-id="<%= a.id %>">Mark Correct</button>
+                </div>
+                <div class="col">
+                    <%= a.text %>
+                </div>
+            </div>
+        <% end %>
+
+        <div class="row">
+            <div class="new-answer-form col">
+                <%= f = form_for @answer_changeset, "#",
+                as: "new_answer",
+                id: "new-answer-form",
+                phx_target: @myself,
+                phx_change: "validate-answer",
+                phx_submit: "append-answer" %>
+
+                <div class="form-group">
+                    <%= text_input f, :text, class: "form-control", placeholder: "New answer" %>
+                    <%= error_tag f, :text %>
+                </div>
+        
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col">
         <h4>Comments</h4>
 
         <%= if Enum.count(@comments) == 0 do %>
             <p class="text-muted">(No comments)</p>
         <% end %>
 
-        <div class="question-comment">
-            <%= for c <- @comments do %>
+        <%= for c <- @comments do %>
+            <div class="question-comment">
                 <p><%= c.text %></p>
-            <% end %>
-        </div>
+            </div>
+        <% end %>
     </div>
 </div>
 

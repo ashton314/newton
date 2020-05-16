@@ -61,6 +61,10 @@ $body-color: #dedede;
 
 $pre-color: #dedede;
 
+$input-color: #cecece;
+$input-bg: darken($body-bg, 2%);
+$input-border-color: lighten($body-bg, 20%);
+
 // Navbar
 $navbar-dark-color: rgba($white, .7);
 $navbar-dark-hover-color: rgba($white, .9);
