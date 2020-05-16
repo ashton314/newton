@@ -2,7 +2,7 @@
 <h2 class="card-title"><%= @title %></h2>
 
 <div class="row">
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-5">
         <%= f = form_for @changeset, "#",
         id: "question-form",
         phx_target: @myself,
@@ -16,7 +16,6 @@
 
         <div class="form-group">
             <%= select f, :type, [{"Multiple Choice", "multiple_choice"}, {"Free Response", "free_response"}, {"Fill-in-the-Blank", "fill_in_blank"}], class: "custom-select" %>
-            <%= error_tag f, :type %>
         </div>
 
         <div class="form-group">
@@ -24,11 +23,19 @@
             <%= error_tag f, :text %>
         </div>
 
+        <h4>Tags</h4>
+        <hr/>
+
+        <div class="form-group">
+            <p class="text-muted">(No tags)</p>
+        </div>
+
         <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary" %>
         </form>
+
     </div>
 
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-md-7">
         <%= case @preview_state do %>
             <% :ok -> %>
                 <div class="embed-responsive embed-responsive-21by9">
@@ -53,7 +60,7 @@
 </div>
 
 <div class="row mt-3">
-    <div class="col">
+    <div class="col-12 col-md-5">
         <h4>Answers</h4>
         <hr/>
 
@@ -67,11 +74,14 @@
                     <%= if a.points_marked > 0 do %>
                         <%= icon(@socket, "check-circle", color: "#209d3e") %>
                     <% else %>
-                        <%= icon_button(@socket, "check-circle", "mark-correct", a.id, @myself, color: "#aaa") %>
+                        <%= icon_button(@socket, "circle", "mark-correct", a.id, @myself, color: "#aaa") %>
                     <% end %>
                 </div>
                 <div class="col">
                     <%= a.text %>
+                </div>
+                <div class="col-auto">
+                    <%= icon_button(@socket, "trash-2", "delete-answer", a.id, @myself, color: "#d22") %>
                 </div>
             </div>
         <% end %>
@@ -93,10 +103,8 @@
             </div>
         </div>
     </div>
-</div>
 
-<div class="row mt-3">
-    <div class="col">
+    <div class="col-12 col-md-7">
         <h4>Comments</h4>
         <hr/>
 
