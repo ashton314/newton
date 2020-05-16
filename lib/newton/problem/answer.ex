@@ -17,7 +17,7 @@ defmodule Newton.Problem.Answer do
   end
 
   @doc false
-  def changeset(answer, attrs) do
+  def changeset(answer, attrs \\ %{}) do
     answer
     |> cast(attrs, [:text, :display, :points_marked, :points_unmarked, :question_id])
     |> validate_required([:text])

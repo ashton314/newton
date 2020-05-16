@@ -55,15 +55,20 @@
 <div class="row mt-3">
     <div class="col">
         <h4>Answers</h4>
+        <hr/>
 
         <%= if Enum.count(@answers) == 0 do %>
             <p class="text-muted">(No answers)</p>
         <% end %>
 
         <%= for a <- @answers do %>
-            <div class="question-answer row my-1">
-                <div class="col-auto">
-                    <button class="btn btn-sm btn-outline-success" phx-target="<%= @myself %>" phx-click="mark-correct" phx-value-answer-id="<%= a.id %>">Mark Correct</button>
+            <div class="question-answer row my-2">
+                <div class="col-auto pr-0">
+                    <%= if a.points_marked > 0 do %>
+                        <%= icon(@socket, "check-circle", color: "#209d3e") %>
+                    <% else %>
+                        <%= icon_button(@socket, "check-circle", "mark-correct", a.id, @myself, color: "#aaa") %>
+                    <% end %>
                 </div>
                 <div class="col">
                     <%= a.text %>
@@ -74,7 +79,6 @@
         <div class="row">
             <div class="new-answer-form col">
                 <%= f = form_for @answer_changeset, "#",
-                as: "new_answer",
                 id: "new-answer-form",
                 phx_target: @myself,
                 phx_change: "validate-answer",
@@ -94,6 +98,7 @@
 <div class="row mt-3">
     <div class="col">
         <h4>Comments</h4>
+        <hr/>
 
         <%= if Enum.count(@comments) == 0 do %>
             <p class="text-muted">(No comments)</p>
