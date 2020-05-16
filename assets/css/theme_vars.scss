@@ -8,10 +8,10 @@
 }
 
 :root {
-    --color-background: #212121;
+    --color-background: #1a1c1e;
     --color-background-sidebar: #303030;
     --color-background-sidebar-selected: #434245;
-    --color-background-titlebar: #38393b;
+    --color-background-titlebar: #34383b;
     --color-background-textfield: #646566;
     --color-text: #dedede;
     --color-text-muted: #aaa;
@@ -54,8 +54,9 @@ $font-family-sans-serif: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe U
 
 // Colors
 $white: #fff;
+$green: #209d3e;
 
-$body-bg: #212121;
+$body-bg: #1a1c1e;
 $body-color: #dedede;
 
 $pre-color: #dedede;
