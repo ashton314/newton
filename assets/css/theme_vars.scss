@@ -76,6 +76,19 @@ $card-bg: lighten($body-bg, 10%);
 $card-spacer-y: 0.5rem;
 $card-spacer-x: 1rem;
 
+// Dropdown
+$dropdown-padding-y: .25rem;
+$dropdown-spacer: 0;
+
+$dropdown-bg: lighten($card-bg, 5%);
+$dropdown-border-color: darken($dropdown-bg, 20%);
+$dropdown-border-radius: 2px;
+
+$dropdown-link-color: $body-color;
+$dropdown-link-hover-color: $dropdown-link-color;
+$dropdown-link-hover-bg: lighten($card-bg, 15%);
+
+
 // .card {
 //     box-shadow: 2px 2px 5px #181818, 
 //                 -2px -2px 5px #2a2a2a;
