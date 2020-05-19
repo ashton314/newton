@@ -8,31 +8,6 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
   @impl true
   def update(
-        %{id: :new, preview_contents: prev_cont, preview_state: prev_state} = assigns,
-        socket
-      ) do
-    # This blows up and just keeps inserting questions into the DB when it tries to render a preview---yikes!
-    {:ok, question} =
-      Problem.create_question(%{
-        text: "Math is $\\int\\cup\\prod$",
-        # name: "New question",
-        type: "multiple_choice"
-      })
-
-    question = Problem.preload_assocs(question)
-
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign(:changeset, Map.get(socket.assigns, :changeset, Problem.change_question(question)))
-     |> assign(:answer_changeset, Answer.changeset(%Answer{}))
-     |> assign(:comments, question.comments)
-     |> assign(:answers, question.answers)
-     |> assign(:preview_contents, prev_cont)
-     |> assign(:preview_state, prev_state)}
-  end
-
-  def update(
         %{id: id, preview_contents: prev_cont, preview_state: prev_state} = assigns,
         socket
       ) do

@@ -2,7 +2,6 @@ defmodule NewtonWeb.QuestionLive.Index do
   use NewtonWeb, :live_view
 
   alias Newton.Problem
-  alias Newton.Problem.Question
   alias NewtonWeb.QuestionLive.QuestionCard
 
   @impl true
@@ -24,11 +23,18 @@ defmodule NewtonWeb.QuestionLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
+    {:ok, question} =
+      Problem.create_question(%{
+        text: "Math is $\\int\\cup\\prod$",
+        name: "New question",
+        type: "multiple_choice"
+      })
+
     socket
     |> assign(:preview_state, nil)
     |> assign(:preview_contents, nil)
     |> assign(:page_title, "New Question")
-    |> assign(:question, %Question{})
+    |> assign(:question, question)
   end
 
   defp apply_action(socket, :index, _params) do
@@ -64,6 +70,12 @@ defmodule NewtonWeb.QuestionLive.Index do
   def handle_event("delete", %{"id" => id}, socket) do
     question = Problem.get_question!(id)
     {:ok, _} = Problem.delete_question(question)
+
+    socket =
+      socket
+      |> assign(:questions, fetch_questions())
+      |> put_flash(:info, "Question deleted")
+      |> push_patch(to: "/questions")
 
     {:noreply, assign(socket, :questions, fetch_questions())}
   end
