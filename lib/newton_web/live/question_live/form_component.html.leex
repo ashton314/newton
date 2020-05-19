@@ -43,9 +43,13 @@
         <h4>Tags</h4>
         <hr/>
 
-        <div class="form-group">
+        <%= if Enum.count(input_value(f, :tags) || []) == 0 do %>
             <p class="text-muted">(No tags)</p>
-        </div>
+        <% end %>
+
+        <%= for t <- input_value(f, :tags) || [] do %>
+            <span class="badge badge-primary"><%= t %></span>
+        <% end %>
 
         <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary" %>
         </form>
