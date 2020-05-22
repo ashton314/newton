@@ -1,0 +1,21 @@
+<%# -*- mode: web -*- %>
+<div>
+    <%= f = form_for @changeset, "#",
+    as: "new_tag",
+    id: "new-tag-form",
+    phx_target: @myself,
+    phx_change: "suggest",
+    phx_submit: "add-tag" %>
+
+    <div class="form-group">
+        <%= text_input f, :new_tag, class: "form-control", placeholder: "Search or add tag…", list: "suggestions" %>
+    </div>
+
+    <datalist id="suggestions">
+        <%= for sug <- @suggestions do %>
+            <option value="<%= sug %>"><%= sug %></option>
+        <% end %>
+    </datalist>
+
+    </form>
+</div>

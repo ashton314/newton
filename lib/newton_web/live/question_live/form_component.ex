@@ -5,6 +5,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
   alias Newton.Problem
   alias Newton.Problem.Answer
+  alias NewtonWeb.QuestionLive.TagSuggestion
 
   @impl true
   def update(
@@ -24,6 +25,20 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
      |> assign_new(:answers, fn -> question.answers end)
      |> assign_new(:preview_contents, fn -> prev_cont end)
      |> assign_new(:preview_state, fn -> prev_state end)}
+  end
+
+  def update(%{id: _id, new_tag: new_tag} = assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> update(:changeset, fn cs ->
+       old_tags = Ecto.Changeset.get_field(cs, :tags, []) || []
+
+       Problem.Question.preloaded_changeset(cs, %{
+         tags: old_tags ++ [new_tag]
+       })
+       |> IO.inspect(label: :new_cs)
+     end)}
   end
 
   @impl true
@@ -62,6 +77,12 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     else
       {:noreply, assign(socket, :answer_changeset, answer_cs)}
     end
+  end
+
+  def handle_event("tag_keyup", val, socket) do
+    IO.inspect(val, label: "val")
+
+    {:noreply, socket}
   end
 
   def handle_event("save", %{"question" => question_params}, socket) do

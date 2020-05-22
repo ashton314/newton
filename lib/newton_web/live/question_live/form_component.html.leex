@@ -39,6 +39,7 @@
             <%= textarea f, :text, class: "form-control", placeholder: "Question text", rows: 5, phx_debounce: 1000 %>
             <%= error_tag f, :text %>
         </div>
+        </form>
 
         <h4>Tags</h4>
         <hr/>
@@ -51,8 +52,10 @@
             <span class="badge badge-primary"><%= t %></span>
         <% end %>
 
-        <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary" %>
-        </form>
+        <%= live_component @socket, TagSuggestion, id: :new_tag %>
+
+        <!-- This goes out here because HTML does *not* like nested form components -->
+        <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary", form: "question-form" %>
 
     </div>
 
