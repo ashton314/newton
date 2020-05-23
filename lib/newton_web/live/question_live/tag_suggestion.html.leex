@@ -1,6 +1,6 @@
 <%# -*- mode: web -*- %>
 <div>
-    <form phx-change="suggest-tags" phx-submit="add-tag" phx-target="<%= @myself %>">
+    <form phx-change="suggest-tags" phx-submit="add-tag" phx-target="<%= @target %>">
         <div class="form-group">
             <input type="text" name="new_tag" placeholder="Search or add tag…" list="suggestions" class="form-control">
         </div>

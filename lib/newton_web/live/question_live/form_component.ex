@@ -7,6 +7,8 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
   alias Newton.Problem.Answer
   alias NewtonWeb.QuestionLive.TagSuggestion
 
+  @sample_tags ~w(math112 math113 derivative integral limit easy medium hard)
+
   @impl true
   def update(
         %{id: id, preview_contents: prev_cont, preview_state: prev_state} = assigns,
@@ -24,28 +26,17 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
      |> assign_new(:comments, fn -> question.comments end)
      |> assign_new(:answers, fn -> question.answers end)
      |> assign_new(:preview_contents, fn -> prev_cont end)
-     |> assign_new(:preview_state, fn -> prev_state end)}
-  end
-
-  def update(%{id: _id, new_tag: new_tag} = assigns, socket) do
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> update(:changeset, fn cs ->
-       old_tags = Ecto.Changeset.get_field(cs, :tags, []) || []
-
-       Problem.Question.preloaded_changeset(cs, %{
-         tags: old_tags ++ [new_tag]
-       })
-       |> IO.inspect(label: :new_cs)
-     end)}
+     |> assign_new(:preview_state, fn -> prev_state end)
+     |> assign_new(:tag_suggestions, fn -> [] end)}
   end
 
   @impl true
   def handle_event("validate", %{"question" => question_params}, socket) do
+    IO.inspect(question_params, label: "question_params in validate")
+
     changeset =
-      socket.assigns.question
-      |> Problem.change_question(question_params)
+      socket.assigns.changeset
+      |> Problem.Question.preloaded_changeset(question_params)
       |> Map.put(:action, :validate)
 
     socket = assign(socket, changeset: changeset)
@@ -80,7 +71,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
   end
 
   def handle_event("suggest-tags", %{"new_tag" => new_tag}, socket) do
-    tag = new_tag["new_tag"]
+    tag = new_tag
 
     matches = Enum.filter(@sample_tags, fn t -> String.contains?(t, tag) end)
 
@@ -88,14 +79,26 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
     socket =
       socket
-      |> assign(:suggestions, matches)
+      |> assign(:tag_suggestions, matches)
 
     {:noreply, socket}
   end
 
-  def handle_event("add-tag", %{"new_tag" => %{"new_tag" => new_tag}}, socket) do
-    send(self(), {:new_tag, new_tag})
-    {:noreply, assign(socket, :suggestions, [])}
+  def handle_event("add-tag", %{"new_tag" => new_tag}, socket) do
+    socket =
+      socket
+      |> assign(:tag_suggestions, [])
+      |> update(:changeset, fn cs ->
+        IO.inspect(cs, label: "cs")
+        old_tags = Ecto.Changeset.get_field(cs, :tags) || []
+        new_tags = old_tags ++ [new_tag]
+        IO.inspect(new_tags, label: "new_tags")
+
+        Problem.Question.preloaded_changeset(cs, %{tags: new_tags})
+        |> IO.inspect(label: "new changest")
+      end)
+
+    {:noreply, socket}
   end
 
   def handle_event("tag_keyup", val, socket) do
@@ -133,7 +136,10 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
   end
 
   defp save_question(socket, :edit, question_params) do
-    case Problem.update_question(socket.assigns.question, question_params) do
+    case Problem.update_question(
+           Map.put(socket.assigns.changeset, :action, :update),
+           question_params
+         ) do
       {:ok, _question} ->
         {:noreply,
          socket

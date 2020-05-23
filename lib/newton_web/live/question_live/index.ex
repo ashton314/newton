@@ -66,17 +66,6 @@ defmodule NewtonWeb.QuestionLive.Index do
     {:noreply, socket}
   end
 
-  def handle_info({:new_tag, new_tag}, socket) do
-    IO.inspect(new_tag, label: "new_tag in parent component")
-
-    send_update(NewtonWeb.QuestionLive.FormComponent,
-      id: socket.assigns.question.id,
-      new_tag: new_tag
-    )
-
-    {:noreply, socket}
-  end
-
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     question = Problem.get_question!(id)

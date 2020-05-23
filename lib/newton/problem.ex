@@ -46,6 +46,12 @@ defmodule Newton.Problem do
     |> Repo.update()
   end
 
+  def update_question(%Ecto.Changeset{} = cs, attrs) do
+    cs
+    |> Question.preloaded_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a question.
   """
