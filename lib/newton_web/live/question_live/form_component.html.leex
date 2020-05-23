@@ -52,7 +52,7 @@
             <span class="badge badge-primary"><%= t %></span>
         <% end %>
 
-        <%= live_component @socket, TagSuggestion, id: :new_tag %>
+        <%= live_component @socket, TagSuggestion, suggestions: [], myself: @myself %>
 
         <!-- This goes out here because HTML does *not* like nested form components -->
         <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary", form: "question-form" %>

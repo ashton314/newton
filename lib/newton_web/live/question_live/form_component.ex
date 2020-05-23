@@ -79,6 +79,25 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     end
   end
 
+  def handle_event("suggest-tags", %{"new_tag" => new_tag}, socket) do
+    tag = new_tag["new_tag"]
+
+    matches = Enum.filter(@sample_tags, fn t -> String.contains?(t, tag) end)
+
+    IO.inspect(matches, label: "matches")
+
+    socket =
+      socket
+      |> assign(:suggestions, matches)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("add-tag", %{"new_tag" => %{"new_tag" => new_tag}}, socket) do
+    send(self(), {:new_tag, new_tag})
+    {:noreply, assign(socket, :suggestions, [])}
+  end
+
   def handle_event("tag_keyup", val, socket) do
     IO.inspect(val, label: "val")
 
