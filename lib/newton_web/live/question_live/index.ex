@@ -1,6 +1,8 @@
 defmodule NewtonWeb.QuestionLive.Index do
   use NewtonWeb, :live_view
 
+  import NewtonWeb.IconHelpers
+
   alias Newton.Problem
   alias NewtonWeb.QuestionLive.QuestionCard
 

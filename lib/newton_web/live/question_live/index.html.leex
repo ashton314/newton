@@ -1,5 +1,13 @@
 <!-- -*- mode: web -*- -->
-<h1 class="text-center my-1">Questions</h1>
+<div class="row my-3 align-items-center">
+    <div class="col-1">
+        &nbsp;
+    </div>
+    <h1 class="text-center my-3 col-10 d-inline-block">Questions</h1>
+    <div class="col-1">
+        <button class="btn btn-link"><%= live_patch icon(@socket, "plus-circle", color: "#209d3e", width: 30, height: 30), to: Routes.question_index_path(@socket, :new) %></button>
+    </div>
+</div>
 
 <%= if @live_action in [:new, :edit] do %>
   <%= live_modal @socket, NewtonWeb.QuestionLive.FormComponent,
@@ -12,11 +20,9 @@
     return_to: Routes.question_index_path(@socket, :index) %>
 <% end %>
 
-<span><%= live_patch "New Question", to: Routes.question_index_path(@socket, :new) %></span>
-
 <div class="row row-cols-1" style="overflow-y: scroll">
     <%= for question <- @questions do %>
-        <div class="col mb-1">
+        <div class="col mb-2">
             <%= live_component @socket, QuestionCard, question: question %>
         </div>
     <% end %>
