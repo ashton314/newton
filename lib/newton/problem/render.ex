@@ -11,6 +11,14 @@ defmodule Newton.Problem.Render do
     [:contents]
   )
 
+  def render_image_preview(%Question{id: q_id} = question, callback) do
+    layout_question_preview(question.text)
+    |> LatexRenderer.image_string_async(callback, dir: q_id)
+  end
+
+  @doc """
+  Temporary question preview
+  """
   def render_question_preview(%Question{} = question, callback) do
     layout_question_preview(question.text)
     |> LatexRenderer.format_string_async(callback)

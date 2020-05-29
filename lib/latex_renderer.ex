@@ -36,6 +36,22 @@ defmodule LatexRenderer do
     end
   end
 
+  @spec image_string_async(
+          str :: String.t(),
+          callback :: ({:ok, String.t()} | {:error, String.t()} -> any()),
+          opts :: Keyword.t()
+        ) :: Supervisor.on_start()
+  def image_string_async(str, callback, opts \\ []) do
+    DynamicSupervisor.start_child(
+      LatexRendering.Supervisor,
+      {Task,
+       fn ->
+         Logger.debug("[LatexRenderer] spawned render task #{inspect(self())}")
+         callback.(format_image(str, opts))
+       end}
+    )
+  end
+
   @spec format_string_async(
           str :: String.t(),
           callback :: ({:ok, String.t()} | {:error, String.t()} -> any())
@@ -53,13 +69,38 @@ defmodule LatexRenderer do
 
   @doc """
   Given a string, formats the LaTeX, and returns a Path to the
+  formatted png file.
+  """
+  @spec format_image(str :: String.t(), opts :: Keyword.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def format_image(str, opts \\ []) do
+    Logger.debug("format_opts called; this is process #{inspect(self())}")
+    base_dir = Application.fetch_env!(:newton, :latex_cache)
+
+    with {:ok, token} <- format_string(str, opts),
+         :ok <- make_image(Path.join([base_dir, token, "#{@filename_base}.pdf"])) do
+      Logger.debug("Successfully built: #{token}")
+      {:ok, token}
+    else
+      {:eexist, token} ->
+        Logger.debug("Already exists, token #{token}")
+        {:ok, token}
+
+      err ->
+        err
+    end
+  end
+
+  @doc """
+  Given a string, formats the LaTeX, and returns a Path to the
   formatted PDF file.
   """
-  @spec format_string(str :: String.t()) :: {:ok, String.t()} | {:error, String.t()}
-  def format_string(str) do
+  @spec format_string(str :: String.t(), opts :: Keyword.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def format_string(str, opts \\ []) do
     Logger.debug("format_string called; this is process #{inspect(self())}")
 
-    with {:ok, tmp, token} <- create_tmp(str),
+    with {:ok, tmp, token} <- create_tmp(str, Keyword.get(opts, :dir)),
          file <- Path.join(tmp, "#{@filename_base}.tex"),
          :ok <- File.write(file, str) do
       Logger.debug("format_string finished; returning token #{token}")
@@ -74,7 +115,7 @@ defmodule LatexRenderer do
     end
   end
 
-  def create_tmp(data) do
+  def create_tmp(data, dirname \\ nil) do
     # Ensure we have a directory
     base_dir = Application.fetch_env!(:newton, :latex_cache)
 
@@ -84,11 +125,15 @@ defmodule LatexRenderer do
 
     # Generate a new unique path
     name =
-      :crypto.hash(:sha512, data)
-      |> Base.hex_encode32(case: :lower, padding: false)
-      |> String.to_charlist()
-      |> Enum.take(32)
-      |> to_string()
+      if is_nil(dirname) do
+        :crypto.hash(:sha512, data)
+        |> Base.hex_encode32(case: :lower, padding: false)
+        |> String.to_charlist()
+        |> Enum.take(32)
+        |> to_string()
+      else
+        dirname
+      end
 
     full_name = Path.join(base_dir, name)
 
@@ -97,6 +142,39 @@ defmodule LatexRenderer do
     else
       {:error, :eexist} -> {:eexist, name}
       err -> err
+    end
+  end
+
+  @doc """
+  Runs the convert command on the path to turn the PDF into a png
+  """
+  def make_image(path) do
+    Logger.debug("Converting #{inspect(path)} into a PNG")
+    {dir, file} = split_at_file(path)
+    base_file = Path.basename(file, ".pdf")
+    Logger.debug("Converting #{base_file} for question #{dir}")
+
+    with {_logs, 0} <-
+           System.cmd("convert", [
+             "-density",
+             "600x600",
+             "#{dir}/#{base_file}.pdf",
+             "-quality",
+             "90",
+             "-resize",
+             "500x600",
+             "-background",
+             "white",
+             "#{dir}/#{base_file}.png"
+           ]) do
+      :ok
+    else
+      {reason, err} when is_integer(err) ->
+        Logger.error(
+          "Couldn't convert #{path} into a png: Exit #{err} with message #{inspect(reason)}"
+        )
+
+        {:error, reason}
     end
   end
 
