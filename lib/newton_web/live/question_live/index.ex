@@ -8,7 +8,16 @@ defmodule NewtonWeb.QuestionLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :questions, fetch_questions())}
+    questions = fetch_questions()
+
+    socket =
+      socket
+      |> assign(:questions, questions)
+      |> assign(:image_renders, %{})
+
+    Enum.map(questions, &request_image_render/1)
+
+    {:ok, socket}
   end
 
   @impl true
@@ -68,6 +77,14 @@ defmodule NewtonWeb.QuestionLive.Index do
     {:noreply, socket}
   end
 
+  def handle_info({:image_preview_ready, :ok, qid, tok}, socket) do
+    socket =
+      socket
+      |> update(:image_renders, fn r -> Map.put(r, qid, tok) end)
+
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     question = Problem.get_question!(id)
@@ -80,6 +97,18 @@ defmodule NewtonWeb.QuestionLive.Index do
       |> push_patch(to: "/questions")
 
     {:noreply, assign(socket, :questions, fetch_questions())}
+  end
+
+  defp request_image_render(question) do
+    me = self()
+
+    Problem.Render.render_image_preview(
+      question,
+      fn
+        {:ok, tok} -> send(me, {:image_preview_ready, :ok, question.id, tok})
+        {:error, mess} -> IO.inspect(mess, label: "error from rendering question")
+      end
+    )
   end
 
   defp fetch_questions do

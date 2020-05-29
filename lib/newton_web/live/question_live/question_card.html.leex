@@ -3,10 +3,12 @@
 <div class="card question-card">
   <div class="card-body pb-0">
     <div class="row justify-content-between px-3">
-      <h4 class="card-title d-inline-block"><%= @question.name %> <small style="font-size: 12px" class="text-muted"><%#= @question.id %></small></h4>
-      <%= live_patch icon(@socket, "edit", color: "#209d3e"), to: Routes.question_index_path(@socket, :edit, @question), class: "btn btn-link", role: "button" %>
+        <h5 class="card-title d-inline-block text-muted"><%= @question.name %> <small style="font-size: 12px" class="text-muted"><%#= @question.id %></small></h5>
+        <%= live_patch icon(@socket, "edit", color: "#209d3e"), to: Routes.question_index_path(@socket, :edit, @question), class: "btn btn-link", role: "button" %>
     </div>
-    <%= @question.text %>
+    <%= if not is_nil(@image) do %>
+        <%= img_tag Routes.static_path(@socket, "/images/latex_renderer/cache/#{@image}/question_preview.png"), width: "1000px" %>
+    <% end %>
     <div class="row justify-content-between mt-2">
         <div class="col">
             <%= for t <- @question.tags || [] do %>

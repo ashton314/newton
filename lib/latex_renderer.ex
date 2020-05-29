@@ -157,14 +157,18 @@ defmodule LatexRenderer do
     with {_logs, 0} <-
            System.cmd("convert", [
              "-density",
-             "600x600",
+             "1500x1500",
              "#{dir}/#{base_file}.pdf",
              "-quality",
              "90",
              "-resize",
-             "500x600",
-             "-background",
+             "1500x1500",
+             "-fuzz",
+             "40%",
+             "-fill",
              "white",
+             "-opaque",
+             "black",
              "#{dir}/#{base_file}.png"
            ]) do
       :ok

@@ -59,7 +59,8 @@ config :newton, NewtonWeb.Endpoint,
 config :newton, NewtonWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      # ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/static/.*(js|css)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/newton_web/(live|views)/.*(ex)$",
       ~r"lib/newton_web/templates/.*(eex)$"
