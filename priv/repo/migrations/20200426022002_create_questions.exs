@@ -10,6 +10,9 @@ defmodule Newton.Repo.Migrations.CreateQuestions do
       add :last_edit_hash, :string
       add :archived, :boolean, default: false, null: false
       add :class_id, references(:classes, on_delete: :nothing, type: :binary_id)
+      add :ref_book, :string
+      add :ref_chapter, :string
+      add :ref_section, :string
 
       timestamps()
     end

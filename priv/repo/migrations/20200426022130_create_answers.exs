@@ -8,7 +8,7 @@ defmodule Newton.Repo.Migrations.CreateAnswers do
       add :display, :boolean, default: false, null: false
       add :points_marked, :integer
       add :points_unmarked, :integer
-      add :question_id, references(:questions, on_delete: :nothing, type: :binary_id)
+      add :question_id, references(:questions, on_delete: :delete_all, type: :binary_id)
 
       timestamps()
     end

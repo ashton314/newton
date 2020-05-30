@@ -13,6 +13,9 @@ defmodule Newton.Problem.Question do
     field :type, :string
     field :name, :string
     field :class_id, :binary_id
+    field :ref_book, :string
+    field :ref_chapter, :string
+    field :ref_section, :string
 
     has_many :answers, Problem.Answer
     has_many :comments, Problem.Comment

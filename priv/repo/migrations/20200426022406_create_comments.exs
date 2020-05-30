@@ -6,8 +6,8 @@ defmodule Newton.Repo.Migrations.CreateComments do
       add :id, :binary_id, primary_key: true
       add :text, :string
       add :resolved, :boolean, default: false, null: false
-      add :question_id, references(:questions, on_delete: :nothing, type: :binary_id)
-      add :user_id, references(:users, on_delete: :nothing, type: :binary_id)
+      add :question_id, references(:questions, on_delete: :delete_all, type: :binary_id)
+      add :user_id, references(:users, on_delete: :nilify_all, type: :binary_id)
 
       timestamps()
     end

@@ -6,7 +6,7 @@ defmodule Newton.Repo.Migrations.CreateTags do
       add :id, :binary_id, primary_key: true
       add :name, :string
       add :color, :string
-      add :class_id, references(:classes, on_delete: :nothing, type: :binary_id)
+      add :class_id, references(:classes, on_delete: :delete_all, type: :binary_id)
 
       timestamps()
     end
