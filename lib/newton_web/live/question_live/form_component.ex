@@ -33,8 +33,6 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"question" => question_params}, socket) do
-    IO.inspect(question_params, label: "question_params in validate")
-
     changeset =
       socket.assigns.question
       |> Problem.Question.preloaded_changeset(question_params)
@@ -76,8 +74,6 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
     matches = Enum.filter(@sample_tags, fn t -> String.contains?(t, tag) end)
 
-    IO.inspect(matches, label: "matches")
-
     socket =
       socket
       |> assign(:tag_suggestions, matches)
@@ -90,26 +86,21 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
       socket
       |> assign(:tag_suggestions, [])
       |> update(:changeset, fn cs ->
-        IO.inspect(cs, label: "cs")
         old_tags = Ecto.Changeset.get_field(cs, :tags) || []
         new_tags = old_tags ++ [new_tag]
-        IO.inspect(new_tags, label: "new_tags")
 
+        # Ecto.Changeset.put_change(cs, :tags, new_tags)
         Problem.Question.preloaded_changeset(cs, %{tags: new_tags})
-        |> IO.inspect(label: "new changest")
       end)
 
     {:noreply, socket}
   end
 
-  def handle_event("tag_keyup", val, socket) do
-    IO.inspect(val, label: "val")
-
+  def handle_event("tag_keyup", _val, socket) do
     {:noreply, socket}
   end
 
   def handle_event("save", %{"question" => question_params}, socket) do
-    IO.inspect(question_params, label: "question_params after save")
     save_question(socket, socket.assigns.action, question_params)
   end
 
@@ -138,10 +129,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
   end
 
   defp save_question(socket, _verb, question_params) do
-    case Problem.update_question(
-           Map.put(socket.assigns.changeset, :action, :update),
-           question_params
-         ) do
+    case Problem.update_question(socket.assigns.question, question_params) do
       {:ok, _question} ->
         {:noreply,
          socket
@@ -149,7 +137,6 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset, label: "changeset---the server wasn't happy about the question")
         {:noreply, assign(socket, :changeset, changeset)}
     end
   end

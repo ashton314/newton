@@ -148,6 +148,11 @@ defmodule LatexRenderer do
   @doc """
   Runs the convert command on the path to turn the PDF into a png
   """
+  @spec make_image(String.t()) :: :ok | {:error, String.t()}
+  if Mix.env() == :test do
+    def make_image(path) when is_binary(path), do: :ok
+  end
+
   def make_image(path) do
     Logger.debug("Converting #{inspect(path)} into a PNG")
     {dir, file} = split_at_file(path)
