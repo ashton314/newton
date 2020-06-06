@@ -89,6 +89,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
         old_tags = Ecto.Changeset.get_field(cs, :tags) || []
         new_tags = old_tags ++ [new_tag]
 
+        # How to fix: put it on question_params... somehow; maybe validate needs to grab the new tags
         # Ecto.Changeset.put_change(cs, :tags, new_tags)
         Problem.Question.preloaded_changeset(cs, %{tags: new_tags})
       end)

@@ -53,11 +53,34 @@ defmodule NewtonWeb.QuestionLiveTest do
         index_live
         |> form("#question-form", question: @create_attrs)
         |> render_submit()
-        |> IO.inspect
         |> follow_redirect(conn, Routes.question_index_path(conn, :index))
 
       assert html =~ "Question updated successfully"
       assert html =~ "some name"
+    end
+
+    test "modifying text doesn't blow out tags", %{conn: conn} do
+      {:ok, index_live, _html} = live(conn, Routes.question_index_path(conn, :index))
+
+      assert index_live |> element("a[alt='New Question']") |> render_click() =~
+               "New Question"
+
+      assert_patch(index_live, Routes.question_index_path(conn, :new))
+
+      # Add the tag
+      assert index_live
+      |> form("#new-tag-form", new_tag: "foo-tag")
+      |> render_submit() =~ "foo-tag"
+      
+      # Modify something
+      {:ok, _, html} =
+        index_live
+        |> form("#question-form", question: %{name: "by any other name"})
+        |> render_submit()
+        |> follow_redirect(conn, Routes.question_index_path(conn, :index))
+
+      assert html =~ "by any other name"
+      assert html =~ "foo-tag"
     end
 
     # test "updates question in listing", %{conn: conn, question: question} do
