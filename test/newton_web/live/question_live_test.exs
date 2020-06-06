@@ -6,22 +6,16 @@ defmodule NewtonWeb.QuestionLiveTest do
   alias Newton.Problem
 
   @create_attrs %{
-    archived: true,
-    last_edit_hash: "some last_edit_hash",
-    tags: [],
     text: "some text",
     type: "free_response",
     name: "some name"
   }
   @update_attrs %{
-    archived: false,
-    last_edit_hash: "some updated last_edit_hash",
-    tags: [],
     text: "some updated text",
     type: "multiple_choice",
     name: "different name"
   }
-  @invalid_attrs %{archived: true, last_edit_hash: nil, tags: nil, text: nil, type: nil}
+  @invalid_attrs %{text: ""}
 
   defp fixture(:question) do
     {:ok, question} = Problem.create_question(@create_attrs)
@@ -34,20 +28,19 @@ defmodule NewtonWeb.QuestionLiveTest do
   end
 
   describe "Index" do
-    @describetag :skip
     setup [:create_question]
 
     test "lists all questions", %{conn: conn, question: question} do
       {:ok, _index_live, html} = live(conn, Routes.question_index_path(conn, :index))
 
-      assert html =~ "Listing Questions"
-      assert html =~ question.last_edit_hash
+      assert html =~ "Questions"
+      assert html =~ question.name
     end
 
     test "saves new question", %{conn: conn} do
       {:ok, index_live, _html} = live(conn, Routes.question_index_path(conn, :index))
 
-      assert index_live |> element("a", "New Question") |> render_click() =~
+      assert index_live |> element("a[alt='New Question']") |> render_click() =~
                "New Question"
 
       assert_patch(index_live, Routes.question_index_path(conn, :new))
@@ -60,10 +53,11 @@ defmodule NewtonWeb.QuestionLiveTest do
         index_live
         |> form("#question-form", question: @create_attrs)
         |> render_submit()
+        |> IO.inspect
         |> follow_redirect(conn, Routes.question_index_path(conn, :index))
 
       assert html =~ "Question created successfully"
-      assert html =~ "some last_edit_hash"
+      assert html =~ "some name"
     end
 
     test "updates question in listing", %{conn: conn, question: question} do

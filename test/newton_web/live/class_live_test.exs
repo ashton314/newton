@@ -33,7 +33,7 @@ defmodule NewtonWeb.ClassLiveTest do
       {:ok, index_live, _html} = live(conn, Routes.class_index_path(conn, :index))
 
       assert index_live |> element("a", "New Class") |> render_click() =~
-        "New Class"
+               "New Class"
 
       assert_patch(index_live, Routes.class_index_path(conn, :new))
 
@@ -55,7 +55,7 @@ defmodule NewtonWeb.ClassLiveTest do
       {:ok, index_live, _html} = live(conn, Routes.class_index_path(conn, :index))
 
       assert index_live |> element("#class-#{class.id} a", "Edit") |> render_click() =~
-        "Edit Class"
+               "Edit Class"
 
       assert_patch(index_live, Routes.class_index_path(conn, :edit, class))
 
@@ -95,7 +95,7 @@ defmodule NewtonWeb.ClassLiveTest do
       {:ok, show_live, _html} = live(conn, Routes.class_show_path(conn, :show, class))
 
       assert show_live |> element("a", "Edit") |> render_click() =~
-        "Edit Class"
+               "Edit Class"
 
       assert_patch(show_live, Routes.class_show_path(conn, :edit, class))
 

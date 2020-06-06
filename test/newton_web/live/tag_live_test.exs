@@ -33,7 +33,7 @@ defmodule NewtonWeb.TagLiveTest do
       {:ok, index_live, _html} = live(conn, Routes.tag_index_path(conn, :index))
 
       assert index_live |> element("a", "New Tag") |> render_click() =~
-        "New Tag"
+               "New Tag"
 
       assert_patch(index_live, Routes.tag_index_path(conn, :new))
 
@@ -55,7 +55,7 @@ defmodule NewtonWeb.TagLiveTest do
       {:ok, index_live, _html} = live(conn, Routes.tag_index_path(conn, :index))
 
       assert index_live |> element("#tag-#{tag.id} a", "Edit") |> render_click() =~
-        "Edit Tag"
+               "Edit Tag"
 
       assert_patch(index_live, Routes.tag_index_path(conn, :edit, tag))
 
@@ -95,7 +95,7 @@ defmodule NewtonWeb.TagLiveTest do
       {:ok, show_live, _html} = live(conn, Routes.tag_show_path(conn, :show, tag))
 
       assert show_live |> element("a", "Edit") |> render_click() =~
-        "Edit Tag"
+               "Edit Tag"
 
       assert_patch(show_live, Routes.tag_show_path(conn, :edit, tag))
 

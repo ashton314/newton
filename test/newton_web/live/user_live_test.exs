@@ -6,7 +6,11 @@ defmodule NewtonWeb.UserLiveTest do
   alias Newton.Auth
 
   @create_attrs %{name: "some name", password: "some password", username: "some username"}
-  @update_attrs %{name: "some updated name", password: "some updated password", username: "some updated username"}
+  @update_attrs %{
+    name: "some updated name",
+    password: "some updated password",
+    username: "some updated username"
+  }
   @invalid_attrs %{name: nil, password: nil, username: nil}
 
   defp fixture(:user) do
@@ -33,7 +37,7 @@ defmodule NewtonWeb.UserLiveTest do
       {:ok, index_live, _html} = live(conn, Routes.user_index_path(conn, :index))
 
       assert index_live |> element("a", "New User") |> render_click() =~
-        "New User"
+               "New User"
 
       assert_patch(index_live, Routes.user_index_path(conn, :new))
 
@@ -55,7 +59,7 @@ defmodule NewtonWeb.UserLiveTest do
       {:ok, index_live, _html} = live(conn, Routes.user_index_path(conn, :index))
 
       assert index_live |> element("#user-#{user.id} a", "Edit") |> render_click() =~
-        "Edit User"
+               "Edit User"
 
       assert_patch(index_live, Routes.user_index_path(conn, :edit, user))
 
@@ -95,7 +99,7 @@ defmodule NewtonWeb.UserLiveTest do
       {:ok, show_live, _html} = live(conn, Routes.user_show_path(conn, :show, user))
 
       assert show_live |> element("a", "Edit") |> render_click() =~
-        "Edit User"
+               "Edit User"
 
       assert_patch(show_live, Routes.user_show_path(conn, :edit, user))
 

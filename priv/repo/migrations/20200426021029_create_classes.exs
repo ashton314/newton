@@ -8,6 +8,5 @@ defmodule Newton.Repo.Migrations.CreateClasses do
 
       timestamps()
     end
-
   end
 end

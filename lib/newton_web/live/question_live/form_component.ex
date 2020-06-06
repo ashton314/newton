@@ -21,6 +21,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign_new(:question, fn -> question end)
      |> assign_new(:changeset, fn -> Problem.change_question(question) end)
      |> assign_new(:answer_changeset, fn -> Answer.changeset(%Answer{}) end)
      |> assign_new(:comments, fn -> question.comments end)
@@ -35,7 +36,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     IO.inspect(question_params, label: "question_params in validate")
 
     changeset =
-      socket.assigns.changeset
+      socket.assigns.question
       |> Problem.Question.preloaded_changeset(question_params)
       |> Map.put(:action, :validate)
 
@@ -108,6 +109,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
   end
 
   def handle_event("save", %{"question" => question_params}, socket) do
+    IO.inspect(question_params, label: "question_params after save")
     save_question(socket, socket.assigns.action, question_params)
   end
 
@@ -147,6 +149,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect(changeset, label: "changeset---the server wasn't happy about the question")
         {:noreply, assign(socket, :changeset, changeset)}
     end
   end

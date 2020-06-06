@@ -5,7 +5,7 @@
     </div>
     <h1 class="text-center my-3 col-10 d-inline-block">Questions</h1>
     <div class="col-1">
-        <button class="btn btn-link"><%= live_patch icon(@socket, "plus-circle", color: "#209d3e", width: 30, height: 30), to: Routes.question_index_path(@socket, :new) %></button>
+        <button class="btn btn-link"><%= live_patch icon(@socket, "plus-circle", color: "#209d3e", width: 30, height: 30), to: Routes.question_index_path(@socket, :new), alt: "New Question" %></button>
     </div>
 </div>
 
