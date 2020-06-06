@@ -28,7 +28,8 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
      |> assign_new(:answers, fn -> question.answers end)
      |> assign_new(:preview_contents, fn -> prev_cont end)
      |> assign_new(:preview_state, fn -> prev_state end)
-     |> assign_new(:tag_suggestions, fn -> [] end)}
+     |> assign_new(:tag_suggestions, fn -> [] end)
+     |> assign_new(:tags, fn -> question.tags || [] end)}
   end
 
   @impl true
@@ -85,14 +86,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     socket =
       socket
       |> assign(:tag_suggestions, [])
-      |> update(:changeset, fn cs ->
-        old_tags = Ecto.Changeset.get_field(cs, :tags) || []
-        new_tags = old_tags ++ [new_tag]
-
-        # How to fix: put it on question_params... somehow; maybe validate needs to grab the new tags
-        # Ecto.Changeset.put_change(cs, :tags, new_tags)
-        Problem.Question.preloaded_changeset(cs, %{tags: new_tags})
-      end)
+      |> update(:tags, fn tags -> tags ++ [new_tag] end)
 
     {:noreply, socket}
   end
@@ -102,7 +96,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
   end
 
   def handle_event("save", %{"question" => question_params}, socket) do
-    save_question(socket, socket.assigns.action, question_params)
+    save_question(socket, socket.assigns.action, Map.put(question_params, "tags", socket.assigns.tags))
   end
 
   def handle_event("mark-correct", %{"click" => answer_id}, socket) do

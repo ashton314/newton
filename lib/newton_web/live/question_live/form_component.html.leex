@@ -40,18 +40,17 @@
             <%= error_tag f, :text %>
         </div>
 
-        <%# hidden_input f, :tags, input_value(f, :tags) || [] %>
         </form>
 
         <h4>Tags</h4>
         <hr/>
 
-        <%= if Enum.count(input_value(f, :tags) || []) == 0 do %>
+        <%= if Enum.count(@tags) == 0 do %>
             <p class="text-muted">(No tags)</p>
         <% end %>
 
         <div class="my-1">
-            <%= for t <- input_value(f, :tags) || [] do %>
+            <%= for t <- @tags || [] do %>
                 <h5 class="d-inline-block"><span class="badge badge-primary mx-1"><%= t %></span></h5>
             <% end %>
         </div>
