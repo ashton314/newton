@@ -135,7 +135,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     )
   end
 
-  defp save_question(socket, :edit, question_params) do
+  defp save_question(socket, _verb, question_params) do
     case Problem.update_question(
            Map.put(socket.assigns.changeset, :action, :update),
            question_params
@@ -148,19 +148,6 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
-    end
-  end
-
-  defp save_question(socket, :new, question_params) do
-    case Problem.create_question(question_params) do
-      {:ok, _question} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Question created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
     end
   end
 end

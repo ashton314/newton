@@ -36,7 +36,7 @@ defmodule NewtonWeb.QuestionLive.Index do
   defp apply_action(socket, :new, _params) do
     {:ok, question} =
       Problem.create_question(%{
-        text: "Math is $\\int\\cup\\prod$",
+        text: "(Text of the question appears here.)",
         name: "New question",
         type: "multiple_choice"
       })
@@ -50,7 +50,7 @@ defmodule NewtonWeb.QuestionLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Questions")
+    |> assign(:page_title, "Question Listing")
     |> assign(:question, nil)
   end
 
