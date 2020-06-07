@@ -35,9 +35,7 @@ defmodule Newton.Problem.Question do
   @doc false
   def preloaded_changeset(question, attrs) do
     question
-    |> cast(attrs, [:name, :text, :tags, :type, :last_edit_hash, :archived])
-    |> validate_required([:text, :type, :name])
-    |> validate_inclusion(:type, ~w(multiple_choice free_response fill_in_blank))
+    |> changeset(attrs)
     |> cast_assoc(:answers, with: &Problem.Answer.changeset/2)
     |> cast_assoc(:comments, with: &Problem.Comment.changeset/2)
   end

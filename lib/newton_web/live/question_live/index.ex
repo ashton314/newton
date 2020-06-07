@@ -57,8 +57,6 @@ defmodule NewtonWeb.QuestionLive.Index do
   # Handle edits
   @impl true
   def handle_info({:preview_ready, :ok, token}, socket) do
-    IO.inspect(token, label: "[handle_info {:preview_ready}] token")
-
     send_update(NewtonWeb.QuestionLive.FormComponent,
       id: socket.assigns.question.id,
       preview_contents: token,

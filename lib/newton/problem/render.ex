@@ -11,6 +11,41 @@ defmodule Newton.Problem.Render do
     [:contents]
   )
 
+  @spec delete_image_preview(question :: Question.t()) :: :ok
+  def delete_image_preview(%Question{id: q_id}) do
+    case LatexRenderer.retrieve_from_token(q_id) do
+      {:error, :bad_token} -> :ok
+      {:ok, path} ->
+        dir =
+          Path.split(path)
+          |> List.delete_at(-1)
+          |> Path.join()
+
+        # I *could* use File.rm_rf!, but this is a little safer
+        if File.exists?(Path.join(dir, "question_preview.tex")) do
+          Path.wildcard(Path.join(dir, "question_preview.*"))
+          |> Enum.map(&File.rm!/1)
+
+          File.rmdir!(dir)
+          :ok
+        else
+          Logger.debug("File not found; returning :ok anyway")
+          :ok
+        end
+    end
+  end
+
+  @doc """
+  Render a preview of the question as an image.
+
+  `callback` should be a function like:
+
+      {:ok, token} | {:error, String.t()} -> any()
+
+  `callback` will be invoked after the function has finished. We use
+  this in the program to send a message to the LiveView process
+  waiting for the preview to finish rendering.
+  """
   def render_image_preview(%Question{id: q_id} = question, callback) do
     layout_question_preview(question.text)
     |> LatexRenderer.image_string_async(callback, dir: q_id)

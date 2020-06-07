@@ -29,7 +29,7 @@ defmodule LatexRenderer do
   def retrieve_from_token(token, suffix \\ "pdf") do
     base_dir = Application.fetch_env!(:newton, :latex_cache)
 
-    if token =~ ~r/^[a-z0-9]+$/ && suffix =~ ~r/^[a-z]+$/ do
+    if token =~ ~r/^[a-z0-9-]+$/ && suffix =~ ~r/^[a-z]+$/ do
       {:ok, Path.join([base_dir, token, "#{@filename_base}.#{suffix}"])}
     else
       {:error, :bad_token}
