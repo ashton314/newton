@@ -6,6 +6,7 @@ defmodule Newton.Problem do
   import Ecto.Query, warn: false
   alias Newton.Repo
 
+  alias __MODULE__
   alias Newton.Problem.Question
 
   def preload_assocs(%Question{} = q, opts \\ []) do
@@ -40,16 +41,18 @@ defmodule Newton.Problem do
   Updates a question.
   """
   def update_question(%Question{} = question, attrs) do
-    question
-    |> Repo.preload([:answers, :comments])
-    |> Question.preloaded_changeset(attrs)
-    |> Repo.update()
-  end
+    result =
+      question
+      |> Repo.preload([:answers, :comments])
+      |> Question.preloaded_changeset(attrs)
+      |> Repo.update()
 
-  def update_question(%Ecto.Changeset{} = cs, attrs) do
-    cs
-    |> Question.preloaded_changeset(attrs)
-    |> Repo.update()
+    case result do
+      {:ok, %Question{}} ->
+        Problem.Render.delete_image_preview(question)
+        result
+      _ -> result
+    end
   end
 
   @doc """
