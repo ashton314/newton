@@ -4,8 +4,8 @@
 \usepackage{tikz}
 \usepackage{color}
 %I'll want to use the taller one for the previews with answers, probably
-\usepackage[margin=0.25in]{geometry}
 %\usepackage[paperwidth=5.5in,paperheight=4.25in,margin=0.25in]{geometry}
+\usepackage[paperwidth=6in,paperheight=1in,margin=0.25in]{geometry}
 %\graphicspath{{../}}
 \begin{document}
 \pagenumbering{gobble}

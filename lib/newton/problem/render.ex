@@ -11,6 +11,14 @@ defmodule Newton.Problem.Render do
     [:contents]
   )
 
+  EEx.function_from_file(
+    :defp,
+    :layout_question_image_preview,
+    "lib/newton/problem/templates/question_image_preview.latex.eex",
+    [:contents]
+  )
+
+
   @spec delete_image_preview(question :: Question.t()) :: :ok
   def delete_image_preview(%Question{id: q_id}) do
     case LatexRenderer.retrieve_from_token(q_id) do
@@ -47,7 +55,7 @@ defmodule Newton.Problem.Render do
   waiting for the preview to finish rendering.
   """
   def render_image_preview(%Question{id: q_id} = question, callback) do
-    layout_question_preview(question.text)
+    layout_question_image_preview(question.text)
     |> LatexRenderer.image_string_async(callback, dir: q_id)
   end
 
