@@ -159,6 +159,23 @@ defmodule LatexRenderer do
     base_file = Path.basename(file, ".pdf")
     Logger.debug("Converting #{base_file} for question #{dir}")
 
+    # Production-quality arguments here: (I'll need to add proper caching before this is feasable)
+    # "-density",
+    # "3000x3000",
+    # "#{dir}/#{base_file}.pdf",
+    # "-quality",
+    # "150",
+    # "-resize",
+    # "3000x3000",
+    # "-fuzz",
+    # "40%",
+    # "-fill",
+    # "white",
+    # "-opaque",
+    # "black",
+    # "#{dir}/#{base_file}.png"
+
+
     with {_logs, 0} <-
            System.cmd("convert", [
              "-density",
