@@ -3,13 +3,14 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{color}
+\usepackage[active, tightpage]{preview}
 %I'll want to use the taller one for the previews with answers, probably
-\usepackage[margin=0.25in]{geometry}
+%% \usepackage[margin=0.25in]{geometry}
 %\usepackage[paperwidth=5.5in,paperheight=4.25in,margin=0.25in]{geometry}
 %\graphicspath{{../}}
 \begin{document}
 \pagenumbering{gobble}
-
+\begin{preview}
 <%= contents %>
-
+\end{preview}
 \end{document}
