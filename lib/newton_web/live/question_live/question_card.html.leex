@@ -7,7 +7,7 @@
         <%= live_patch icon(@socket, "edit", color: "#209d3e"), to: Routes.question_index_path(@socket, :edit, @question), class: "btn btn-link", role: "button" %>
     </div>
     <%= if not is_nil(@image) do %>
-        <%= img_tag Routes.static_path(@socket, "/images/latex_renderer/cache/#{@image}/question_preview.png"), width: "1000px" %>
+        <%= img_tag Routes.static_path(@socket, "/images/latex_renderer/cache/#{@image}/question_preview.png"), class: "preview-img" %>
     <% end %>
     <div class="row justify-content-between mt-2">
         <div class="col">
