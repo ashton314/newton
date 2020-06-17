@@ -175,8 +175,8 @@ defmodule LatexRenderer do
     # "black",
     # "#{dir}/#{base_file}.png"
 
-
-    with {_logs, 0} <-
+    with {:exists?, false} <- {:exists?, File.exists?("#{dir}/#{base_file}.png")},
+         {_logs, 0} <-
            System.cmd("convert", [
              "-density",
              "1500x1500",
@@ -195,6 +195,13 @@ defmodule LatexRenderer do
            ]) do
       :ok
     else
+      {:exists?, true} ->
+        Logger.debug(
+          "Bypassing conversion for #{dir}/#{base_file}.png because it's already there"
+        )
+
+        :ok
+
       {reason, err} when is_integer(err) ->
         Logger.error(
           "Couldn't convert #{path} into a png: Exit #{err} with message #{inspect(reason)}"

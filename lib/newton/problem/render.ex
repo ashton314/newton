@@ -31,7 +31,7 @@ defmodule Newton.Problem.Render do
 
         # I *could* use File.rm_rf!, but this is a little safer
         if File.exists?(Path.join(dir, "question_preview.tex")) do
-          Path.wildcard(Path.join(dir, "question_preview.*"))
+          Path.wildcard(Path.join(dir, "question_preview*"))
           |> Enum.map(&File.rm!/1)
 
           File.rmdir!(dir)

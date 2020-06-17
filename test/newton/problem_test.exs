@@ -53,6 +53,22 @@ defmodule Newton.ProblemTest do
       assert question.name == "a name"
     end
 
+    test "create_question/1 with long text is OK" do
+      assert {:ok, %Question{} = question} =
+               Problem.create_question(%{
+                 name: "test question",
+                 type: "multiple_choice",
+                 text: """
+                 Hello world:
+                 \begin{tikzpicture}
+                 \draw[help lines] (-1, -1) grid (5, 5);
+                 \end{tikzpicture}
+                 This is a sample of some long text. Previously this would make the db
+                 have a small fit, but hopefully we've got that sorted by now!
+                 """
+               })
+    end
+
     test "create_question/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Problem.create_question(@invalid_attrs)
     end
