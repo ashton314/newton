@@ -15,6 +15,7 @@ defmodule Newton.Application do
       {Phoenix.PubSub, name: Newton.PubSub},
       # Start the Endpoint (http/https)
       NewtonWeb.Endpoint,
+      Newton.GarbageCollector,
       # Start a worker by calling: Newton.Worker.start_link(arg)
       # {Newton.Worker, arg}
       {DynamicSupervisor, strategy: :one_for_one, name: LatexRendering.Supervisor}
