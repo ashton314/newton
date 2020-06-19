@@ -1,3 +1,4 @@
+<%# -*- mode: web -*- %>
 <h2><%= @title %></h2>
 
 <%= f = form_for @changeset, "#",
@@ -6,29 +7,41 @@
   phx_change: "validate",
   phx_submit: "save" %>
 
+<div class="form-group">
   <%= label f, :name %>
-  <%= text_input f, :name %>
+  <%= text_input f, :name, class: "form-control", placeholder: "ex. Exam the Third" %>
   <%= error_tag f, :name %>
+</div>
 
+<div class="form-group">
   <%= label f, :course_code %>
-  <%= text_input f, :course_code %>
+  <%= text_input f, :course_code, class: "form-control", placeholder: "MATH 112" %>
   <%= error_tag f, :course_code %>
+</div>
 
+<div class="form-group">
   <%= label f, :course_name %>
-  <%= text_input f, :course_name %>
+  <%= text_input f, :course_name, class: "form-control", placeholder: "ex. Introduction to Improbability" %>
   <%= error_tag f, :course_name %>
+</div>
 
+<div class="form-group">
   <%= label f, :exam_date %>
-  <%= text_input f, :exam_date %>
+  <%= text_input f, :exam_date, class: "form-control", placeholder: "ex. Fall 2020" %>
   <%= error_tag f, :exam_date %>
+</div>
 
+<div class="form-group">
   <%= label f, :stamp %>
-  <%= text_input f, :stamp %>
+  <%= text_input f, :stamp, class: "form-control", placeholder: "ex. NB" %>
   <%= error_tag f, :stamp %>
+</div>
 
+<div class="form-group">
   <%= label f, :barcode %>
-  <%= text_input f, :barcode %>
+  <%= text_input f, :barcode, class: "form-control", placeholder: "ex. 1034501" %>
   <%= error_tag f, :barcode %>
+</div>
 
-  <%= submit "Save", phx_disable_with: "Saving..." %>
+  <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary" %>
 </form>

@@ -1,4 +1,13 @@
-<h1>Listing Exams</h1>
+<!-- -*- mode: web -*- -->
+<div class="row my-3 align-items-center">
+    <div class="col-1">
+        &nbsp;
+    </div>
+    <h1 class="text-center my-3 col-10 d-inline-block">Exams</h1>
+    <div class="col-1">
+        <button class="btn btn-link"><%= live_patch icon(@socket, "plus-circle", color: "#209d3e", width: 30, height: 30), to: Routes.exam_index_path(@socket, :new), alt: "New Exam" %></button>
+    </div>
+</div>
 
 <%= if @live_action in [:new, :edit] do %>
   <%= live_modal @socket, NewtonWeb.ExamLive.FormComponent,
@@ -9,7 +18,7 @@
     return_to: Routes.exam_index_path(@socket, :index) %>
 <% end %>
 
-<table>
+<table class="table">
   <thead>
     <tr>
       <th>Name</th>
@@ -42,4 +51,3 @@
   </tbody>
 </table>
 
-<span><%= live_patch "New Exam", to: Routes.exam_index_path(@socket, :new) %></span>

@@ -1,6 +1,8 @@
 defmodule NewtonWeb.ExamLive.Index do
   use NewtonWeb, :live_view
 
+  import NewtonWeb.IconHelpers
+
   alias Newton.Problem
   alias Newton.Problem.Exam
 

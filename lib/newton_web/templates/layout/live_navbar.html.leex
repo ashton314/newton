@@ -13,7 +13,10 @@
           <!--   <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a> -->
           <!-- </li> -->
           <li class="nav-item">
-            <%= link "Question Listing", to: Routes.question_index_path(@socket, :index), class: "nav-link" %>
+            <%= link "Questions", to: Routes.question_index_path(@socket, :index), class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link "Exams", to: Routes.exam_index_path(@socket, :index), class: "nav-link" %>
           </li>
           <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
           <li class="nav-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@socket, :home), class: "nav-link" %></li>
@@ -25,26 +28,26 @@
 </header>
 
 <!-- Toast container -->
-<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px; margin-bottom: -200px">
-    <!-- Position it -->
-    <div style="position: absolute; top: 0; right: 0;">
+<!-- <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px; margin-bottom: -200px"> -->
+<!--     <\!-- Position it -\-> -->
+<!--     <div style="position: absolute; top: 0; right: 0;"> -->
 
-        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <!-- <img src="..." class="rounded mr-2" alt="..."> -->
-                <strong class="mr-auto">Newton</strong>
-                <small class="text-muted">informative</small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close" phx-click="lv:clear-flash" phx-value-key="info">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="toast-body">
-                <%= live_flash(@flash, :info) %>
-            </div>
-        </div>
+<!--         <div class="toast" role="alert" aria-live="assertive" aria-atomic="true"> -->
+<!--             <div class="toast-header"> -->
+<!--                 <\!-- <img src="..." class="rounded mr-2" alt="..."> -\-> -->
+<!--                 <strong class="mr-auto">Newton</strong> -->
+<!--                 <small class="text-muted">informative</small> -->
+<!--                 <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close" phx-click="lv:clear-flash" phx-value-key="info"> -->
+<!--                     <span aria-hidden="true">&times;</span> -->
+<!--                 </button> -->
+<!--             </div> -->
+<!--             <div class="toast-body"> -->
+<!--                 <%= live_flash(@flash, :info) %> -->
+<!--             </div> -->
+<!--         </div> -->
 
-    </div>
-</div>
+<!--     </div> -->
+<!-- </div> -->
 
 
 <main role="main" class="container">

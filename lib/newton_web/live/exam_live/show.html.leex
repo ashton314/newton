@@ -1,4 +1,5 @@
-<h1>Show Exam</h1>
+<%# -*- mode: web %>
+<h1><%= @exam.name %></h1>
 
 <%= if @live_action in [:edit] do %>
   <%= live_modal @socket, NewtonWeb.ExamLive.FormComponent,
@@ -10,12 +11,6 @@
 <% end %>
 
 <ul>
-
-  <li>
-    <strong>Name:</strong>
-    <%= @exam.name %>
-  </li>
-
   <li>
     <strong>Course code:</strong>
     <%= @exam.course_code %>
@@ -43,5 +38,5 @@
 
 </ul>
 
-<span><%= live_patch "Edit", to: Routes.exam_show_path(@socket, :edit, @exam), class: "button" %></span>
+<span><%= live_patch "Edit Exam Metadata", to: Routes.exam_show_path(@socket, :edit, @exam), class: "btn btn-outline-success btn-sm" %></span>
 <span><%= live_redirect "Back", to: Routes.exam_index_path(@socket, :index) %></span>
