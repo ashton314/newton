@@ -4,7 +4,7 @@
         <h2 class="d-inline-block card-title"><%= @title %></h2>
     </div>
 
-    <div class="col-auto">
+    <div class="col-auto mr-3">
         <div class="dropdown">
             <button type="button" class="btn" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <%= icon(@socket, "more-vertical") %>
@@ -19,7 +19,7 @@
 </div>
 
 <div class="row">
-    <div class="col-12 col-md-5">
+    <div class="col-12 col-lg-5 mb-3">
         <%= f = form_for @changeset, "#",
         id: "question-form",
         phx_target: @myself,
@@ -40,10 +40,24 @@
             <%= error_tag f, :text %>
         </div>
 
+        <div class="row">
+            <div class="form-group col">
+                <%= label f, :ref_chapter, "Chapter" %>
+                <%= text_input f, :ref_chapter, class: "form-control", placeholder: "Ex. 7" %>
+                <%= error_tag f, :ref_chapter %>
+            </div>
+
+            <div class="form-group col">
+                <%= label f, :ref_section, "Section" %>
+                <%= text_input f, :ref_section, class: "form-control", placeholder: "Ex. 2" %>
+                <%= error_tag f, :ref_section %>
+            </div>
+        </div>
+
         </form>
 
-        <h4>Tags</h4>
         <hr/>
+        <h4>Tags</h4>
 
         <%= if Enum.count(@tags) == 0 do %>
             <p class="text-muted">(No tags)</p>
@@ -58,11 +72,11 @@
         <%= live_component @socket, TagSuggestion, suggestions: @tag_suggestions, target: @myself %>
 
         <!-- This goes out here because HTML does *not* like nested form components -->
-        <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary", form: "question-form" %>
+        <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary btn-block", form: "question-form" %>
 
     </div>
 
-    <div class="col-12 col-md-7">
+    <div class="col-12 col-lg-7">
         <%= case @preview_state do %>
             <% :ok -> %>
                 <div class="embed-responsive embed-responsive-21by9">
