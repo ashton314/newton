@@ -28,6 +28,11 @@ config :newton,
   latex_cache: "priv/static/images/latex_renderer/cache",
   latex_program: "xelatex"
 
+# Garbage collector configuration---all time in seconds
+config :newton, Newton.GarbageCollector,
+  collect_every: 5 * 60,
+  max_age: 5 * 60
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
