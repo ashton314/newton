@@ -26,7 +26,7 @@ defmodule Newton.Problem.Question do
   @doc false
   def changeset(question, attrs) do
     question
-    |> cast(attrs, [:name, :text, :tags, :type, :last_edit_hash, :archived])
+    |> cast(attrs, [:name, :text, :tags, :type, :last_edit_hash, :archived, :ref_chapter, :ref_section])
     |> validate_required([:text, :type, :name])
     |> validate_inclusion(:type, ~w(multiple_choice free_response fill_in_blank))
   end
