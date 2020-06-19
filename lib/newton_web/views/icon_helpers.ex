@@ -10,7 +10,7 @@ defmodule NewtonWeb.IconHelpers do
     width = Keyword.get(opts, :width, 24)
     height = Keyword.get(opts, :height, 24)
     color = Keyword.get(opts, :color, "#fff")
-    stroke_width = Keyword.get(opts, :stroke_width, 2)
+    stroke_width = Keyword.get(opts, :stroke_width, 1.2)
 
     content_tag(
       :svg,
@@ -31,7 +31,7 @@ defmodule NewtonWeb.IconHelpers do
     width = Keyword.get(opts, :width, 24)
     height = Keyword.get(opts, :height, 24)
     color = Keyword.get(opts, :color, "#fff")
-    stroke_width = Keyword.get(opts, :stroke_width, 2)
+    stroke_width = Keyword.get(opts, :stroke_width, 1.2)
 
     content_tag(
       :svg,
