@@ -18,6 +18,8 @@
           <li class="nav-item">
             <%= link "Exams", to: Routes.exam_index_path(@socket, :index), class: "nav-link" %>
           </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
           <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
           <li class="nav-item"><%= link "LiveDashboard", to: Routes.live_dashboard_path(@socket, :home), class: "nav-link" %></li>
           <% end %>

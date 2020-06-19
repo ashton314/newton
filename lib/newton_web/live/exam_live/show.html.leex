@@ -1,5 +1,5 @@
 <%# -*- mode: web %>
-<h1><%= @exam.name %></h1>
+<h1 class="text-center my-3"><%= @exam.name %></h1>
 
 <%= if @live_action in [:edit] do %>
   <%= live_modal @socket, NewtonWeb.ExamLive.FormComponent,
@@ -10,33 +10,43 @@
     return_to: Routes.exam_show_path(@socket, :show, @exam) %>
 <% end %>
 
-<ul>
-  <li>
-    <strong>Course code:</strong>
-    <%= @exam.course_code %>
-  </li>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-6">
+                <ul>
+                    <li>
+                        <strong>Course code:</strong>
+                        <%= @exam.course_code %>
+                    </li>
 
-  <li>
-    <strong>Course name:</strong>
-    <%= @exam.course_name %>
-  </li>
+                    <li>
+                        <strong>Course name:</strong>
+                        <%= @exam.course_name %>
+                    </li>
 
-  <li>
-    <strong>Exam date:</strong>
-    <%= @exam.exam_date %>
-  </li>
+                    <li>
+                        <strong>Exam date:</strong>
+                        <%= @exam.exam_date %>
+                    </li>
+                </ul>
+            </div>
 
-  <li>
-    <strong>Stamp:</strong>
-    <%= @exam.stamp %>
-  </li>
+            <div class="col-6">
+                <ul>
+                    <li>
+                        <strong>Stamp:</strong>
+                        <%= @exam.stamp %>
+                    </li>
 
-  <li>
-    <strong>Barcode:</strong>
-    <%= @exam.barcode %>
-  </li>
-
-</ul>
-
-<span><%= live_patch "Edit Exam Metadata", to: Routes.exam_show_path(@socket, :edit, @exam), class: "btn btn-outline-success btn-sm" %></span>
-<span><%= live_redirect "Back", to: Routes.exam_index_path(@socket, :index) %></span>
+                    <li>
+                        <strong>Barcode:</strong>
+                        <%= @exam.barcode %>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <span><%= live_patch "Edit Exam Metadata", to: Routes.exam_show_path(@socket, :edit, @exam), class: "btn btn-outline-success btn-sm" %></span>
+    </div>
+</div>
+<span><%#= live_redirect "Back", to: Routes.exam_index_path(@socket, :index) %></span>
