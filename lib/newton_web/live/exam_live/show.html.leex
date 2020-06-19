@@ -1,0 +1,47 @@
+<h1>Show Exam</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, NewtonWeb.ExamLive.FormComponent,
+    id: @exam.id,
+    title: @page_title,
+    action: @live_action,
+    exam: @exam,
+    return_to: Routes.exam_show_path(@socket, :show, @exam) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @exam.name %>
+  </li>
+
+  <li>
+    <strong>Course code:</strong>
+    <%= @exam.course_code %>
+  </li>
+
+  <li>
+    <strong>Course name:</strong>
+    <%= @exam.course_name %>
+  </li>
+
+  <li>
+    <strong>Exam date:</strong>
+    <%= @exam.exam_date %>
+  </li>
+
+  <li>
+    <strong>Stamp:</strong>
+    <%= @exam.stamp %>
+  </li>
+
+  <li>
+    <strong>Barcode:</strong>
+    <%= @exam.barcode %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.exam_show_path(@socket, :edit, @exam), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.exam_index_path(@socket, :index) %></span>

@@ -40,6 +40,13 @@ defmodule NewtonWeb.Router do
     live "/questions/:id", QuestionLive.Show, :show
     live "/questions/:id/show/edit", QuestionLive.Show, :edit
 
+    # Exam CRUD
+    live "/exams", ExamLive.Index, :index
+    live "/exams/new", ExamLive.Index, :new
+    live "/exams/:id/edit", ExamLive.Index, :edit
+    live "/exams/:id", ExamLive.Show, :show
+    live "/exams/:id/show/edit", ExamLive.Show, :edit
+
     # Comment CRUD
     live "/comments", CommentLive.Index, :index
     live "/comments/new", CommentLive.Index, :new

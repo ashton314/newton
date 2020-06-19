@@ -1,0 +1,45 @@
+<h1>Listing Exams</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, NewtonWeb.ExamLive.FormComponent,
+    id: @exam.id || :new,
+    title: @page_title,
+    action: @live_action,
+    exam: @exam,
+    return_to: Routes.exam_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Course code</th>
+      <th>Course name</th>
+      <th>Exam date</th>
+      <th>Stamp</th>
+      <th>Barcode</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="exams">
+    <%= for exam <- @exams do %>
+      <tr id="exam-<%= exam.id %>">
+        <td><%= exam.name %></td>
+        <td><%= exam.course_code %></td>
+        <td><%= exam.course_name %></td>
+        <td><%= exam.exam_date %></td>
+        <td><%= exam.stamp %></td>
+        <td><%= exam.barcode %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.exam_show_path(@socket, :show, exam) %></span>
+          <span><%= live_patch "Edit", to: Routes.exam_index_path(@socket, :edit, exam) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: exam.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Exam", to: Routes.exam_index_path(@socket, :new) %></span>
