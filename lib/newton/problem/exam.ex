@@ -12,6 +12,8 @@ defmodule Newton.Problem.Exam do
     field :name, :string
     field :stamp, :string
 
+    many_to_many :questions, Newton.Problem.Question, join_through: "exam_questions"
+
     timestamps()
   end
 
