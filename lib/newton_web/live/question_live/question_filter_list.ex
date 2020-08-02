@@ -12,4 +12,12 @@ defmodule NewtonWeb.QuestionLive.QuestionFilterList do
 
     {:ok, assign(socket, assigns)}
   end
+
+  defp maybe_selected_class(question, questions) do
+    if Enum.member?(questions, question) do
+      "question-selected"
+    else
+      ""
+    end
+  end
 end

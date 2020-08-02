@@ -68,6 +68,11 @@
   cursor: pointer;
 }
 
+.question-selected > .question-card {
+    border-color: #325f39;
+    border-width: 3px;
+}
+
 
 /* Alerts and form errors */
 .alert {

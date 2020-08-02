@@ -1,5 +1,5 @@
 <%# -*- mode: web -*- %>
-<%= if @live_action == :edit do %>
+<%= if @live_action == :edit_question do %>
   <%= live_modal @socket, NewtonWeb.QuestionLive.FormComponent,
     id: @question.id || :new,
     title: @page_title,
@@ -17,7 +17,7 @@
         </div>
     <% end %>
     <%= for question <- @questions do %>
-        <div class="col mb-2" phx-click="toggle_question_inclusion" phx-value-question-id="<%= question.id %>">
+        <div class="col mb-2 <%= maybe_selected_class(question, @selected) %>" phx-click="toggle_question_inclusion" phx-value-question-id="<%= question.id %>">
             <%= live_component @socket, QuestionCard, question: question, image: @image_renders[question.id] %>
         </div>
     <% end %>
