@@ -17,7 +17,7 @@
         </div>
     <% end %>
     <%= for question <- @questions do %>
-        <div class="col mb-2">
+        <div class="col mb-2" phx-click="toggle_question_inclusion" phx-value-question-id="<%= question.id %>">
             <%= live_component @socket, QuestionCard, question: question, image: @image_renders[question.id] %>
         </div>
     <% end %>

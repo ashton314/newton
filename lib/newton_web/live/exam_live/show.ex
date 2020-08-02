@@ -28,6 +28,22 @@ defmodule NewtonWeb.ExamLive.Show do
   defp page_title(:show), do: "Show Exam"
   defp page_title(:edit), do: "Edit Exam"
 
+  @impl true
+  def handle_event("toggle_question_inclusion", %{"question-id" => id}, socket) do
+    socket =
+      if Enum.find(socket.assigns.exam_questions, fn q -> q.id == id end) do
+        # It's already on the exam: remove it
+        update(socket, :exam_questions, fn qs -> Enum.filter(qs, &(&1.id != id)) end)
+      else
+        # Add it
+        q = Problem.get_question!(id)
+        update(socket, :exam_questions, fn qs -> [q | qs] end)
+      end
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info({:preview_ready, :ok, token}, socket) do
     send_update(NewtonWeb.QuestionLive.FormComponent,
       id: socket.assigns.question.id,
