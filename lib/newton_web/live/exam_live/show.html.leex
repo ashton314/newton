@@ -50,8 +50,17 @@
     </div>
 </div>
 
-<!-- <div class="row mt-3">
-     <div class="col-12 col-lg-6" style="max-height: calc(vh); overflow-y: scroll"> -->
-<%= live_component @socket, QuestionLive.QuestionFilterList, id: :all_questions, parent: self(), exam_id: @exam.id, questions: @all_questions, selected: @exam_questions, filter: "", live_action: @live_action, image_renders: @image_renders %>
-<!-- </div>
-     </div> -->
+<div class="row mt-3">
+    <div class="col-12 col-lg-6">
+        <h4>All Questions</h4>
+        <div style="max-height: calc(90vh); overflow-y: scroll">
+            <%= live_component @socket, QuestionLive.QuestionFilterList, parent: self(), exam_id: @exam.id, questions: @all_questions, selected: @exam_questions, filter: "", live_action: @live_action, image_renders: @image_renders %>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <h4>Test Questions</h4>
+        <div style="max-height: calc(90vh); overflow-y: scroll">
+            <%= live_component @socket, QuestionLive.QuestionFilterList, parent: self(), exam_id: @exam.id, questions: @exam_questions, selected: @exam_questions, filter: "", live_action: @live_action, image_renders: @image_renders %>
+        </div>
+    </div>
+</div>

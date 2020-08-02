@@ -11,6 +11,11 @@
 <% end %>
 
 <div class="row row-cols-1" style="overflow-y: scroll">
+    <%= if length(@questions) == 0 do %>
+        <div class="col">
+            (No questions)
+        </div>
+    <% end %>
     <%= for question <- @questions do %>
         <div class="col mb-2">
             <%= live_component @socket, QuestionCard, question: question, image: @image_renders[question.id] %>

@@ -159,7 +159,6 @@ defmodule LatexRenderer do
     base_file = Path.basename(file, ".pdf")
     Logger.debug("Converting #{base_file} for question #{dir}")
 
-    # Production-quality arguments here: (I'll need to add proper caching before this is feasable)
     # "-density",
     # "3000x3000",
     # "#{dir}/#{base_file}.pdf",
@@ -178,13 +177,24 @@ defmodule LatexRenderer do
     with {:exists?, false} <- {:exists?, File.exists?("#{dir}/#{base_file}.png")},
          {_logs, 0} <-
            System.cmd("convert", [
+             # "-density",
+             # "1500x1500",
+             # "#{dir}/#{base_file}.pdf",
+             # "-quality",
+             # "90",
+             # "-resize",
+             # "1500x1500",
+
+             # Production-quality arguments here: (I'll need to add proper caching before this is feasable)
              "-density",
-             "1500x1500",
+             "3000x3000",
              "#{dir}/#{base_file}.pdf",
              "-quality",
-             "90",
+             "150",
              "-resize",
-             "1500x1500",
+             "3000x3000",
+             # End prod arguments
+
              "-fuzz",
              "40%",
              "-fill",
@@ -196,16 +206,12 @@ defmodule LatexRenderer do
       :ok
     else
       {:exists?, true} ->
-        Logger.debug(
-          "Bypassing conversion for #{dir}/#{base_file}.png because it's already there"
-        )
+        Logger.debug("Bypassing conversion for #{dir}/#{base_file}.png because it's already there")
 
         :ok
 
       {reason, err} when is_integer(err) ->
-        Logger.error(
-          "Couldn't convert #{path} into a png: Exit #{err} with message #{inspect(reason)}"
-        )
+        Logger.error("Couldn't convert #{path} into a png: Exit #{err} with message #{inspect(reason)}")
 
         {:error, reason}
     end
