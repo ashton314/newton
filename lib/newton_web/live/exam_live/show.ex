@@ -44,6 +44,12 @@ defmodule NewtonWeb.ExamLive.Show do
     {:noreply, socket}
   end
 
+  def handle_event("save_questions", _, socket) do
+    IO.inspect(socket.assigns.exam_questions, label: "socket.assigns.exam_questions")
+    Problem.update_exam_questions(socket.assigns.exam, socket.assigns.exam_questions) |> IO.inspect()
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_info({:preview_ready, :ok, token}, socket) do
     send_update(NewtonWeb.QuestionLive.FormComponent,

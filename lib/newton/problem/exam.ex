@@ -12,7 +12,7 @@ defmodule Newton.Problem.Exam do
     field :name, :string
     field :stamp, :string
 
-    many_to_many :questions, Newton.Problem.Question, join_through: "exam_questions"
+    many_to_many :questions, Newton.Problem.Question, join_through: "exam_questions", on_replace: :delete
 
     timestamps()
   end
@@ -22,5 +22,13 @@ defmodule Newton.Problem.Exam do
     exam
     |> cast(attrs, [:name, :course_code, :course_name, :exam_date, :stamp, :barcode])
     |> validate_required([:name, :course_code, :course_name, :exam_date, :stamp, :barcode])
+  end
+
+  # Changeset for modifying the many-to-many relation
+  @doc false
+  def questions_changeset(exam, questions) do
+    exam
+    |> change()
+    |> put_assoc(:questions, questions)
   end
 end

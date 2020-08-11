@@ -51,7 +51,9 @@ defmodule Newton.Problem do
       {:ok, %Question{}} ->
         Problem.Render.delete_image_preview(question)
         result
-      _ -> result
+
+      _ ->
+        result
     end
   end
 
@@ -417,6 +419,13 @@ defmodule Newton.Problem do
   def update_exam(%Exam{} = exam, attrs) do
     exam
     |> Exam.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_exam_questions(%Exam{} = exam, new_questions) do
+    exam
+    |> Repo.preload(:questions)
+    |> Exam.questions_changeset(new_questions)
     |> Repo.update()
   end
 
