@@ -1,6 +1,7 @@
 defmodule NewtonWeb.ExamLive.Show do
   use NewtonWeb, :live_view
 
+  import NewtonWeb.IconHelpers
   alias Newton.Problem
   alias NewtonWeb.QuestionLive
 

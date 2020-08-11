@@ -56,8 +56,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     answer_cs = Answer.changeset(%Answer{}, new_answer)
 
     if answer_cs.valid? do
-      {:ok, new_answer} =
-        Problem.create_answer(Map.put(new_answer, "question_id", socket.assigns.id))
+      {:ok, new_answer} = Problem.create_answer(Map.put(new_answer, "question_id", socket.assigns.id))
 
       socket =
         socket

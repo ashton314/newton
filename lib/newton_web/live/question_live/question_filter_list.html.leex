@@ -7,7 +7,7 @@
     question: @question,
     preview_state: @preview_state || nil,
     preview_contents: @preview_contents || nil,
-    return_to: Routes.question_index_path(@socket, :index) %>
+    return_to: @return_to || Routes.question_index_path(@socket, :index) %>
 <% end %>
 
 <div class="row row-cols-1" style="overflow-y: scroll">
