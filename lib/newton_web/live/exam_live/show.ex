@@ -2,6 +2,7 @@ defmodule NewtonWeb.ExamLive.Show do
   use NewtonWeb, :live_view
 
   import NewtonWeb.IconHelpers
+  require Logger
   alias Newton.Problem
   alias NewtonWeb.QuestionLive
 
@@ -45,9 +46,21 @@ defmodule NewtonWeb.ExamLive.Show do
   end
 
   def handle_event("save_questions", _, socket) do
-    IO.inspect(socket.assigns.exam_questions, label: "socket.assigns.exam_questions")
-    Problem.update_exam_questions(socket.assigns.exam, socket.assigns.exam_questions) |> IO.inspect()
-    {:noreply, socket}
+    case Problem.update_exam_questions(socket.assigns.exam, socket.assigns.exam_questions) do
+      {:ok, exam} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Saved #{length(exam.questions)} questions to exam")
+         |> push_redirect(to: Routes.exam_show_path(socket, :show, socket.assigns.exam))}
+
+      {:error, %Ecto.Changeset{} = cs} ->
+        Logger.error("Error saving questions: #{inspect(cs)}")
+
+        {:noreply,
+         socket
+         |> put_flash(:error, "Error: couldn't save questions!")
+         |> push_redirect(to: Routes.exam_show_path(socket, :show, socket.assigns.exam))}
+    end
   end
 
   @impl true
