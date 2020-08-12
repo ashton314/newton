@@ -1,24 +1,76 @@
 <%# -*- mode: web -*- %>
 <h1 class="text-center mb-3">Statistics</h1>
 
-<section>
-    <h3 class="mb-2">General Statistics</h3>
+<div class="row justify-content-around">
+    <div class="card col col-md-8 col-lg-6">
+        <div class="card-body">
+            <h3 class="mb-2">General Statistics</h3>
 
-    <h5>Total Count</h5>
-    <table class="table table-sm w-50">
-        <tbody>
-            <tr>
-                <th scope="row">Questions</th>
-                <td><%= @stats.totals.questions %></td>
-            </tr>
-            <tr>
-                <th scope="row">Exams</th>
-                <td><%= @stats.totals.exams %></td>
-            </tr>
-            <tr>
-                <th scope="row">Tags</th>
-                <td><%= @stats.totals.tags %></td>
-            </tr>
-        </tbody>
-    </table>
-</section>
+            <h5>Total Count</h5>
+            <table class="table table-sm">
+                <tbody>
+                    <tr>
+                        <th scope="row">Questions</th>
+                        <td><%= @stats.totals.questions %></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Exams</th>
+                        <td><%= @stats.totals.exams %></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Tags</th>
+                        <td><%= @stats.totals.tags %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="my-3 row justify-content-around">
+    <div class="card col col-lg-6">
+        <div class="card-body">
+            <h3>Questions by Chapter and Section</h3>
+
+            <table class="table table">
+                <tbody>
+                    <%= for chapter <- Map.keys(@stats.refs) do %>
+                        <tr>
+                            <th scope="row">Chapter <%= chapter %></th>
+                            <th scope="row"><%= length flatten_map(@stats.refs[chapter]) %></th>
+                        </tr>
+
+                        <%= for section <- Map.keys(@stats.refs[chapter]) do %>
+                            <%= if section == :unassigned do %>
+                                <%= if @stats.refs[chapter][section] != [] do %>
+                                    <tr>
+                                        <td class="pl-5">Unassigned Section</td>
+                                        <td><%= length @stats.refs[chapter][section] %>
+                                    </tr>
+                                <% end %>
+                            <% else %>
+                                <tr>
+                                    <td class="pl-5"><%= chapter %>.<%= section %></td>
+                                    <td><%= length @stats.refs[chapter][section] %>
+                                </tr>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                    <tr>
+                        <th scope="row">Unassigned Chapter</th>
+                        <td><%= length @stats.unassigned %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-around">
+    <div class="card col col-lg-6">
+        <div class="card-body">
+            <h3>Questions by Tag</h3>
+            <span class="text-muted">Coming Soon</span>
+        </div>
+    </div>
+</div>

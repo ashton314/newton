@@ -22,11 +22,9 @@ defmodule NewtonWeb.StatsLive do
 
     # Collate the questions into their sections
     Enum.reduce(questions, stats, fn %Question{} = q, s ->
-      IO.inspect(q, label: "current question")
-
       {_, new_stats} =
         if is_nil(q.ref_chapter) || q.ref_chapter == "" do
-          get_and_update_in(s, [:unassigned], &{&1, [q | &1]})
+          get_and_update_in(s, [:unassigned], &{&1, [q | &1 || []]})
           # Map.update!(s, :unassigned, &[q | &1])
         else
           get_and_update_in(s, [:refs, q.ref_chapter], fn chapter ->
@@ -34,9 +32,9 @@ defmodule NewtonWeb.StatsLive do
 
             {_, new_chapter} =
               if is_nil(q.ref_section) || q.ref_section == "" do
-                get_and_update_in(new_chapter, [:unassigned], &{&1, [q | &1]})
+                get_and_update_in(new_chapter, [:unassigned], &{&1, [q | &1 || []]})
               else
-                get_and_update_in(new_chapter, [q.ref_section], &{&1, [q | &1]})
+                get_and_update_in(new_chapter, [q.ref_section], &{&1, [q | &1 || []]})
               end
 
             {chapter, new_chapter}
@@ -45,8 +43,9 @@ defmodule NewtonWeb.StatsLive do
 
       new_stats
     end)
-    |> IO.inspect(label: "hairy stats")
+  end
 
-    stats
+  defp flatten_map(struct) do
+    Enum.flat_map(struct, fn {key, val} -> val end)
   end
 end
