@@ -19,6 +19,8 @@ defmodule NewtonWeb.Router do
 
     live "/", PageLive, :index
 
+    live "/stats", StatsLive
+
     # Class CRUD
     live "/classes", ClassLive.Index, :index
     live "/classes/new", ClassLive.Index, :new

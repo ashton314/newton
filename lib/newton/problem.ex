@@ -21,6 +21,17 @@ defmodule Newton.Problem do
   end
 
   @doc """
+  Returns a list of all tags in use in the project.
+  """
+  def list_tags do
+    list_questions()
+    |> Enum.reduce(:sets.new(), fn %Question{tags: tags}, set ->
+      Enum.reduce(tags, set, fn t, s -> :sets.add_element(t, s) end)
+    end)
+    |> :sets.to_list()
+  end
+
+  @doc """
   Gets a single question.
 
   Raises `Ecto.NoResultsError` if the Question does not exist.

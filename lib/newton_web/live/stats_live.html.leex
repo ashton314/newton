@@ -1,0 +1,24 @@
+<%# -*- mode: web -*- %>
+<h1 class="text-center mb-3">Statistics</h1>
+
+<section>
+    <h3 class="mb-2">General Statistics</h3>
+
+    <h5>Total Count</h5>
+    <table class="table table-sm w-50">
+        <tbody>
+            <tr>
+                <th scope="row">Questions</th>
+                <td><%= @stats.totals.questions %></td>
+            </tr>
+            <tr>
+                <th scope="row">Exams</th>
+                <td><%= @stats.totals.exams %></td>
+            </tr>
+            <tr>
+                <th scope="row">Tags</th>
+                <td><%= @stats.totals.tags %></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
