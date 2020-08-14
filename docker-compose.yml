@@ -1,0 +1,27 @@
+version: "3"
+services:
+  app:
+    image: ashton314/program_builder
+    ports:
+      - "4000:4000"
+      - "80:80"
+      - "443:443"
+    links:
+      - db
+    volumes:
+      - ${SSL_KEY_PATH}:${SSL_KEY_PATH}
+      - ${SSL_CERT_PATH}:${SSL_CERT_PATH}
+    environment:
+      - SECRET_BASE
+      - POSTGRES_PASSWORD
+      - SSL_KEY_PATH
+      - SSL_CERT_PATH
+  db:
+    image: postgres
+    volumes:
+      - program_builder_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=program_builder_prod
+      - POSTGRES_PASSWORD
+volumes:
+  program_builder_volume: {}
