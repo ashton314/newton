@@ -8,14 +8,14 @@ services:
       - "443:443"
     links:
       - db
-    volumes:
-      - ${SSL_KEY_PATH}:${SSL_KEY_PATH}
-      - ${SSL_CERT_PATH}:${SSL_CERT_PATH}
+    # volumes:
+    #   - ${SSL_KEY_PATH}:${SSL_KEY_PATH}
+    #   - ${SSL_CERT_PATH}:${SSL_CERT_PATH}
     environment:
-      - SECRET_BASE
+      - SECRET_KEY_BASE
       - POSTGRES_PASSWORD
-      - SSL_KEY_PATH
-      - SSL_CERT_PATH
+      # - SSL_KEY_PATH
+      # - SSL_CERT_PATH
   db:
     image: postgres
     volumes:
