@@ -8,7 +8,6 @@ defmodule Newton.Release do
   end
 
   def migrate do
-    Logger.info("Current environment: #{Mix.env}")
     load_app()
     migrate_no_load()
   end
