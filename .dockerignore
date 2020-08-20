@@ -1,4 +1,4 @@
 deps/
 assets/node_modules
 .elixir_ls/
-._build/
+_build/

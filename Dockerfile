@@ -30,9 +30,11 @@ RUN mix phx.digest
 
 # compile and build release
 COPY lib lib
-# uncomment COPY if rel/ exists
-# COPY rel rel
 RUN mix do compile, release
+
+################################
+# Build Application Containers #
+################################
 
 FROM alpine:3.9 AS app
 RUN apk add --no-cache openssl ncurses-libs texlive-xetex
@@ -47,30 +49,5 @@ COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/newton ./
 
 ENV HOME=/app
 
-CMD ["bin/newton", "start"]
-
-# # Build the run container
-# FROM ubuntu:latest AS app
-
-# # Install packages, get texlive
-# RUN apt-get update && apt-get upgrade --yes
-# RUN apt-get install wget curl make openssl --yes
-
-# # Install tzdata non-interactively
-# RUN ln -fs /usr/share/zoneinfo/America/Denver /etc/localtime
-# RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata
-
-# # Install the TeX Live distro
-# RUN apt-get install --yes texlive-xetex
-
-# # RUN chown nobody:nobody /app
-
-# # USER nobody:nobody
-
-# # COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/newton ./
-
-# COPY --from=build /app/_build/prod/rel/newton ./
-
-# ENV HOME=/app
-
-# CMD ["bin/newton", "start"]
+# bin/newton eval "Newton.Release.migrate"
+CMD bin/newton start

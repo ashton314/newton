@@ -24,7 +24,11 @@ defmodule Newton.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Newton.Supervisor]
-    Supervisor.start_link(children, opts)
+    result = Supervisor.start_link(children, opts)
+
+    Newton.Release.migrate_no_load()
+
+    result
   end
 
   # Tell Phoenix to update the endpoint configuration

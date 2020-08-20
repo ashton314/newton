@@ -18,10 +18,12 @@ services:
       # - SSL_CERT_PATH
   db:
     image: postgres
+    ports:
+      - "5432:5432"
     volumes:
-      - program_builder_volume:/var/lib/postgresql/data
+      - newton_volume:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=program_builder_prod
+      - POSTGRES_DB=newton_prod
       - POSTGRES_PASSWORD
 volumes:
-  program_builder_volume: {}
+  newton_volume: {}
