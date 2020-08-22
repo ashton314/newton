@@ -19,6 +19,9 @@ defmodule Newton.QueryParser do
     |> tokenize
     |> parse_tokens
     |> Map.update!(:refs, fn refs -> Enum.filter(refs, & &1) end)
+    |> Map.update!(:refs, fn refs -> Enum.filter(refs, & &1) end)
+    |> Map.update!(:normal, fn norms -> Enum.filter(norms, & &1 != "") end)
+    |> Map.update!(:tags, fn tags -> Enum.filter(tags, & &1 != "") end)
   end
 
   def tokenize(query), do: Regex.split(~r/ /, query)
@@ -32,7 +35,7 @@ defmodule Newton.QueryParser do
       Regex.match?(~r/^\[.*\]$/, tok) ->
 	parse_tokens(rest, Map.update!(parsed, :tags, &[strip(tok) | &1]))
 
-      Regex.match?(~r/^\{.*\}$/, tok) ->
+      Regex.match?(~r/^\{\d+(\.\d+)?\}$/, tok) ->
 	parse_tokens(rest, Map.update!(parsed, :refs, &[parse_ref(tok) | &1]))
 
       true ->
@@ -41,7 +44,21 @@ defmodule Newton.QueryParser do
   end
 
   def parse_ref(ref) do
-    Regex.named_captures(~r/\{(?<chapter>[[:digit:]]*)(\.(?<section>[[:digit:]]+))?\}/, ref)
+    res =
+      Regex.named_captures(~r/\{(?<chapter>[[:digit:]]*)(\.(?<section>[[:digit:]]+))?\}/, ref)
+
+    if res["chapter"] && res["chapter"] != "" do
+      if res["section"] && res["section"] != "" do
+	{c, _} = Integer.parse(res["chapter"])
+	{s, _} = Integer.parse(res["section"])
+	%{chapter: c, section: s}
+      else
+	{c, _} = Integer.parse(res["chapter"])
+	%{chapter: c}
+      end
+    else
+      nil
+    end
   end
 
   defp strip(str) do

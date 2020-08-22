@@ -29,6 +29,7 @@ defmodule NewtonWeb.ExamLiveTest do
       assert html =~ exam.barcode
     end
 
+    @tag :skip
     test "saves new exam", %{conn: conn} do
       {:ok, index_live, _html} = live(conn, Routes.exam_index_path(conn, :index))
 
@@ -91,6 +92,7 @@ defmodule NewtonWeb.ExamLiveTest do
       assert html =~ exam.barcode
     end
 
+    @tag :skip
     test "updates exam within modal", %{conn: conn, exam: exam} do
       {:ok, show_live, _html} = live(conn, Routes.exam_show_path(conn, :show, exam))
 
