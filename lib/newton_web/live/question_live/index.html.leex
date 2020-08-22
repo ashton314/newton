@@ -9,6 +9,15 @@
     </div>
 </div>
 
+<!-- Search field -->
+<div class="row my-3 align-items-center">
+    <div class="col">
+	<form phx-change="search" phx-submit="search">
+	    <input type="text" name="q" class="form-control" value="<%= @query  %>" placeholder="Search Questions" phx-debounce="500" <%= if @loading, do: "readonly" %>/>
+	</form>
+    </div>
+</div>
+
 <%= if @live_action in [:new, :edit] do %>
   <%= live_modal @socket, NewtonWeb.QuestionLive.FormComponent,
     id: @question.id || :new,

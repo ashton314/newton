@@ -20,6 +20,14 @@ defmodule Newton.Problem do
     Repo.all(Question)
   end
 
+
+  @doc """
+  Returns a list of questions matching a query string
+  """
+  def list_questions(query_string) do
+    Repo.all(Question)
+  end
+
   @doc """
   Returns a list of all tags in use in the project.
   """

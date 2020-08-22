@@ -12,8 +12,11 @@ defmodule NewtonWeb.QuestionLive.Index do
 
     socket =
       socket
+      |> assign(:all_questions, questions)
       |> assign(:questions, questions)
+      |> assign(:loading, false)
       |> assign(:image_renders, %{})
+      |> assign(:query, "")
 
     Enum.map(questions, &request_image_render/1)
 
@@ -36,7 +39,7 @@ defmodule NewtonWeb.QuestionLive.Index do
   defp apply_action(socket, :new, _params) do
     {:ok, question} =
       Problem.create_question(%{
-        text: "(Text of the question appears here.)",
+        text: "(Put text here)",
         name: "New question",
         type: "multiple_choice"
       })
@@ -83,6 +86,12 @@ defmodule NewtonWeb.QuestionLive.Index do
     {:noreply, socket}
   end
 
+  def handle_info({:search, query}, socket) do
+    filtered = Problem.list_questions(query)
+    {:noreply, assign(socket, loading: false, questions: filtered)}
+  end
+
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     question = Problem.get_question!(id)
@@ -95,6 +104,11 @@ defmodule NewtonWeb.QuestionLive.Index do
       |> push_patch(to: "/questions")
 
     {:noreply, assign(socket, :questions, fetch_questions())}
+  end
+
+  def handle_event("search", %{"q" => query}, socket) when byte_size(query) <= 100 do
+    send(self(), {:search, query})
+    {:noreply, assign(socket, query: query, loading: true)}
   end
 
   defp request_image_render(question) do
