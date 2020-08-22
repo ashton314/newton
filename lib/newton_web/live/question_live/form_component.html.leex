@@ -36,22 +36,24 @@
         </div>
 
         <div class="form-group">
-            <%= textarea f, :text, class: "form-control", placeholder: "Question text", rows: 5, phx_debounce: 1000 %>
+            <%= textarea f, :text, class: "form-control", placeholder: "Question text", rows: 10, phx_debounce: 1000 %>
             <%= error_tag f, :text %>
         </div>
 
         <div class="row">
-            <div class="form-group col">
-                <%= label f, :ref_chapter, "Chapter" %>
-                <%= text_input f, :ref_chapter, class: "form-control", placeholder: "Ex. 7" %>
-                <%= error_tag f, :ref_chapter %>
-            </div>
-
-            <div class="form-group col">
-                <%= label f, :ref_section, "Section" %>
-                <%= text_input f, :ref_section, class: "form-control", placeholder: "Ex. 2" %>
-                <%= error_tag f, :ref_section %>
-            </div>
+	    <div class="col-6 mr-md-0">
+		<div class="form-inline">
+                    <%= label f, :ref_chapter, "Chapter", class: "mr-2" %>
+                    <%= text_input f, :ref_chapter, class: "form-control", size: 5, placeholder: "Ex. 7" %>
+		</div>
+	    </div>
+	    
+	    <div class="col-6 ml-md-0">
+		<div class="form-inline">
+                    <%= label f, :ref_section, "Section", class: "mr-2" %>
+                    <%= text_input f, :ref_section, class: "form-control", size: 5, placeholder: "Ex. 2" %>
+		</div>
+	    </div>
         </div>
 
         </form>
@@ -79,7 +81,7 @@
     <div class="col-12 col-lg-7">
         <%= case @preview_state do %>
             <% :ok -> %>
-                <div class="embed-responsive embed-responsive-21by9">
+                <div class="embed-responsive embed-responsive-4by3">
                     <embed crossorigin="anonymous"
                            src="<%= Routes.static_path(@socket, "/images/latex_renderer/cache/#{@preview_contents}/question_preview.pdf") %>"
                            class="embed-responsive-item" type="application/pdf"></embed>
