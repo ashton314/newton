@@ -7,8 +7,6 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
   alias Newton.Problem.Answer
   alias NewtonWeb.QuestionLive.TagSuggestion
 
-  @sample_tags ~w(math112 math113 derivative integral limit easy medium hard)
-
   @impl true
   def update(
         %{id: id, preview_contents: prev_cont, preview_state: prev_state} = assigns,
@@ -71,8 +69,9 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
   def handle_event("suggest-tags", %{"new_tag" => new_tag}, socket) do
     tag = new_tag
+    all_tags = Problem.list_tags_from_questions() || []
 
-    matches = Enum.filter(@sample_tags, fn t -> String.contains?(t, tag) end)
+    matches = Enum.filter(all_tags, fn t -> String.contains?(t, tag) end)
 
     socket =
       socket

@@ -4,7 +4,7 @@ defmodule Newton.Repo.Migrations.CreateQuestions do
   def change do
     create table(:questions, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :text, :string
+      add :text, :text
       add :tags, {:array, :string}
       add :type, :string
       add :last_edit_hash, :string

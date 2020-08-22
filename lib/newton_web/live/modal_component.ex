@@ -3,8 +3,6 @@ defmodule NewtonWeb.ModalComponent do
 
   @impl true
   def render(assigns) do
-    IO.inspect(assigns.return_to, label: "assigns.return_to")
-
     ~L"""
     <div id="<%= @id %>" class="phx-modal"
       phx-capture-click="close"

@@ -12,7 +12,7 @@ defmodule NewtonWeb.StatsLive do
   defp compute_stats do
     questions = Problem.list_questions()
     exams = Problem.list_exams()
-    tags = Problem.list_tags()
+    tags = Problem.list_tags_from_questions()
 
     stats = %{
       totals: %{questions: length(questions), exams: length(exams), tags: length(tags)},

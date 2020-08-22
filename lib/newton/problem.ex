@@ -23,10 +23,10 @@ defmodule Newton.Problem do
   @doc """
   Returns a list of all tags in use in the project.
   """
-  def list_tags do
+  def list_tags_from_questions do
     list_questions()
     |> Enum.reduce(:sets.new(), fn %Question{tags: tags}, set ->
-      Enum.reduce(tags, set, fn t, s -> :sets.add_element(t, s) end)
+      Enum.reduce(tags || [], set, fn t, s -> :sets.add_element(t, s) end)
     end)
     |> :sets.to_list()
   end
