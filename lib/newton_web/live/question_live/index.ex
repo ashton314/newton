@@ -12,6 +12,7 @@ defmodule NewtonWeb.QuestionLive.Index do
 
     socket =
       socket
+      |> assign(:interpretation, %{normal: [], tags: [], refs: []})
       |> assign(:all_questions, questions)
       |> assign(:questions, questions)
       |> assign(:loading, false)
@@ -107,8 +108,13 @@ defmodule NewtonWeb.QuestionLive.Index do
   end
 
   def handle_event("search", %{"q" => query}, socket) when byte_size(query) <= 100 do
+    IO.inspect(query, label: "query in search")
     send(self(), {:search, query})
     {:noreply, assign(socket, query: query, loading: true)}
+  end
+
+  def handle_event("interpret", %{"q" => query}, socket) do
+    {:noreply, assign(socket, interpretation: Newton.QueryParser.parse(query))}
   end
 
   defp request_image_render(question) do

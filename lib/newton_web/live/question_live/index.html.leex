@@ -12,9 +12,41 @@
 <!-- Search field -->
 <div class="row my-3 align-items-center">
     <div class="col">
-	<form phx-change="search" phx-submit="search">
-	    <input type="text" name="q" class="form-control" value="<%= @query  %>" placeholder="Search Questions" phx-debounce="500" <%= if @loading, do: "readonly" %>/>
+	<form phx-change="interpret" phx-submit="search">
+	    <div class="input-group">
+		<input type="text" name="q" class="form-control" value="<%= @query  %>" placeholder="Search Questions" <%= if @loading, do: "readonly" %>/>
+		<div class="input-group-append">
+		    <submit class="btn btn-primary">Search</submit>
+		</div>
+	    </div>
 	</form>
+	<%= if %{normal: [], tags: [], refs: []} != @interpretation do %>
+	    <span class="text-muted">
+		Searching for questions
+		<%= if length(@interpretation.normal) > 0 do %>
+		    with the words
+		    <%= for w <- @interpretation.normal do %>
+			'<%= w %>', 
+		    <% end %>
+		<% end %>
+		<%= if length(@interpretation.tags) > 0 do %>
+		    with <strong>all</strong> the tags
+		    <%= for t <- @interpretation.tags do %>
+			'<%= t %>', 
+		    <% end %>
+		<% end %>
+		<%= if length(@interpretation.refs) > 0 do %>
+		    in <strong>any</strong> of 
+		    <%= for r <- @interpretation.refs do %>
+			<%= if is_nil(Map.get(r, :section)) do %>
+			    chapter <%= r.chapter %>, 
+			<% else %>
+			    section <%= r.chapter %>.<%= r.section %>, 
+			<% end %>
+		    <% end %>
+		<% end %>
+	    </span>
+	<% end %>
     </div>
 </div>
 
