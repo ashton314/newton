@@ -57,7 +57,7 @@ defmodule NewtonWeb.QuestionLive.Index do
       socket
       |> assign(:page_title, "Question Listing")
       |> assign(:question, nil)
-    
+
     case Map.fetch(params, :query) do
       {:ok, ""} -> socket
       {:ok, q} -> assign(socket, query: q, loading: true)
@@ -98,7 +98,6 @@ defmodule NewtonWeb.QuestionLive.Index do
     filtered = Problem.list_questions(query)
     {:noreply, assign(socket, loading: false, questions: filtered)}
   end
-
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
