@@ -16,7 +16,7 @@
 	    <div class="input-group">
 		<input type="text" name="q" class="form-control" value="<%= @query  %>" placeholder="Search Questions" <%= if @loading, do: "readonly" %>/>
 		<div class="input-group-append">
-		    <submit class="btn btn-primary">Search</submit>
+		    <button type="submit" class="btn btn-primary" phx-disable-with="Searching...">Search</button>
 		</div>
 	    </div>
 	</form>

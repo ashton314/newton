@@ -52,10 +52,17 @@ defmodule NewtonWeb.QuestionLive.Index do
     |> assign(:question, question)
   end
 
-  defp apply_action(socket, :index, _params) do
-    socket
-    |> assign(:page_title, "Question Listing")
-    |> assign(:question, nil)
+  defp apply_action(socket, :index, params) do
+    socket =
+      socket
+      |> assign(:page_title, "Question Listing")
+      |> assign(:question, nil)
+    
+    case Map.fetch(params, :query) do
+      {:ok, ""} -> socket
+      {:ok, q} -> assign(socket, query: q, loading: true)
+      _ -> socket
+    end
   end
 
   # Handle edits
@@ -110,7 +117,8 @@ defmodule NewtonWeb.QuestionLive.Index do
   def handle_event("search", %{"q" => query}, socket) when byte_size(query) <= 100 do
     IO.inspect(query, label: "query in search")
     send(self(), {:search, query})
-    {:noreply, assign(socket, query: query, loading: true)}
+
+    {:noreply, push_patch(socket, to: Routes.question_index_path(socket, :index, %{query: query}), replace: true)}
   end
 
   def handle_event("interpret", %{"q" => query}, socket) do
