@@ -2,7 +2,7 @@ import Config
 
 config :newton, Newton.Repo,
   # ssl: true,
-  username: "postgres",
+  username: "newton",
   password: System.get_env("POSTGRES_PASSWORD") || raise("No db password set in env"),
   database: "newton_prod",
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
