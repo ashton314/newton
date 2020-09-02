@@ -25,7 +25,9 @@ RUN cd assets && yarn install --no-progress --frozen-lockfile && cd ..
 
 COPY priv priv
 COPY assets assets
-RUN npm run --prefix ./assets deploy
+WORKDIR assets
+RUN yarn run deploy
+WORKDIR /app
 RUN mix phx.digest
 
 # compile and build release
