@@ -48,6 +48,8 @@ COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/newton ./
 
 RUN apk add libcap && setcap 'cap_net_bind_service=+ep' /app/bin/newton
 
+RUN mkdir -p /tmp/latex_renderer/cache
+
 ENV HOME=/app
 
 EXPOSE 80
