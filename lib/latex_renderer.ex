@@ -186,6 +186,12 @@ defmodule LatexRenderer do
              # "-resize",
              # "1500x1500",
 
+             # Prevent OOM-killing
+             "-limit",
+             "memory",
+             "40MB",
+
+             # Begin prod settings
              "-density",
              "3000x3000",
              "#{dir}/#{base_file}.pdf",
