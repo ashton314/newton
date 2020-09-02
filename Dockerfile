@@ -41,13 +41,13 @@ RUN apk add --no-cache openssl ncurses-libs texlive-xetex
 
 WORKDIR /app
 
-RUN chown nobody:nobody /app
-
-USER nobody:nobody
-
 COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/newton ./
+
+RUN apk add libcap && setcap 'cap_net_bind_service=+ep' /app/bin/newton
 
 ENV HOME=/app
 
-# bin/newton eval "Newton.Release.migrate"
+EXPOSE 80
+EXPOSE 443
+
 CMD bin/newton start
