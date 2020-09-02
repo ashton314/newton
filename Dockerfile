@@ -20,15 +20,15 @@ COPY config config
 RUN mix do deps.get, deps.compile
 
 # build assets
-RUN npm install --global webpack
-COPY assets/yarn.lock assets/yarn.lock ./assets/
-RUN cd assets && yarn install --no-progress --frozen-lockfile && cd ..
-
-COPY priv priv
 COPY assets assets
-WORKDIR assets
-RUN yes | yarn run deploy
-WORKDIR /app
+COPY priv priv
+
+RUN yarn global add webpack webpack-cli \
+    && cd assets \
+    && yarn install --no-progress --frozen-lockfile \
+    && yes | yarn run deploy \
+    && cd ..
+
 RUN mix phx.digest
 
 # compile and build release
