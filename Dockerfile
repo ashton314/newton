@@ -1,7 +1,8 @@
 FROM elixir:1.10.0-alpine AS build
 
 # install build dependencies
-RUN apk add --no-cache build-base yarn git python npm
+RUN apk update && apk add build-base yarn git python npm
+
 
 # prepare build dir
 WORKDIR /app
