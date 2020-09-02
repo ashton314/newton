@@ -29,3 +29,5 @@ config :newton, NewtonWeb.Endpoint, server: true
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.
+
+config :newton, latex_cache: "/tmp/latex_renderer/cache"

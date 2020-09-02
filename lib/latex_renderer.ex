@@ -177,6 +177,7 @@ defmodule LatexRenderer do
     with {:exists?, false} <- {:exists?, File.exists?("#{dir}/#{base_file}.png")},
          {_logs, 0} <-
            System.cmd("convert", [
+             # Dev options (for faster render)
              # "-density",
              # "1500x1500",
              # "#{dir}/#{base_file}.pdf",
@@ -185,7 +186,6 @@ defmodule LatexRenderer do
              # "-resize",
              # "1500x1500",
 
-             # Production-quality arguments here: (I'll need to add proper caching before this is feasable)
              "-density",
              "3000x3000",
              "#{dir}/#{base_file}.pdf",
