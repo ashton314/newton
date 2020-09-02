@@ -26,7 +26,7 @@ RUN cd assets && yarn install --no-progress --frozen-lockfile && cd ..
 COPY priv priv
 COPY assets assets
 WORKDIR assets
-RUN yarn run deploy
+RUN yes | yarn run deploy
 WORKDIR /app
 RUN mix phx.digest
 
