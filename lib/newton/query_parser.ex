@@ -14,14 +14,24 @@ defmodule Newton.QueryParser do
   All other text will be searched through the question text.
   """
 
+  @type parsed_query :: %{
+          refs: [%{chapter: integer(), section: integer()} | %{chapter: integer()}],
+          normal: [String.t()],
+          tags: [String.t()]
+        }
+
+  @doc """
+  Parse a query string.
+  """
+  @spec parse(String.t()) :: parsed_query()
   def parse(query) do
     query
     |> tokenize
     |> parse_tokens
     |> Map.update!(:refs, fn refs -> Enum.filter(refs, & &1) end)
     |> Map.update!(:refs, fn refs -> Enum.filter(refs, & &1) end)
-    |> Map.update!(:normal, fn norms -> Enum.filter(norms, & &1 != "") end)
-    |> Map.update!(:tags, fn tags -> Enum.filter(tags, & &1 != "") end)
+    |> Map.update!(:normal, fn norms -> Enum.filter(norms, &(&1 != "")) end)
+    |> Map.update!(:tags, fn tags -> Enum.filter(tags, &(&1 != "")) end)
   end
 
   def tokenize(query), do: Regex.split(~r/ /, query)
@@ -33,28 +43,27 @@ defmodule Newton.QueryParser do
   def parse_tokens([tok | rest], parsed) do
     cond do
       Regex.match?(~r/^\[.*\]$/, tok) ->
-	parse_tokens(rest, Map.update!(parsed, :tags, &[strip(tok) | &1]))
+        parse_tokens(rest, Map.update!(parsed, :tags, &[strip(tok) | &1]))
 
       Regex.match?(~r/^\{\d+(\.\d+)?\}$/, tok) ->
-	parse_tokens(rest, Map.update!(parsed, :refs, &[parse_ref(tok) | &1]))
+        parse_tokens(rest, Map.update!(parsed, :refs, &[parse_ref(tok) | &1]))
 
       true ->
-	parse_tokens(rest, Map.update!(parsed, :normal, &[tok | &1]))
+        parse_tokens(rest, Map.update!(parsed, :normal, &[tok | &1]))
     end
   end
 
   def parse_ref(ref) do
-    res =
-      Regex.named_captures(~r/\{(?<chapter>[[:digit:]]*)(\.(?<section>[[:digit:]]+))?\}/, ref)
+    res = Regex.named_captures(~r/\{(?<chapter>[[:digit:]]*)(\.(?<section>[[:digit:]]+))?\}/, ref)
 
     if res["chapter"] && res["chapter"] != "" do
       if res["section"] && res["section"] != "" do
-	{c, _} = Integer.parse(res["chapter"])
-	{s, _} = Integer.parse(res["section"])
-	%{chapter: c, section: s}
+        {c, _} = Integer.parse(res["chapter"])
+        {s, _} = Integer.parse(res["section"])
+        %{chapter: c, section: s}
       else
-	{c, _} = Integer.parse(res["chapter"])
-	%{chapter: c}
+        {c, _} = Integer.parse(res["chapter"])
+        %{chapter: c}
       end
     else
       nil

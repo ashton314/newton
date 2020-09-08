@@ -8,6 +8,7 @@ defmodule Newton.Problem do
 
   alias __MODULE__
   alias Newton.Problem.Question
+  alias Newton.QuestionPage
 
   def preload_assocs(%Question{} = q, opts \\ []) do
     Repo.preload(q, [:answers, :comments], opts)
@@ -20,6 +21,30 @@ defmodule Newton.Problem do
     Repo.all(Question)
   end
 
+  @doc """
+  The Big Kahuna: this function takes a `QuestionPage` struct and
+  returns a list of `Question` structs along with handles to the next
+  and previous pages.
+  """
+  def paged_questions(%QuestionPage{query: query, page: page, page_length: page_length}) do
+    offset = page * page_length
+
+    full_query = from(q in Question, limit: ^page_length, offset: ^offset)
+
+    questions =
+      full_query
+      |> Repo.all()
+
+    %{
+      results: questions,
+      next_page:
+        if(length(questions) < page_length,
+          do: nil,
+          else: %QuestionPage{query: query, page: page + 1, page_length: page_length}
+        ),
+      previous_page: if(page == 0, do: nil, else: %QuestionPage{query: query, page: page - 1, page_length: page_length})
+    }
+  end
 
   @doc """
   Returns a list of questions matching a query string

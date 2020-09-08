@@ -2,6 +2,37 @@ defmodule Newton.ProblemTest do
   use Newton.DataCase
 
   alias Newton.Problem
+  alias Newton.QuestionPage
+  alias Newton.Factory
+
+  describe "paged_questions/1" do
+    setup do
+      # Insert 100 test questions
+      for _ <- 1..100 do
+        Factory.insert(:question)
+      end
+
+      :ok
+    end
+
+    test "smoke" do
+      assert length(Problem.list_questions()) == 100
+    end
+
+    test "first page" do
+      assert %{results: r, next_page: %QuestionPage{page: 1, page_length: 10}, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("", page_length: 10))
+
+      assert length(r) == 10
+    end
+
+    test "last page" do
+      assert %{results: r, next_page: nil, previous_page: %QuestionPage{page: 8, page_length: 11}} =
+               Problem.paged_questions(QuestionPage.new("", page: 9, page_length: 11))
+
+      assert length(r) == 1
+    end
+  end
 
   describe "questions" do
     alias Newton.Problem.Question
@@ -321,8 +352,22 @@ defmodule Newton.ProblemTest do
   describe "exams" do
     alias Newton.Problem.Exam
 
-    @valid_attrs %{barcode: "some barcode", course_code: "some course_code", course_name: "some course_name", exam_date: "some exam_date", name: "some name", stamp: "some stamp"}
-    @update_attrs %{barcode: "some updated barcode", course_code: "some updated course_code", course_name: "some updated course_name", exam_date: "some updated exam_date", name: "some updated name", stamp: "some updated stamp"}
+    @valid_attrs %{
+      barcode: "some barcode",
+      course_code: "some course_code",
+      course_name: "some course_name",
+      exam_date: "some exam_date",
+      name: "some name",
+      stamp: "some stamp"
+    }
+    @update_attrs %{
+      barcode: "some updated barcode",
+      course_code: "some updated course_code",
+      course_name: "some updated course_name",
+      exam_date: "some updated exam_date",
+      name: "some updated name",
+      stamp: "some updated stamp"
+    }
     @invalid_attrs %{barcode: nil, course_code: nil, course_name: nil, exam_date: nil, name: nil, stamp: nil}
 
     def exam_fixture(attrs \\ %{}) do
