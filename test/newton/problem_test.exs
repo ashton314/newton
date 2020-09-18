@@ -4,6 +4,7 @@ defmodule Newton.ProblemTest do
   alias Newton.Problem
   alias Newton.QuestionPage
   alias Newton.Factory
+  alias Newton.Problem.Question
 
   describe "paged_questions/1" do
     setup do
@@ -31,6 +32,63 @@ defmodule Newton.ProblemTest do
                Problem.paged_questions(QuestionPage.new("", page: 9, page_length: 11))
 
       assert length(r) == 1
+    end
+  end
+
+  describe "paged_questions/1 with filtering" do
+    setup do
+      # Insert 100 test questions
+      for i <- 1..100 do
+        tags =
+          Enum.filter(2..51, &(rem(i, &1) == 0))
+          |> Enum.map(&"tag#{&1}")
+
+        Factory.insert(:question, tags: tags)
+      end
+
+      :ok
+    end
+
+    test "finds with one tag" do
+      assert %{results: r, next_page: nil, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("[tag2]", page_length: 100))
+
+      assert length(r) == 50
+
+      assert %{results: r, next_page: nil, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("[tag3]", page_length: 100))
+
+      assert length(r) == 33
+    end
+
+    test "finds with several tags" do
+      assert %{results: r, next_page: nil, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("[tag3] [tag2]", page_length: 100))
+
+      assert length(r) == 16
+    end
+
+    test "returns empty list with no matches" do
+      assert %{results: [], next_page: nil, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("[tag101]", page_length: 100))
+    end
+
+    test "finds one with a unique tag" do
+      assert %{results: [%Question{tags: ["tag3", "tag17", "tag51"]}], next_page: nil, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("[tag51]", page_length: 100))
+    end
+
+    test "paginates properly when some tags are in play" do
+      assert %{results: r1, next_page: np, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("[tag3]", page_length: 25))
+
+      assert length(r1) == 25
+
+      assert %{results: r2, next_page: nil, previous_page: pp} = Problem.paged_questions(np)
+
+      assert length(r2) == 8
+
+      assert %{results: ^r1, next_page: ^np, previous_page: nil} = Problem.paged_questions(pp)
     end
   end
 

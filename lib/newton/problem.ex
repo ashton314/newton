@@ -4,6 +4,7 @@ defmodule Newton.Problem do
   """
 
   import Ecto.Query, warn: false
+  import Ecto.Query.API, only: [fragment: 1], warn: false
   alias Newton.Repo
 
   alias __MODULE__
@@ -30,6 +31,11 @@ defmodule Newton.Problem do
     offset = page * page_length
 
     full_query = from(q in Question, limit: ^page_length, offset: ^offset)
+
+    full_query =
+      Enum.reduce(query.tags, full_query, fn tag, q_acc ->
+        from(q in q_acc, where: fragment("? = ANY (?)", ^tag, q.tags))
+      end)
 
     questions =
       full_query
