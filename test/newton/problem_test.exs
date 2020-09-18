@@ -1,5 +1,5 @@
 defmodule Newton.ProblemTest do
-  use Newton.DataCase
+  use Newton.DataCasea, async: true
 
   alias Newton.Problem
   alias Newton.QuestionPage
