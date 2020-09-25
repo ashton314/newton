@@ -7,6 +7,8 @@ defmodule NewtonWeb.QuestionLive.Index do
   alias Newton.QuestionPage
   alias NewtonWeb.QuestionLive.QuestionCard
 
+  @default_page_length 25
+
   @impl true
   def mount(_params, _session, socket) do
     questions = fetch_questions()
@@ -20,7 +22,9 @@ defmodule NewtonWeb.QuestionLive.Index do
       |> assign(:image_renders, %{})
       |> assign(:query, "")
       |> assign(:page, 0)
-      |> assign(:page_length, 25)
+      |> assign(:page_length, @default_page_length)
+      |> assign(:next_page, nil)
+      |> assign(:previous_page, nil)
 
     Enum.map(questions, &request_image_render/1)
 
@@ -60,13 +64,27 @@ defmodule NewtonWeb.QuestionLive.Index do
       socket
       |> assign(:page_title, "Question Listing")
       |> assign(:question, nil)
+      |> assign(
+        :page_length,
+        case Integer.parse(Map.get(params, "page_length", "")) do
+          {int, _} -> int
+          _ -> @default_page_length
+        end
+      )
+      |> assign(
+        :page,
+        case Integer.parse(Map.get(params, "page", "")) do
+          {int, _} -> int
+          _ -> 0
+        end
+      )
 
     case Map.fetch(params, "query") do
       {:ok, ""} ->
         socket
 
       {:ok, q} ->
-        send(self(), {:search, q})
+        send(self(), {:search, q, socket.assigns.page_length, socket.assigns.page})
         assign(socket, query: q, loading: true)
 
       _ ->
@@ -103,11 +121,9 @@ defmodule NewtonWeb.QuestionLive.Index do
     {:noreply, socket}
   end
 
-  def handle_info({:search, query}, socket) do
+  def handle_info({:search, query, page_length, page}, socket) do
     %{results: filtered, next_page: np, previous_page: pp} =
-      Problem.paged_questions(
-        QuestionPage.new(query, page: socket.assigns.page, page_length: socket.assigns.page_length)
-      )
+      Problem.paged_questions(QuestionPage.new(query, page: page, page_length: page_length))
 
     {:noreply, assign(socket, loading: false, questions: filtered)}
   end
@@ -127,7 +143,16 @@ defmodule NewtonWeb.QuestionLive.Index do
   end
 
   def handle_event("search", %{"q" => query}, socket) when byte_size(query) <= 100 do
-    {:noreply, push_patch(socket, to: Routes.question_index_path(socket, :index, %{query: query}), replace: true)}
+    {:noreply,
+     push_patch(socket,
+       to:
+         Routes.question_index_path(socket, :index, %{
+           query: query,
+           page_length: socket.assigns.page_length,
+           page: socket.assigns.page
+         }),
+       replace: true
+     )}
   end
 
   def handle_event("interpret", %{"q" => query}, socket) do
