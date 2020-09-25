@@ -118,6 +118,21 @@ defmodule Newton.ProblemTest do
     end
   end
 
+  describe "escape_like_query/1" do
+    test "no special chars" do
+      assert "foo bar baz" == Problem.escape_like_query("foo bar baz")
+    end
+
+    test "backslashes" do
+      assert "\\\\int \\\\emph" == Problem.escape_like_query("\\int \\emph")
+    end
+
+    test "other regex characters" do
+      assert "\\(parens\\) \\\\thingy\\_thingy \\[brackets\\] \\{braces\\} \\?huh \\|\\| \\* \\+" ==
+               Problem.escape_like_query("(parens) \\thingy_thingy [brackets] {braces} ?huh || * +")
+    end
+  end
+
   describe "questions" do
     alias Newton.Problem.Question
 

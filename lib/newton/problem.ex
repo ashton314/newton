@@ -41,9 +41,7 @@ defmodule Newton.Problem do
     # Add words to the search
     full_query =
       Enum.reduce(query.normal, full_query, fn word, q_acc ->
-        # yes, this is vulnerable to a LIKE injection. Since this
-        # isn't exactly "public facing", I'm not going to worry about it.
-        like_query = "%#{word}%"
+        like_query = escape_like_query("%#{word}%")
         from(q in q_acc, where: ilike(q.text, ^like_query))
       end)
 
@@ -66,6 +64,14 @@ defmodule Newton.Problem do
           else: %QuestionPage{query: query, page: page - 1, page_length: page_length}
         )
     }
+  end
+
+  @doc """
+  Escapes a string that gets passed to `ilike/2`.
+  """
+  @spec escape_like_query(String.t()) :: String.t()
+  def escape_like_query(str) do
+    Regex.replace(~r/[\\|+*_?{}_()\[\]]/, str, &"\\#{&1}")
   end
 
   @doc """
