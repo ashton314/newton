@@ -32,10 +32,22 @@ defmodule Newton.Problem do
 
     full_query = from(q in Question, limit: ^page_length, offset: ^offset)
 
+    # Add tags to the search
     full_query =
       Enum.reduce(query.tags, full_query, fn tag, q_acc ->
         from(q in q_acc, where: fragment("? = ANY (?)", ^tag, q.tags))
       end)
+
+    # Add words to the search
+    full_query =
+      Enum.reduce(query.normal, full_query, fn word, q_acc ->
+        # yes, this is vulnerable to a LIKE injection. Since this
+        # isn't exactly "public facing", I'm not going to worry about it.
+        like_query = "%#{word}%"
+        from(q in q_acc, where: ilike(q.text, ^like_query))
+      end)
+
+    # TODO: Add filtering on section: remember, join the sections with ORs
 
     questions =
       full_query
@@ -48,7 +60,11 @@ defmodule Newton.Problem do
           do: nil,
           else: %QuestionPage{query: query, page: page + 1, page_length: page_length}
         ),
-      previous_page: if(page == 0, do: nil, else: %QuestionPage{query: query, page: page - 1, page_length: page_length})
+      previous_page:
+        if(page == 0,
+          do: nil,
+          else: %QuestionPage{query: query, page: page - 1, page_length: page_length}
+        )
     }
   end
 

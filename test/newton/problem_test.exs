@@ -43,7 +43,12 @@ defmodule Newton.ProblemTest do
           Enum.filter(2..51, &(rem(i, &1) == 0))
           |> Enum.map(&"tag#{&1}")
 
-        Factory.insert(:question, tags: tags)
+        text =
+          Enum.filter(2..51, &(rem(i, &1) == 0))
+          |> Enum.map(&Factory.gimme_a_word/1)
+          |> Enum.join(" ")
+
+        Factory.insert(:question, tags: tags, text: text)
       end
 
       :ok
@@ -89,6 +94,27 @@ defmodule Newton.ProblemTest do
       assert length(r2) == 8
 
       assert %{results: ^r1, next_page: ^np, previous_page: nil} = Problem.paged_questions(pp)
+    end
+
+    test "finds with one word fragment" do
+      # matches "carbon"
+      assert %{results: r, next_page: nil, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("arb", page_legnth: 50))
+
+      assert length(r) == 16
+    end
+
+    test "finds with one word fragment and some tags (match narrows)" do
+      # matches "carbon"
+      assert %{results: r, next_page: nil, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("arb [tag12] [tag2]", page_legnth: 50))
+
+      assert length(r) == 8
+    end
+
+    test "no matches when text is not present" do
+      assert %{results: [], next_page: nil, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("this_is_not_an_element [tag2]"))
     end
   end
 
