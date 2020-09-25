@@ -22,7 +22,6 @@ defmodule NewtonWeb.QuestionLive.Index do
       |> assign(:page, 0)
       |> assign(:page_length, 25)
 
-    IO.inspect("WE ARE IN MOUNT!!")
     Enum.map(questions, &request_image_render/1)
 
     {:ok, socket}
@@ -62,10 +61,16 @@ defmodule NewtonWeb.QuestionLive.Index do
       |> assign(:page_title, "Question Listing")
       |> assign(:question, nil)
 
-    case Map.fetch(params, :query) do
-      {:ok, ""} -> socket
-      {:ok, q} -> assign(socket, query: q, loading: true)
-      _ -> socket
+    case Map.fetch(params, "query") do
+      {:ok, ""} ->
+        socket
+
+      {:ok, q} ->
+        send(self(), {:search, q})
+        assign(socket, query: q, loading: true)
+
+      _ ->
+        socket
     end
   end
 
