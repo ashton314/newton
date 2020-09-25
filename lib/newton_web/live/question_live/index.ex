@@ -4,6 +4,7 @@ defmodule NewtonWeb.QuestionLive.Index do
   import NewtonWeb.IconHelpers
 
   alias Newton.Problem
+  alias Newton.QuestionPage
   alias NewtonWeb.QuestionLive.QuestionCard
 
   @impl true
@@ -18,7 +19,10 @@ defmodule NewtonWeb.QuestionLive.Index do
       |> assign(:loading, false)
       |> assign(:image_renders, %{})
       |> assign(:query, "")
+      |> assign(:page, 0)
+      |> assign(:page_length, 25)
 
+    IO.inspect("WE ARE IN MOUNT!!")
     Enum.map(questions, &request_image_render/1)
 
     {:ok, socket}
@@ -95,7 +99,11 @@ defmodule NewtonWeb.QuestionLive.Index do
   end
 
   def handle_info({:search, query}, socket) do
-    filtered = Problem.list_questions(query)
+    %{results: filtered, next_page: np, previous_page: pp} =
+      Problem.paged_questions(
+        QuestionPage.new(query, page: socket.assigns.page, page_length: socket.assigns.page_length)
+      )
+
     {:noreply, assign(socket, loading: false, questions: filtered)}
   end
 

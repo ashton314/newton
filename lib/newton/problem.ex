@@ -77,7 +77,7 @@ defmodule Newton.Problem do
   @doc """
   Returns a list of questions matching a query string
   """
-  def list_questions(query_string) do
+  def list_questions(_query_string) do
     Repo.all(Question)
   end
 
