@@ -127,9 +127,6 @@ defmodule NewtonWeb.QuestionLive.Index do
   end
 
   def handle_event("search", %{"q" => query}, socket) when byte_size(query) <= 100 do
-    IO.inspect(query, label: "query in search")
-    send(self(), {:search, query})
-
     {:noreply, push_patch(socket, to: Routes.question_index_path(socket, :index, %{query: query}), replace: true)}
   end
 
