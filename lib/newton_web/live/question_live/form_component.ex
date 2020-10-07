@@ -69,7 +69,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
   def handle_event("suggest-tags", %{"new_tag" => new_tag}, socket) do
     tag = new_tag
-    all_tags = Problem.list_tags_from_questions() || []
+    all_tags = Problem.list_tags_from_questions()
 
     matches = Enum.filter(all_tags, fn t -> String.contains?(t, tag) end)
 
