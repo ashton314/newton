@@ -11,13 +11,10 @@ defmodule NewtonWeb.QuestionLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    questions = fetch_questions()
-
     socket =
       socket
       |> assign(:interpretation, %{normal: [], tags: [], refs: []})
-      |> assign(:all_questions, questions)
-      |> assign(:questions, questions)
+      |> assign(:questions, [])
       |> assign(:loading, false)
       |> assign(:image_renders, %{})
       |> assign(:query, "")
@@ -27,7 +24,8 @@ defmodule NewtonWeb.QuestionLive.Index do
       |> assign(:previous_page, nil)
       |> assign(:total_count, 0)
 
-    Enum.map(questions, &request_image_render/1)
+    # Fire off request to start looking for questions
+    send(self(), {:search, "", socket.assigns.page_length, socket.assigns.page})
 
     {:ok, socket}
   end
@@ -81,9 +79,6 @@ defmodule NewtonWeb.QuestionLive.Index do
       )
 
     case Map.fetch(params, "query") do
-      {:ok, ""} ->
-        socket
-
       {:ok, q} ->
         send(self(), {:search, q, socket.assigns.page_length, socket.assigns.page})
         assign(socket, query: q, loading: true)
@@ -126,6 +121,8 @@ defmodule NewtonWeb.QuestionLive.Index do
     %{results: filtered, next_page: np, previous_page: pp, total_count: tc} =
       Problem.paged_questions(QuestionPage.new(query, page: page, page_length: page_length))
 
+    Enum.map(filtered, &request_image_render/1)
+
     {:noreply, assign(socket, loading: false, questions: filtered, next_page: np, previous_page: pp, total_count: tc)}
   end
 
@@ -136,11 +133,14 @@ defmodule NewtonWeb.QuestionLive.Index do
 
     socket =
       socket
-      |> assign(:questions, fetch_questions())
+      |> assign(:questions, [])
       |> put_flash(:info, "Question deleted")
       |> push_patch(to: "/questions")
 
-    {:noreply, assign(socket, :questions, fetch_questions())}
+    # Refresh question list
+    send(self(), {:search, socket.assigns.query, socket.assigns.page_length, socket.assigns.page})
+
+    {:noreply, assign(socket, :questions, [])}
   end
 
   def handle_event("search", %{"q" => query}, socket) when byte_size(query) <= 100 do
@@ -160,6 +160,25 @@ defmodule NewtonWeb.QuestionLive.Index do
     {:noreply, assign(socket, interpretation: Newton.QueryParser.parse(query))}
   end
 
+  def handle_event("change_page_length", %{"page_length" => new_length}, socket) do
+    parsed_length =
+      case Integer.parse(new_length) do
+        {int, _} -> int
+        _ -> 25
+      end
+
+    {:noreply,
+     push_patch(socket,
+       to:
+         Routes.question_index_path(socket, :index, %{
+           query: socket.assigns.query,
+           page_length: parsed_length,
+           page: socket.assigns.page
+         }),
+       replace: true
+     )}
+  end
+
   defp request_image_render(question) do
     me = self()
 
@@ -170,9 +189,5 @@ defmodule NewtonWeb.QuestionLive.Index do
         {:error, mess} -> IO.inspect(mess, label: "error from rendering question")
       end
     )
-  end
-
-  defp fetch_questions do
-    Problem.list_questions()
   end
 end
