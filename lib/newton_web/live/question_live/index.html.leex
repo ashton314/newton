@@ -3,7 +3,7 @@
 <!-- Search field -->
 <div class="row my-3 align-items-center">
     <div class="col">
-	<form phx-change="interpret" phx-submit="search">
+	<form phx-change="interpret" phx-submit="search" id="search-form">
 	    <div class="input-group">
 		<input type="text" name="q" class="form-control" value="<%= @query  %>" placeholder="Search Questions" <%= if @loading, do: "readonly" %>/>
 		<div class="input-group-append">
@@ -98,7 +98,7 @@
 
 <div class="row justify-content-between p-2">
     <div class="col-1">
-	<button class="btn btn-link"><%= live_patch icon(@socket, "plus-circle", color: "#209d3e", width: 30, height: 30), to: Routes.question_index_path(@socket, :new), alt: "New Question" %></button>
+	&nbsp;
     </div>
 
     <!-- Pagination links -->
