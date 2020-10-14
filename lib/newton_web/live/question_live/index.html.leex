@@ -95,3 +95,39 @@
         </div>
     <% end %>
 </div>
+
+<div class="row justify-content-between p-2">
+    <div class="col-1">
+	<button class="btn btn-link"><%= live_patch icon(@socket, "plus-circle", color: "#209d3e", width: 30, height: 30), to: Routes.question_index_path(@socket, :new), alt: "New Question" %></button>
+    </div>
+
+    <!-- Pagination links -->
+    <div class="col-auto">
+	<%= live_patch "«", to: Routes.question_index_path(@socket, :index, %{query: @query, page_length: @page_length, page: @page - 1}),
+	class: "btn btn-link #{if is_nil(@previous_page), do: :disabled}", alt: "Previous page" %>
+	Questions 
+	<%= case length(@questions) do %>
+	    <% 0 -> %>
+		0
+		<% 1 -> %>
+		    <%= (@page * @page_length) + 1 %>
+		    <% _ ->  %>
+			<%= (@page * @page_length) + 1 %>&ndash;<%= (@page * @page_length) + length(@questions) %>
+		    <% end %> 
+		    of <%= @total_count %>
+		    <%= live_patch "»", to: Routes.question_index_path(@socket, :index, %{query: @query, page_length: @page_length, page: @page + 1}),
+		    class: "btn btn-link #{if is_nil(@next_page), do: :disabled}", alt: "Next page" %>
+    </div>
+
+    <div class="col-auto">
+	<form phx-change="change_page_length" class="form-inline p-1">
+	    <select class="custom-select custom-select-sm" name="page_length" value="<%= @page_length %>">
+		<option value="10" <%= if 10 == @page_length, do: :selected %>>10</option>
+		<option value="25" <%= if 25 == @page_length, do: :selected %>>25</option>
+		<option value="50" <%= if 50 == @page_length, do: :selected %>>50</option>
+		<option value="100" <%= if 100 == @page_length, do: :selected %>>100</option>
+	    </select>
+	    <label class="ml-2">per page</label>
+	</form>
+    </div>
+</div>
