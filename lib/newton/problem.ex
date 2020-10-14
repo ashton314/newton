@@ -30,7 +30,7 @@ defmodule Newton.Problem do
   def paged_questions(%QuestionPage{query: query, page: page, page_length: page_length}) do
     offset = page * page_length
 
-    full_query = from(q in Question, limit: ^page_length, offset: ^offset)
+    full_query = from(q in Question)
 
     # Add tags to the search
     full_query =
@@ -47,14 +47,20 @@ defmodule Newton.Problem do
 
     # TODO: Add filtering on section: remember, join the sections with ORs
 
+    total_count =
+      from(p in full_query, select: count())
+      |> Repo.one()
+
+    paginated_query = from(q in full_query, limit: ^page_length, offset: ^offset)
+
     questions =
-      full_query
+      paginated_query
       |> Repo.all()
 
     %{
       results: questions,
       next_page:
-        if(length(questions) < page_length,
+        if(offset + length(questions) >= total_count,
           do: nil,
           else: %QuestionPage{query: query, page: page + 1, page_length: page_length}
         ),
@@ -62,7 +68,8 @@ defmodule Newton.Problem do
         if(page == 0,
           do: nil,
           else: %QuestionPage{query: query, page: page - 1, page_length: page_length}
-        )
+        ),
+      total_count: total_count
     }
   end
 

@@ -184,7 +184,7 @@ defmodule Newton.ProblemTest do
     end
 
     test "create_question/1 with long text is OK" do
-      assert {:ok, %Question{} = question} =
+      assert {:ok, %Question{} = _question} =
                Problem.create_question(%{
                  name: "test question",
                  type: "multiple_choice",
@@ -441,7 +441,7 @@ defmodule Newton.ProblemTest do
                  ]
                })
 
-      assert {:ok, a1} = Problem.create_answer(%{question_id: q.id, text: "different answer"})
+      assert {:ok, _a1} = Problem.create_answer(%{question_id: q.id, text: "different answer"})
 
       q2 = Repo.preload(q, :answers, force: true)
       assert Enum.count(q2.answers) == 3

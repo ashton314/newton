@@ -25,6 +25,7 @@ defmodule NewtonWeb.QuestionLive.Index do
       |> assign(:page_length, @default_page_length)
       |> assign(:next_page, nil)
       |> assign(:previous_page, nil)
+      |> assign(:total_count, 0)
 
     Enum.map(questions, &request_image_render/1)
 
@@ -122,10 +123,10 @@ defmodule NewtonWeb.QuestionLive.Index do
   end
 
   def handle_info({:search, query, page_length, page}, socket) do
-    %{results: filtered, next_page: np, previous_page: pp} =
+    %{results: filtered, next_page: np, previous_page: pp, total_count: tc} =
       Problem.paged_questions(QuestionPage.new(query, page: page, page_length: page_length))
 
-    {:noreply, assign(socket, loading: false, questions: filtered, next_page: np, previous_page: pp)}
+    {:noreply, assign(socket, loading: false, questions: filtered, next_page: np, previous_page: pp, total_count: tc)}
   end
 
   @impl true
