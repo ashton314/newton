@@ -125,7 +125,7 @@ defmodule NewtonWeb.QuestionLive.Index do
     %{results: filtered, next_page: np, previous_page: pp} =
       Problem.paged_questions(QuestionPage.new(query, page: page, page_length: page_length))
 
-    {:noreply, assign(socket, loading: false, questions: filtered)}
+    {:noreply, assign(socket, loading: false, questions: filtered, next_page: np, previous_page: pp)}
   end
 
   @impl true
