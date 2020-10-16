@@ -1,6 +1,4 @@
 <%# -*- mode: web -*- %>
-<h2 class="text-center my-3"><%= @exam.name %></h2>
-
 <%= if @live_action in [:edit] do %>
   <%= live_modal @socket, NewtonWeb.ExamLive.FormComponent,
     id: @exam.id,
@@ -10,17 +8,17 @@
     return_to: Routes.exam_show_path(@socket, :show, @exam) %>
 <% end %>
 
-<div class="card">
-    <div class="card-body pb-1">
+<div class="card mt-2">
+    <div class="card-body py-1">
         <div class="row justify-content-between">
             <div class="col-auto">
-                <h5 class="card-title">Metadata</h5>
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#metadataCollapse">Metadata <%= icon(@socket, "chevron-down") %></button>
             </div>
             <div class="col-auto">
                 <%= live_patch icon(@socket, "edit", color: "#209d3e"), to: Routes.exam_show_path(@socket, :edit, @exam), class: "btn btn-link", role: "button" %>
             </div>
         </div>
-        <div class="row">
+        <div class="row collapse" id="metadataCollapse">
             <div class="col-6">
                 <ul>
                     <li>
@@ -42,6 +40,10 @@
 
             <div class="col-6">
                 <ul>
+		    <li>
+			<strong>Name:</strong>
+			<%= @exam.name %>
+		    </li>
                     <li>
                         <strong>Stamp:</strong>
                         <%= @exam.stamp %>
