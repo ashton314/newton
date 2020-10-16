@@ -4,7 +4,10 @@ defmodule NewtonWeb.ExamLive.Show do
   import NewtonWeb.IconHelpers
   require Logger
   alias Newton.Problem
+  alias Newton.QuestionPage
   alias NewtonWeb.QuestionLive
+
+  @default_page_length 25
 
   @impl true
   def mount(_params, _session, socket) do
@@ -21,10 +24,18 @@ defmodule NewtonWeb.ExamLive.Show do
 
     {:noreply,
      socket
+     |> assign(:interpretation, %{normal: [], tags: [], refs: []})
      |> assign(:page_title, page_title(socket.assigns.live_action))
+     |> assign(:page, 0)
+     |> assign(:page_length, @default_page_length)
+     |> assign(:next_page, nil)
+     |> assign(:previous_page, nil)
+     |> assign(:total_count, 0)
      |> assign(:exam, exam)
      |> assign(:exam_questions, exam_questions)
-     |> assign(:all_questions, all_questions)}
+     |> assign(:all_questions, all_questions)
+     |> assign(:loading, false)
+     |> assign(:query, "")}
   end
 
   defp page_title(:show), do: "Show Exam"
@@ -63,6 +74,15 @@ defmodule NewtonWeb.ExamLive.Show do
     end
   end
 
+  def handle_event("interpret", %{"q" => query}, socket) do
+    {:noreply, assign(socket, interpretation: Newton.QueryParser.parse(query))}
+  end
+
+  def handle_event("search", %{"q" => query}, socket) do
+    send(self(), {:search, query, socket.assigns.page_length, socket.assigns.page})
+    {:noreply, assign(socket, query: query, loading: true)}
+  end
+
   @impl true
   def handle_info({:preview_ready, :ok, token}, socket) do
     send_update(NewtonWeb.QuestionLive.FormComponent,
@@ -89,6 +109,16 @@ defmodule NewtonWeb.ExamLive.Show do
       |> update(:image_renders, fn r -> Map.put(r, qid, tok) end)
 
     {:noreply, socket}
+  end
+
+  def handle_info({:search, query, page_length, page}, socket) do
+    %{results: filtered, next_page: np, previous_page: pp, total_count: tc} =
+      Problem.paged_questions(QuestionPage.new(query, page: page, page_length: page_length))
+
+    Enum.map(filtered, &request_image_render/1)
+
+    {:noreply,
+     assign(socket, loading: false, all_questions: filtered, next_page: np, previous_page: pp, total_count: tc)}
   end
 
   defp request_image_render(question) do
