@@ -18,9 +18,11 @@ defmodule NewtonWeb.ExamLive.Show do
   def handle_params(%{"id" => id}, _, socket) do
     exam = Problem.get_exam!(id) |> Newton.Repo.preload([:questions])
     exam_questions = exam.questions
-    all_questions = Problem.list_questions()
+    all_questions = []
 
     Enum.map(all_questions, &request_image_render/1)
+
+    send(self(), {:search, "", @default_page_length, 0})
 
     {:noreply,
      socket
@@ -72,6 +74,27 @@ defmodule NewtonWeb.ExamLive.Show do
          |> put_flash(:error, "Error: couldn't save questions!")
          |> push_redirect(to: Routes.exam_show_path(socket, :show, socket.assigns.exam))}
     end
+  end
+
+  def handle_event("go-next-page", _, socket) do
+    send(self(), {:search, socket.assigns.query, socket.assigns.page_length, socket.assigns.page + 1})
+    {:noreply, assign(socket, loading: true, page: socket.assigns.page + 1)}
+  end
+
+  def handle_event("go-previous-page", _, socket) do
+    send(self(), {:search, socket.assigns.query, socket.assigns.page_length, socket.assigns.page - 1})
+    {:noreply, assign(socket, loading: true, page: socket.assigns.page - 1)}
+  end
+
+  def handle_event("change_page_length", %{"page_length" => new_length}, socket) do
+    parsed_length =
+      case Integer.parse(new_length) do
+        {int, _} -> int
+        _ -> 25
+      end
+
+    send(self(), {:search, socket.assigns.query, parsed_length, socket.assigns.page})
+    {:noreply, assign(socket, page_length: parsed_length)}
   end
 
   def handle_event("interpret", %{"q" => query}, socket) do

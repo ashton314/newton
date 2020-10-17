@@ -37,7 +37,6 @@
                     </li>
                 </ul>
             </div>
-
             <div class="col-6">
                 <ul>
 		    <li>
@@ -48,7 +47,6 @@
                         <strong>Stamp:</strong>
                         <%= @exam.stamp %>
                     </li>
-
                     <li>
                         <strong>Barcode:</strong>
                         <%= @exam.barcode %>
@@ -102,6 +100,37 @@
 <div class="row mt-2">
     <div class="col-12 col-lg-6">
         <h4 class="text-center">All Questions</h4>
+
+	<!-- Pagination links -->
+	<div class="row">
+	    <div class="col-auto">
+		<button class="btn btn-link" phx-click="go-previous-page" <%= if is_nil(@previous_page), do: "disabled" %>>«</button>
+		Questions 
+		<%= case length(@all_questions) do %>
+		    <% 0 -> %>
+			0
+		    <% 1 -> %>
+			<%= (@page * @page_length) + 1 %>
+		    <% _ ->  %>
+			<%= (@page * @page_length) + 1 %>&ndash;<%= (@page * @page_length) + length(@all_questions) %>
+		<% end %> 
+		of <%= @total_count %>
+		<button class="btn btn-link" phx-click="go-next-page" <%= if is_nil(@next_page), do: "disabled" %>>»</button>
+	    </div>
+
+	    <div class="col-auto">
+		<form phx-change="change_page_length" class="form-inline p-1">
+		    <select class="custom-select custom-select-sm" name="page_length" value="<%= @page_length %>">
+			<option value="10" <%= if 10 == @page_length, do: :selected %>>10</option>
+			<option value="25" <%= if 25 == @page_length, do: :selected %>>25</option>
+			<option value="50" <%= if 50 == @page_length, do: :selected %>>50</option>
+			<option value="100" <%= if 100 == @page_length, do: :selected %>>100</option>
+		    </select>
+		    <label class="ml-2">per page</label>
+		</form>
+	    </div>
+	</div>
+
         <div style="max-height: calc(90vh); overflow-y: scroll">
             <%= live_component @socket, QuestionLive.QuestionFilterList,
             parent: self(),
@@ -115,17 +144,12 @@
         </div>
     </div>
     <div class="col-12 col-lg-6">
-        <div class="row justify-content-between">
-            <div class="col-auto">
-                <!-- Empty for alignment -->
-            </div>
-            <div class="col-auto">
-                <h4 class="text-center">Test Questions</h4>
-            </div>
-            <div class="col-auto">
-                <button class="btn btn-primary btn-sm" phx-click="save_questions">Save</button>
-            </div>
-        </div>
+        <h4 class="text-center">Test Questions</h4>
+	<div class="row mt-1 mb-2">
+	    <div class="col">
+		<button class="btn btn-outline-primary btn-sm btn-block" phx-click="save_questions">Save</button>
+	    </div>
+	</div>
         <div style="max-height: calc(90vh); overflow-y: scroll">
             <%= live_component @socket, QuestionLive.QuestionFilterList,
             parent: self(),
