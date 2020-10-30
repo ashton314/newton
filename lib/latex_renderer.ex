@@ -178,21 +178,21 @@ defmodule LatexRenderer do
          {_logs, 0} <-
            System.cmd("convert", [
              # Dev options (for faster render)
-             # "-density",
-             # "1500x1500",
-             # "#{dir}/#{base_file}.pdf",
-             # "-quality",
-             # "90",
-             # "-resize",
-             # "1500x1500",
-
              "-density",
-             "3000x3000",
+             "1500x1500",
              "#{dir}/#{base_file}.pdf",
              "-quality",
-             "150",
+             "90",
              "-resize",
-             "3000x3000",
+             "1500x1500",
+
+             # "-density",
+             # "3000x3000",
+             # "#{dir}/#{base_file}.pdf",
+             # "-quality",
+             # "150",
+             # "-resize",
+             # "3000x3000",
              # End prod arguments
 
              "-fuzz",

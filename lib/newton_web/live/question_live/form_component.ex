@@ -61,10 +61,38 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
         |> assign(:answer_changeset, Answer.changeset(%Answer{}))
         |> update(:answers, fn answers -> answers ++ [new_answer] end)
 
+      validated_question = Ecto.Changeset.apply_changes(socket.assigns.changeset)
+      request_render(validated_question)
+
       {:noreply, socket}
     else
       {:noreply, assign(socket, :answer_changeset, answer_cs)}
     end
+  end
+
+  def handle_event("mark-correct", %{"click" => answer_id}, socket) do
+    new_answers =
+      socket.assigns.answers
+      |> Enum.map(fn
+        %{id: ^answer_id} = answer -> Problem.update_answer(answer, %{points_marked: 1})
+        answer -> Problem.update_answer(answer, %{points_marked: 0})
+      end)
+      |> Enum.map(fn {:ok, ans} -> ans end)
+
+    validated_question = Ecto.Changeset.apply_changes(socket.assigns.changeset)
+    request_render(validated_question)
+
+    {:noreply, assign(socket, :answers, new_answers)}
+  end
+
+  def handle_event("delete-answer", %{"click" => answer_id}, socket) do
+    answer = Enum.find(socket.assigns.answers, &(&1.id == answer_id))
+    Problem.delete_answer(answer)
+
+    validated_question = Ecto.Changeset.apply_changes(socket.assigns.changeset)
+    request_render(validated_question)
+
+    {:noreply, update(socket, :answers, fn answers -> Enum.reject(answers, &(&1.id == answer_id)) end)}
   end
 
   def handle_event("suggest-tags", %{"new_tag" => new_tag}, socket) do
@@ -95,18 +123,6 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
   def handle_event("save", %{"question" => question_params}, socket) do
     save_question(socket, socket.assigns.action, Map.put(question_params, "tags", socket.assigns.tags))
-  end
-
-  def handle_event("mark-correct", %{"click" => answer_id}, socket) do
-    new_answers =
-      socket.assigns.answers
-      |> Enum.map(fn
-        %{id: ^answer_id} = answer -> Problem.update_answer(answer, %{points_marked: 1})
-        answer -> Problem.update_answer(answer, %{points_marked: 0})
-      end)
-      |> Enum.map(fn {:ok, ans} -> ans end)
-
-    {:noreply, assign(socket, :answers, new_answers)}
   end
 
   defp request_render(question) do
