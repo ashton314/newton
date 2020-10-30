@@ -61,10 +61,25 @@ minute (also configurable).
 
 ## Production Deployment
 
-### Building
+First you will need to clone the repository onto your host:
 
-*Note: you may skip this if you can and plan on using the pre-compiled
-images from DockerHub.*
+    git clone https://github.com/ashton314/newton.git
+
+You will also need to have Postgres installed and running, and make
+sure that your docker user has access to the databas.
+
+Once that's done, you'll need to copy the `.env-example` to `.envrc`
+and replace the pre-defined values with random secrets. You can
+generate one if you have Elixir installed with `mix phx.gen.secret 64`
+on the command line.
+
+**KEEP THESE VALUES SECRET!** They should just live on the host and
+must **NOT** be checked into version ctonrol.
+
+If you have another secret management system like Vault, that should
+be fine as long as you know how to set it up yourself.
+
+### Building
 
 Build the container
 
@@ -90,7 +105,13 @@ If you need to run migrations, run this command next:
 That will run all the migrations to ensure that the database is
 up-to-date.
 
-Finally, start the app:
+Finally, start up the app:
+
+    sudo docker run --network="host" --env-file .envrc -d ashton314/newton
+
+However, if you're not using a Postgres instance on the host, you can
+use a Postgres instance as defined to work with `docker-compose`. Run
+with:
 
     docker-compose up -d
 
