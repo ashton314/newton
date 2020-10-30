@@ -1,5 +1,12 @@
 \documentclass[14pt]{article} % -*- mode: latex -*-
-\usepackage{amsmath}
+\usepackage{amsmath,enumitem,amssymb}
+\newlist{todolist}{itemize}{1}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{color}
@@ -9,6 +16,20 @@
 \begin{document}
 \pagenumbering{gobble}
 \begin{preview}
-<%= contents %>
+<%= text %>
+
+<%= if length(answers) > 0 do %>
+<%= if type == "multiple_choice" do %>
+\begin{todolist}
+<%= for ans <- answers do %>
+<%= if ans.points_marked > 0, do: "\\item[\\done]", else: "\\item" %>{<%= ans.text %>}
+<% end %>
+\end{todolist}
+<% else %>
+Answer: <%= Enum.find(answers, List.first(answers), &(&1.points_marked > 0)).text %>
+<% end %>
+<% else %>
+\textit{(No answers given)}
+<% end %>
 \end{preview}
 \end{document}

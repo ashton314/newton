@@ -4,13 +4,15 @@ defmodule Newton.Problem.Render do
 
   alias Newton.Problem.Question
 
+  # Used for question previews
   EEx.function_from_file(
     :defp,
     :layout_question_preview,
     "lib/newton/problem/templates/question_preview.latex.eex",
-    [:contents]
+    [:text, :answers, :type]
   )
 
+  # Used when rendering the inverted .pngs
   EEx.function_from_file(
     :defp,
     :layout_question_image_preview,
@@ -18,11 +20,12 @@ defmodule Newton.Problem.Render do
     [:contents]
   )
 
-
   @spec delete_image_preview(question :: Question.t()) :: :ok
   def delete_image_preview(%Question{id: q_id}) do
     case LatexRenderer.retrieve_from_token(q_id) do
-      {:error, :bad_token} -> :ok
+      {:error, :bad_token} ->
+        :ok
+
       {:ok, path} ->
         dir =
           Path.split(path)
@@ -63,7 +66,9 @@ defmodule Newton.Problem.Render do
   Temporary question preview
   """
   def render_question_preview(%Question{} = question, callback) do
-    layout_question_preview(question.text)
+    question = Newton.Repo.preload(question, [:answers])
+
+    layout_question_preview(question.text, question.answers, question.type)
     |> LatexRenderer.format_string_async(callback)
   end
 
