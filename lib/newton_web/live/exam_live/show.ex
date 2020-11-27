@@ -11,7 +11,7 @@ defmodule NewtonWeb.ExamLive.Show do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :image_renders, %{})}
+    {:ok, assign(socket, image_renders: %{}, download_loading: false)}
   end
 
   @impl true
@@ -37,6 +37,7 @@ defmodule NewtonWeb.ExamLive.Show do
      |> assign(:exam_questions, exam_questions)
      |> assign(:all_questions, all_questions)
      |> assign(:loading, false)
+     |> assign(:downloaod_loading, false)
      |> assign(:query, "")}
   end
 
@@ -74,6 +75,10 @@ defmodule NewtonWeb.ExamLive.Show do
          |> put_flash(:error, "Error: couldn't save questions!")
          |> push_redirect(to: Routes.exam_show_path(socket, :show, socket.assigns.exam))}
     end
+  end
+
+  def handle_event("download-exam", _, socket) do
+    {:noreply, assign(socket, download_loading: true)}
   end
 
   def handle_event("go-next-page", _, socket) do
