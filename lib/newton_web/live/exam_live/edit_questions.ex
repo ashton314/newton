@@ -3,7 +3,7 @@ defmodule NewtonWeb.ExamLive.EditQuestions do
 
   # import NewtonWeb.IconHelpers
 
-  alias Newton.Problem
+  alias Newton.Exam
 
   @impl true
   def mount(_params, _session, socket) do
@@ -17,7 +17,7 @@ defmodule NewtonWeb.ExamLive.EditQuestions do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    exam = Problem.get_exam!(id) |> Newton.Repo.preload(:questions)
+    exam = Exam.get_exam!(id) |> Newton.Repo.preload(:questions)
 
     {:noreply,
      socket

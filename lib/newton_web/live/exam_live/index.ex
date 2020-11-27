@@ -19,7 +19,7 @@ defmodule NewtonWeb.ExamLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Exam")
-    |> assign(:exam, Problem.get_exam!(id))
+    |> assign(:exam, Newton.Exam.get_exam!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -36,13 +36,13 @@ defmodule NewtonWeb.ExamLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    exam = Problem.get_exam!(id)
-    {:ok, _} = Problem.delete_exam(exam)
+    exam = Newton.Exam.get_exam!(id)
+    {:ok, _} = Newton.Exam.delete_exam(exam)
 
     {:noreply, assign(socket, :exams, list_exams())}
   end
 
   defp list_exams do
-    Problem.list_exams()
+    Newton.Exam.list_exams()
   end
 end

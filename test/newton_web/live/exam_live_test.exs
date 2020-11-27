@@ -3,7 +3,7 @@ defmodule NewtonWeb.ExamLiveTest do
 
   import Phoenix.LiveViewTest
 
-  alias Newton.Problem
+  alias Newton.Exam
 
   @create_attrs %{
     barcode: "some barcode",
@@ -24,7 +24,7 @@ defmodule NewtonWeb.ExamLiveTest do
   @invalid_attrs %{barcode: nil, course_code: nil, course_name: nil, exam_date: nil, name: nil, stamp: nil}
 
   defp fixture(:exam) do
-    {:ok, exam} = Problem.create_exam(@create_attrs)
+    {:ok, exam} = Exam.create_exam(@create_attrs)
     exam
   end
 

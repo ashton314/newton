@@ -4,6 +4,7 @@ defmodule NewtonWeb.ExamLive.Show do
   import NewtonWeb.IconHelpers
   require Logger
   alias Newton.Problem
+  alias Newton.Exam
   alias Newton.QuestionPage
   alias NewtonWeb.QuestionLive
 
@@ -16,7 +17,7 @@ defmodule NewtonWeb.ExamLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    exam = Problem.get_exam!(id) |> Newton.Repo.preload([:questions])
+    exam = Exam.get_exam!(id) |> Newton.Repo.preload([:questions])
     exam_questions = exam.questions
     all_questions = []
 
@@ -60,7 +61,7 @@ defmodule NewtonWeb.ExamLive.Show do
   end
 
   def handle_event("save_questions", _, socket) do
-    case Problem.update_exam_questions(socket.assigns.exam, socket.assigns.exam_questions) do
+    case Exam.update_exam_questions(socket.assigns.exam, socket.assigns.exam_questions) do
       {:ok, exam} ->
         {:noreply,
          socket

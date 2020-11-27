@@ -2,6 +2,7 @@ defmodule NewtonWeb.StatsLive do
   use NewtonWeb, :live_view
 
   alias Newton.Problem
+  alias Newton.Exam
   alias Newton.Problem.Question
 
   @impl true
@@ -11,7 +12,7 @@ defmodule NewtonWeb.StatsLive do
 
   defp compute_stats do
     questions = Problem.list_questions()
-    exams = Problem.list_exams()
+    exams = Exam.list_exams()
     tags = Problem.list_tags_from_questions()
 
     stats = %{

@@ -1,11 +1,11 @@
 defmodule NewtonWeb.ExamLive.FormComponent do
   use NewtonWeb, :live_component
 
-  alias Newton.Problem
+  alias Newton.Exam
 
   @impl true
   def update(%{exam: exam} = assigns, socket) do
-    changeset = Problem.change_exam(exam)
+    changeset = Exam.change_exam(exam)
 
     {:ok,
      socket
@@ -17,7 +17,7 @@ defmodule NewtonWeb.ExamLive.FormComponent do
   def handle_event("validate", %{"exam" => exam_params}, socket) do
     changeset =
       socket.assigns.exam
-      |> Problem.change_exam(exam_params)
+      |> Exam.change_exam(exam_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :changeset, changeset)}
@@ -28,7 +28,7 @@ defmodule NewtonWeb.ExamLive.FormComponent do
   end
 
   defp save_exam(socket, :edit, exam_params) do
-    case Problem.update_exam(socket.assigns.exam, exam_params) do
+    case Exam.update_exam(socket.assigns.exam, exam_params) do
       {:ok, _exam} ->
         {:noreply,
          socket
@@ -41,7 +41,7 @@ defmodule NewtonWeb.ExamLive.FormComponent do
   end
 
   defp save_exam(socket, :new, exam_params) do
-    case Problem.create_exam(exam_params) do
+    case Exam.create_exam(exam_params) do
       {:ok, _exam} ->
         {:noreply,
          socket
