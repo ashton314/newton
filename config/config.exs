@@ -23,8 +23,9 @@ config :newton, :generators,
   binary_id: true,
   sample_binary_id: "11111111-1111-1111-1111-111111111111"
 
-# LatexRenderer configuration
+# LatexRenderer and Exam.Renderer configuration
 config :newton,
+  exam_folder_base: "priv/static/exams",
   latex_cache: "priv/static/images/latex_renderer/cache",
   latex_program: "xelatex"
 

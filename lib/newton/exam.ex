@@ -7,17 +7,10 @@ defmodule Newton.Exam do
   import Ecto.Query.API, only: [fragment: 1], warn: false
   alias Newton.Repo
 
-  alias __MODULE__
   alias Newton.Problem.Exam
 
   @doc """
   Returns the list of exams.
-
-  ## Examples
-
-      iex> list_exams()
-      [%Exam{}, ...]
-
   """
   def list_exams do
     Repo.all(Exam)
@@ -27,29 +20,11 @@ defmodule Newton.Exam do
   Gets a single exam.
 
   Raises `Ecto.NoResultsError` if the Exam does not exist.
-
-  ## Examples
-
-      iex> get_exam!(123)
-      %Exam{}
-
-      iex> get_exam!(456)
-      ** (Ecto.NoResultsError)
-
   """
   def get_exam!(id), do: Repo.get!(Exam, id)
 
   @doc """
   Creates a exam.
-
-  ## Examples
-
-      iex> create_exam(%{field: value})
-      {:ok, %Exam{}}
-
-      iex> create_exam(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
   def create_exam(attrs \\ %{}) do
     %Exam{}
@@ -100,12 +75,6 @@ defmodule Newton.Exam do
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking exam changes.
-
-  ## Examples
-
-      iex> change_exam(exam)
-      %Ecto.Changeset{data: %Exam{}}
-
   """
   def change_exam(%Exam{} = exam, attrs \\ %{}) do
     Exam.changeset(exam, attrs)
