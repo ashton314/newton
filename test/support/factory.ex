@@ -2,12 +2,25 @@ defmodule Newton.Factory do
   use ExMachina.Ecto, repo: Newton.Repo
 
   alias Newton.Problem.Question
+  alias Newton.Problem.Exam
 
   def question_factory do
     %Question{
       text: "Some fake question",
       tags: [],
       name: Faker.StarWars.character()
+    }
+  end
+
+  def exam_factory do
+    %Exam{
+      name: sequence("name"),
+      course_code: sequence("course_code"),
+      course_name: sequence("course_name"),
+      exam_date: sequence("exam_date"),
+      stamp: sequence("stamp"),
+      barcode: sequence("barcode"),
+      questions: [build(:question), build(:question)]
     }
   end
 

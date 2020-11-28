@@ -3,7 +3,7 @@ defmodule Newton.Exam.Renderer do
   Compiles and renders exams.
   """
 
-  import Logger
+  require Logger
 
   alias Newton.Repo
   alias Newton.Problem.Exam
@@ -70,6 +70,9 @@ defmodule Newton.Exam.Renderer do
   """
   @spec format_exam!(exam_root :: Path.t(), exam :: Exam.t()) :: Path.t()
   def format_exam!(exam_root, %Exam{} = exam) do
+    exam = Repo.preload(exam, :questions)
+    IO.inspect(exam, label: "exam")
+
     exam_root
   end
 end
