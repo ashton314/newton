@@ -9,11 +9,13 @@ defmodule Newton.Exam.Renderer do
   alias Newton.Repo
   alias Newton.Problem.Exam
 
+  @common_asset_root "lib/newton/exam/common_assets"
+
   # Exam and Makefile rendering functions
   EEx.function_from_file(
     :defp,
     :layout_makefile,
-    "lib/newton/exam/common_assets/Makefile.eex",
+    Path.join(@common_asset_root, "Makefile.eex"),
     [:latex_engine]
   )
 
@@ -71,6 +73,14 @@ defmodule Newton.Exam.Renderer do
     # Makefile
     makefile_cont = layout_makefile(Application.fetch_env!(:newton, :latex_program))
     File.write!(Path.join(exam_root, "Makefile"), makefile_cont)
+
+    # .sty latex headers
+    for sty_file <- Path.wildcard(Path.join(@common_asset_root, "*.sty")) do
+      File.cp!(
+        sty_file,
+        Path.join(exam_root, Path.basename(sty_file))
+      )
+    end
 
     exam_root
   end
