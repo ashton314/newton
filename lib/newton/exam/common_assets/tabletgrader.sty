@@ -1,0 +1,161 @@
+%%
+%% This is file `tabletgrader.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% tabletgrader.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% 
+%% Copyright (C) 2014 by Steven M. McKay
+%% 
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.2 of this license or (at your option) any later
+%% version.  The latest version of this license is in:
+%% 
+%%    http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2003/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[2001/06/01]
+
+\ProvidesPackage{tabletgrader}[2015/05/12 .dtx examheader file]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Set the Options to pass through to automultiplechoice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareOption*{%
+\PassOptionsToPackage{\CurrentOption}{automultiplechoice}%
+}
+\ProcessOptions\relax
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Load Necessary Packages  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{automultiplechoice}
+\RequirePackage{ifthen} %needed for if then else and whiledo programming structures
+\RequirePackage{makebarcode} %needed to make the testing center barcode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Counter Declarations    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{pointsmone}
+\newcommand{\MCnum}{1} %The default number of points for multiple choice questions is 1
+\newcommand{\ismultiple}{} % workaround so that we can close mcquestion correctly
+\newcommand{\istrue}{} % workaround so that we can close tfquestion correctly
+\newcommand{\ispone}{}
+\newcounter{double}
+\setcounter{double}{0}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  File Creation    Writes double or single sided pages to a file %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newwrite\pagesfile
+\immediate\openout\pagesfile=\jobname.pag
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Front Page Creation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\AMCbeginQuestion#1#2{\par\noindent{#1} #2\hspace{1em}}
+\def\AMCotextReserved{{\bfseries DON'T MARK}}
+\AMCopenOpts{dots=false,framerulecol=white,annotate=false}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Pages commands   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\nextpage{\clearpage} %default behavior for single page questions
+\newenvironment{doublepage} %sets pages to double sided (blank page on second side)
+{
+\ifthenelse{\isodd{\thepage}}{}{ % if the double page is going to start on an even page, add a blank page between
+\clearpage {\bfseries This page is intentionally blank.  You may use it, if needed, as scratch paper.}\clearpage
+}
+\setcounter{double}{1}
+\def\nextpage{\clearpage {\bfseries This page is intentionally blank.  You may use it, if needed, as extra space for the questions on the other side.}\clearpage} % set nextpage to add a blank page after the question page
+}
+{
+\setcounter{double}{0}
+\def\nextpage{\clearpage} %reset nextpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Question environment    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\setmultiplechoice}[1]{\renewcommand{\MCnum}{#1}}
+\newenvironment{mcquestion}[2][] % wrapper for question with globally set points value - uses automultiplechoice question and choices
+{
+\renewcommand{\ismultiple}{#1}
+\ifthenelse{\equal{#1}{}} % sets up a questionmult if the optional argument is *anything*
+{
+\begin{question}{#2}\scoring{b=\MCnum}
+}
+{
+\begin{questionmult}{#2}\scoring{b=\MCnum/N}
+}
+}
+{
+\ifthenelse{\equal{\ismultiple}{}}{\end{question}}{\end{questionmult}}
+}
+
+\newenvironment{tfquestion}[2][] % wrapper for truefalse question:  Uses \MCnum for the point total
+{
+\renewcommand{\istrue}{#1}
+\begin{question}{#2}\scoring{b=\MCnum}
+}
+{
+\ifthenelse{\equal{\istrue}{}}
+{
+\begin{choices}[o]
+\correctchoice{True}
+\wrongchoice{False}
+\end{choices}
+}
+{
+\begin{choices}[o]
+\wrongchoice{True}
+\correctchoice{False}
+\end{choices}
+}
+\end{question}
+}
+
+\newenvironment{freequestion}[3][]% wrapper for question to be graded by instructor
+{ % three commands: #1, if present, creates an extra box marked +1/2.
+         % #2 is the name of the question
+         % #3 is the point total. A maximum of 20 points is recommended
+\renewcommand{\ispone}{#1}
+\ifthenelse{\equal{\thefirst}{1}}{
+\ifthenelse{\equal{\thedouble}{0}}{
+\immediate\write\pagesfile{#2/single}
+}
+{
+\immediate\write\pagesfile{#2/double}
+}
+}{}
+\begin{question}{#2}
+\ifthenelse{#3>10}{
+\setcounter{pointsmone}{#3}
+\addtocounter{pointsmone}{-1}
+\AMCOpen{}{\begin{minipage}{.8\textwidth}
+\baselineskip=1.4\baselineskip
+\foreach \n in {0,...,\thepointsmone}{\begin{minipage}{6ex}\wrongchoice{\n}\scoring{\n}\end{minipage}\hspace{-.1ex}}
+\begin{minipage}{6ex}\correctchoice{#3}\scoring{#3}\end{minipage}\end{minipage}}
+}
+{
+\setcounter{pointsmone}{#3}
+\addtocounter{pointsmone}{-1}
+\AMCOpen{}{\foreach \n in {0,...,\thepointsmone}{\wrongchoice{\n}\scoring{\n}}
+\correctchoice{#3}\scoring{#3}}
+}
+
+\vspace{-.6in}
+
+}
+{
+\end{question}
+}
+
+\AtEndDocument{
+}
+\endinput
+%%
+%% End of file `tabletgrader.sty'.

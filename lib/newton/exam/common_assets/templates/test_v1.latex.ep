@@ -1,0 +1,99 @@
+\documentclass[12pt]{article}
+\usepackage[box,nowatermark]{byuexamheader}
+\usepackage{amsmath,amsfonts}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepgflibrary{arrows}
+\everymath{\displaystyle}
+\Course{<%= $course_code %>}{<%= $course_name %>}
+\TestName{<%= $test_name %>}
+\Date{<%= $test_date %>}
+\Stamp{<%= $stamp %>}
+\Barcode{<%= $barcode %>}
+
+\newcommand\modified[1]{{\color{blue} #1}}
+
+\newcommand{\series}[3]{\displaystyle \sum_{{#1}={#2}}^{#3} }
+\newcommand{\limit}[2]{\displaystyle \lim_{{#1} \rightarrow {#2}} }
+\newcommand{\din}[2]{\displaystyle \int_{#1}^{#2}}
+\newcommand{\Int}{\displaystyle \int}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\mb}{\mathbf}
+\newcommand{\vc}[1]{\bf #1}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\s}{\mathcal{S}}
+\newcommand{\oh}{\mathcal{O}}
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\vp}{\varphi}
+\newcommand{\cm}{\textnormal{cm}}
+\DeclareMathOperator{\nullity}{nullity}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\spa}{Span}
+\DeclareMathOperator{\row}{Row}
+\DeclareMathOperator{\col}{Col}
+\DeclareMathOperator{\nul}{Nul}
+\newcommand{\nm}{\triangleleft}
+
+\def \a{\alpha} \def \b{\beta} \def \d{\delta} \def \g{\gamma}
+\def \k{\kappa}
+\def \t{\theta} \def \p{\phi} \def \e{\epsilon} \def \s{\sigma}
+\def \l{\lambda} \def \z{\zeta}
+
+\begin{document}
+
+% for my $mcquestion (@{$mcquestions}) {
+<%= $mcquestion %>
+% }
+
+\onecopy{1}{
+
+\frontpage
+
+\noindent{\bfseries Instructions}
+\begin{enumerate}[label={\bfseries\Roman*}),noitemsep]
+\item Do not write on the barcode area at the top of each page, or near the
+    four circles on each page.
+\item Fill in your name, the correct boxes for your BYU ID and for the
+    correct answer on the multiple choice completely.
+\item Multiple choice questions are 3 points each.
+\item For questions which require a written answer, show all your work in the
+    space provided and justify your answer.  Simplify your answers.
+\item No books, notes, or calculators are allowed.
+\item There is a {\bfseries 3 hour} time limit on this exam.
+\item Please do not talk about the test with other students until after
+    finals are over.
+\end{enumerate}
+\nextpage
+
+\setmultiplechoice{3}
+
+\noindent \textbf{Part I: Multiple Choice Questions:} \emph{(3 points each)
+Choose the best answer for each multiple choice question. Fill in the box
+completely for the the correct answer.} \vspace{.2in}
+
+\shufflegroup{multiple}
+\insertgroup{multiple}
+
+
+\nextpage
+\noindent \emph{{\bf Part II:} Free response: Write your answer in the space provided. Answers not placed in this space will be ignored.}
+ \bigskip
+
+% for my $frquestion (@{$frquestions}) {
+<%= $frquestion %>
+\nextpage
+% }
+
+
+
+}
+
+\end{document}

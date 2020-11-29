@@ -1,0 +1,108 @@
+%%
+%% This is file `byuexamheader.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% byuexamheader.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% 
+%% Copyright (C) 2015 by Steven M. McKay
+%% 
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.2 of this license or (at your option) any later
+%% version.  The latest version of this license is in:
+%% 
+%%    http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2003/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[2001/06/01]
+
+\ProvidesPackage{tabletgrader}[2015/05/12 .dtx examheader file]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Set the Options to pass through to tabletgrader (which will pass them through to automultiplechoice)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareOption*{%
+\PassOptionsToPackage{\CurrentOption}{tabletgrader}%
+}
+\ProcessOptions\relax
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Load Necessary Packages  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{tabletgrader}
+\RequirePackage{ifthen} %needed for if then else and whiledo programming structures
+\RequirePackage{makebarcode} %needed to make the testing center barcode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Counter Declarations    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{examnumber}
+\setcounter{examnumber}{0}
+\newcounter{barcodenumber}
+\setcounter{barcodenumber}{0}
+\newcounter{first}
+\setcounter{first}{0}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Front Page Creation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\threedigit}[1]{
+  \ifnum#1<100 0\fi%
+  \ifnum#1<10 0\fi%
+  \number#1%
+}
+\newcommand{\testingcode}[1]{\shortstack[t]{\barcode[code=Code39, X=.24mm,H=.75cm]{#1}\\ {\small #1}}\\
+}
+\newcommand{\Course}[2]{\def\coursenumber{#1}\def\coursename{#2}}
+\newcommand{\Instructor}[1]{\def\instructor{#1}}
+\newcommand{\TestName}[1]{\def\testname{#1}}
+\newcommand{\Date}[1]{\def\testdate{#1}}
+\newcommand{\Time}[1]{\def\testtime{#1}}
+\newcommand{\Section}[1]{\def\section{#1}}
+\newcommand{\Stamp}[1]{\def\stamp{#1}}
+\newcommand{\Barcode}[1]{\setcounter{barcodenumber}{#1}}
+
+\def\section{0} % Give section an initialization of 0
+\def\instructor{noname} %noname indicates the instructor's name has not been initialized
+\def\shortname{EXAM} %standard end of first part name, unless redefined.
+
+\newcommand{\frontpage}{
+%%check to see if we need to reset exam number
+\addtocounter{examnumber}{1}
+\noindent {\Huge\bfseries\stamp\hfill\ifthenelse{\equal{\thebarcodenumber}{0}}{}{\begin{minipage}[t]{2in}\testingcode{\thebarcodenumber}}\end{minipage}\hfill\threedigit{\theexamnumber}}\\
+\begin{minipage}[t]{.4\linewidth}
+
+\vspace{.3in}
+
+\noindent\textbf{\LARGE \coursenumber\ifthenelse{\section>0}{-\section}{}}\\[2mm]
+\textbf{\LARGE \testname}\\%
+\textbf{\testdate}\\[2mm]
+\end{minipage}
+\hfill\namefield{\begin{minipage}[t]{.4\linewidth}
+
+\vspace{.3in}
+
+Name:\hrulefill \\[2mm]
+\ifthenelse{\section<1} % put a place for the section number if it is not defined
+{
+Section:\hrulefill \\[2mm]
+}
+{}
+Instructor:\ifthenelse{\equal{\instructor}{noname}}{\hrulefill}{\ \instructor}\\[1mm]
+\end{minipage}
+}
+
+\noindent{\large Encode your BYU ID in the grid below.}\\[2mm]
+\AMCcode{BYUID}{9}\\[2mm]
+\addtocounter{first}{1}
+}
+
+\AtEndDocument{
+}
+\endinput
+%%
+%% End of file `byuexamheader.sty'.

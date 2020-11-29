@@ -1,0 +1,14 @@
+% my %quest = %{$question};
+\element{multiple}{
+\begin{mcquestion}{<%= $quest{id} %>}
+    <%= $quest{text} %>
+ \begin{choices}
+% for my $correct (@{$quest{correct_answers}}) {
+ \correctchoice{<%= $correct =%>}
+% }
+% for my $wrong (@{$quest{wrong_answers}}) {
+  \wrongchoice{<%= $wrong =%>}
+% }
+ \end{choices}
+ \end{mcquestion}
+}

@@ -3,10 +3,19 @@ defmodule Newton.Exam.Renderer do
   Compiles and renders exams.
   """
 
+  require EEx
   require Logger
 
   alias Newton.Repo
   alias Newton.Problem.Exam
+
+  # Exam and Makefile rendering functions
+  EEx.function_from_file(
+    :defp,
+    :layout_makefile,
+    "lib/newton/exam/common_assets/Makefile.eex",
+    [:latex_engine]
+  )
 
   @doc """
   Puts all the files for an exam together
@@ -59,6 +68,10 @@ defmodule Newton.Exam.Renderer do
   """
   @spec populate_assets!(Path.t()) :: Path.t()
   def populate_assets!(exam_root) do
+    # Makefile
+    makefile_cont = layout_makefile(Application.fetch_env!(:newton, :latex_program))
+    File.write!(Path.join(exam_root, "Makefile"), makefile_cont)
+
     exam_root
   end
 

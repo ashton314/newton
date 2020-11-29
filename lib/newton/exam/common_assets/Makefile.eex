@@ -1,0 +1,9 @@
+# -*- mode: makefile -*-
+LATEX_ENGINE = <%= latex_engine %>
+
+exam.pdf: exam.tex
+	$(LATEX_ENGINE) exam.tex
+
+.PHONY: clean
+clean:
+	rm -f *.{log,aux,out,dvi,ps,toc}
