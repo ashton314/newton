@@ -11,12 +11,26 @@ defmodule Newton.Exam.Renderer do
 
   @common_asset_root "lib/newton/exam/common_assets"
 
-  # Exam and Makefile rendering functions
+  # Exam, README, and Makefile rendering functions
   EEx.function_from_file(
     :defp,
     :layout_makefile,
     Path.join(@common_asset_root, "Makefile.eex"),
     [:latex_engine]
+  )
+
+  EEx.function_from_file(
+    :defp,
+    :layout_readme,
+    Path.join(@common_asset_root, "README.txt.eex"),
+    [:latex_engine]
+  )
+
+  EEx.function_from_file(
+    :defp,
+    :layout_exam,
+    Path.join(@common_asset_root, "exam.tex.eex"),
+    [:exam, :questions]
   )
 
   @doc """
@@ -74,6 +88,10 @@ defmodule Newton.Exam.Renderer do
     makefile_cont = layout_makefile(Application.fetch_env!(:newton, :latex_program))
     File.write!(Path.join(exam_root, "Makefile"), makefile_cont)
 
+    # README.txt
+    readme_cont = layout_readme(Application.fetch_env!(:newton, :latex_program))
+    File.write!(Path.join(exam_root, "README.txt"), readme_cont)
+
     # .sty latex headers
     for sty_file <- Path.wildcard(Path.join(@common_asset_root, "*.sty")) do
       File.cp!(
@@ -94,7 +112,9 @@ defmodule Newton.Exam.Renderer do
   @spec format_exam!(exam_root :: Path.t(), exam :: Exam.t()) :: Path.t()
   def format_exam!(exam_root, %Exam{} = exam) do
     exam = Repo.preload(exam, :questions)
-    IO.inspect(exam, label: "exam")
+
+    exam_content = layout_exam(exam, exam.questions)
+    File.write!(Path.join(exam_root, "exam.tex"), exam_content)
 
     exam_root
   end

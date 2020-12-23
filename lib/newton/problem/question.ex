@@ -12,6 +12,7 @@ defmodule Newton.Problem.Question do
     field :text, :string
     field :type, :string
     field :name, :string
+    field :points, :integer, default: 1
     field :class_id, :binary_id
     field :ref_book, :string
     field :ref_chapter, :string

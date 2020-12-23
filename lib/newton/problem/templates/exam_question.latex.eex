@@ -1,0 +1,34 @@
+<%# Template for questions as included in exam %>
+
+<%= case question.type do %>
+  <% "multiple_choice" -> %>
+\element{multiple}{
+  \begin{mcquestion}{<%= disp(question.name) %>}
+      <%= question.text %>
+
+      <%= if length(question.answers) > 0 do %>
+      \begin{choices}
+        <%= for ans <- question.answers do %>
+        <%= if ans.points_marked > 0, do: "\\correctchoice", else: "\\wrongchoice" %>{<%= ans.text %>}
+        <% end %>
+      \end{choices}
+      <% else %>
+      \textit{(No answers given)}
+      <% end %>
+
+      \begin{choices}
+        \correctchoice{Correct}
+        \wrongchoice{Wrong}
+      \end{choices}
+  \end{mcquestion}
+}
+  <% "free_response" -> %>
+\begin{freequestion}{<%= disp(question.name) %>}{<%= question.points || 3 %>}
+    <%= question.text %>
+\end{freequestion}
+  <% "fill_in_blank" -> %>
+\begin{freequestion}{<%= disp(question.name) %>}{<%= question.points || 3 %>}
+    <%= question.text %>
+\end{freequestion}
+<% end %>
+

@@ -20,6 +20,13 @@ defmodule Newton.Problem.Render do
     [:contents]
   )
 
+  EEx.function_from_file(
+    :def,
+    :layout_question_for_exam,
+    "lib/newton/problem/templates/exam_question.latex.eex",
+    [:question]
+  )
+
   @spec delete_image_preview(question :: Question.t()) :: :ok
   def delete_image_preview(%Question{id: q_id}) do
     case LatexRenderer.retrieve_from_token(q_id) do
