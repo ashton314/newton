@@ -122,4 +122,20 @@ defmodule Newton.Exam.Renderer do
 
     exam_root
   end
+
+  @doc """
+  Run make in the given directory
+  """
+  @spec run_make!(exam_root :: Path.t()) :: Path.t()
+  def run_make!(exam_root) do
+    case System.cmd("make", [], cd: exam_root, env: [{"LATEX_FLAGS", "-halt-on-error"}]) do
+      {_output, 0} ->
+        Logger.info("Make ran without problems; exam built in #{exam_root}")
+        exam_root
+
+      {err, err_code} ->
+        Logger.warn("Make command did not succeed; exited with #{err_code}; Output:\n#{err}")
+        exam_root
+    end
+  end
 end

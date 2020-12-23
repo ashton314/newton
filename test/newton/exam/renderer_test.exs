@@ -87,7 +87,26 @@ defmodule Newton.Exam.RendererTest do
       File.rm_rf!(exam_dir)
     end
 
-    test "exam.tex renders ok with known good questions"
+    test "exam.tex renders ok with known good questions" do
+      exam = Factory.insert(:exam)
+
+      base_dir = Application.fetch_env!(:newton, :exam_folder_base)
+      exam_dir = Path.join(base_dir, exam.id)
+
+      # Render!
+      exam
+      |> Renderer.ensure_exam_dir!()
+      |> Renderer.populate_assets!()
+      |> Renderer.format_exam!(exam)
+      |> Renderer.run_make!()
+
+      assert File.exists?(exam_dir)
+      assert File.exists?(Path.join(exam_dir, "exam.tex"))
+      assert File.exists?(Path.join(exam_dir, "exam.pdf"))
+
+      # Cleanup
+      File.rm_rf!(exam_dir)
+    end
 
     test "failed rendering just produces a zip file with no .pdf inside"
   end

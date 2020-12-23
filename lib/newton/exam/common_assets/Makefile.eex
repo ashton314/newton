@@ -1,8 +1,9 @@
 # -*- mode: makefile -*-
 LATEX_ENGINE = <%= latex_engine %>
+LATEX_FLAGS  =
 
 exam.pdf: exam.tex
-	$(LATEX_ENGINE) exam.tex
+	$(LATEX_ENGINE) $(LATEX_FLAGS) exam.tex
 
 .PHONY: clean
 clean:
