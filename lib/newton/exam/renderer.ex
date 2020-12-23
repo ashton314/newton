@@ -30,7 +30,7 @@ defmodule Newton.Exam.Renderer do
     :defp,
     :layout_exam,
     Path.join(@common_asset_root, "exam.tex.eex"),
-    [:exam, :questions]
+    [:exam, :mc_questions, :fr_questions, :bl_questions]
   )
 
   @doc """
@@ -113,7 +113,11 @@ defmodule Newton.Exam.Renderer do
   def format_exam!(exam_root, %Exam{} = exam) do
     exam = Repo.preload(exam, :questions)
 
-    exam_content = layout_exam(exam, exam.questions)
+    mc_questions = Enum.filter(exam.questions, &(&1.type == "multiple_choice"))
+    fr_questions = Enum.filter(exam.questions, &(&1.type == "free_response"))
+    bl_questions = Enum.filter(exam.questions, &(&1.type == "fill_in_the_blank"))
+
+    exam_content = layout_exam(exam, mc_questions, fr_questions, bl_questions)
     File.write!(Path.join(exam_root, "exam.tex"), exam_content)
 
     exam_root

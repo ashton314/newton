@@ -3,24 +3,41 @@ defmodule Newton.Factory do
 
   alias Newton.Problem.Question
   alias Newton.Problem.Exam
+  alias Newton.Problem.Answer
 
   def question_factory do
     %Question{
-      text: "Some fake question",
+      text: Faker.StarWars.quote(),
       tags: [],
+      type: "multiple_choice",
+      answers: [build(:answer, points_marked: 1), build(:answer), build(:answer)],
       name: Faker.StarWars.character()
+    }
+  end
+
+  def answer_factory do
+    %Answer{
+      points_marked: 0,
+      text: Faker.Lorem.sentence()
     }
   end
 
   def exam_factory do
     %Exam{
       name: sequence("name"),
-      course_code: sequence("course_code"),
-      course_name: sequence("course_name"),
-      exam_date: sequence("exam_date"),
+      course_code: sequence("coursecode"),
+      course_name: sequence("coursename"),
+      exam_date: sequence("examdate"),
       stamp: sequence("stamp"),
-      barcode: sequence("barcode"),
-      questions: [build(:question), build(:question)]
+      barcode: "10000001",
+      questions: [
+        build(:question),
+        build(:question),
+        build(:question),
+        build(:question, type: "free_response", answers: []),
+        build(:question, type: "free_response", answers: []),
+        build(:question, type: "free_response", answers: [])
+      ]
     }
   end
 

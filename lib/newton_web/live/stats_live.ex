@@ -47,6 +47,6 @@ defmodule NewtonWeb.StatsLive do
   end
 
   defp flatten_map(struct) do
-    Enum.flat_map(struct, fn {key, val} -> val end)
+    Enum.flat_map(struct, fn {_key, val} -> val end)
   end
 end

@@ -5,7 +5,6 @@
 \element{multiple}{
   \begin{mcquestion}{<%= disp(question.name) %>}
       <%= question.text %>
-
       <%= if length(question.answers) > 0 do %>
       \begin{choices}
         <%= for ans <- question.answers do %>
@@ -15,11 +14,6 @@
       <% else %>
       \textit{(No answers given)}
       <% end %>
-
-      \begin{choices}
-        \correctchoice{Correct}
-        \wrongchoice{Wrong}
-      \end{choices}
   \end{mcquestion}
 }
   <% "free_response" -> %>

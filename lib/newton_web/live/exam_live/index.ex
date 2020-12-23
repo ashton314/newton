@@ -3,7 +3,6 @@ defmodule NewtonWeb.ExamLive.Index do
 
   import NewtonWeb.IconHelpers
 
-  alias Newton.Problem
   alias Newton.Problem.Exam
 
   @impl true

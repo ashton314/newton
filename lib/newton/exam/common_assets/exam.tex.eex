@@ -8,8 +8,8 @@
 \usepgflibrary{arrows}
 \everymath{\displaystyle}
 \Course{<%= exam.course_code || "No Course Code" %>}{<%= exam.course_name || "No Course" %>}
-\TestName{<%= exam.test_name || "Unnamed Test" %>}
-\Date{<%= exam.test_date || "\\today" %>}
+\TestName{<%= exam.name || "Unnamed Test" %>}
+\Date{<%= exam.exam_date || "\\today" %>}
 \Stamp{<%= exam.stamp || "NB" %>}
 \Barcode{<%= exam.barcode || "00000000" %>}
 
@@ -94,5 +94,9 @@ completely for the the correct answer.} \vspace{.2in}
 <% end %>
 
 } <%# Closes "\onecopy{1}{" %>
+
+<%= if length(bl_questions) > 0 do %>
+\textbf{WARNING:} Fill-in-the-blank question types are not supported in Newton yet; just use free response for now. Number of questions omitted: <%= length(bl_questions) %>
+<% end %>
 
 \end{document}

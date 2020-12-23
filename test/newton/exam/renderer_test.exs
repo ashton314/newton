@@ -63,14 +63,22 @@ defmodule Newton.Exam.RendererTest do
     test "exam.tex file exists and has correct contents" do
       exam = Factory.insert(:exam)
 
+      IO.inspect(exam, label: "exam")
+
       base_dir = Application.fetch_env!(:newton, :exam_folder_base)
       exam_dir = Path.join(base_dir, exam.id)
 
-      assert exam_dir == Renderer.ensure_exam_dir!(exam)
-      assert File.exists?(exam_dir)
-
       # Render!
-      assert exam_dir == Renderer.format_exam!(exam_dir, exam)
+      exam
+      |> Renderer.ensure_exam_dir!()
+      |> Renderer.populate_assets!()
+      |> Renderer.format_exam!(exam)
+
+      assert File.exists?(exam_dir)
+      assert File.exists?(Path.join(exam_dir, "exam.tex"))
+
+      # Cleanup
+      # File.rm_rf!(exam_dir)
     end
 
     test "exam.tex renders ok with known good questions"
