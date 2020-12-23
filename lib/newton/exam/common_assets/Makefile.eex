@@ -6,4 +6,4 @@ exam.pdf: exam.tex
 
 .PHONY: clean
 clean:
-	rm -f *.{log,aux,out,dvi,ps,toc}
+	rm -f *.{log,aux,out,dvi,ps,toc,amc,pag}
