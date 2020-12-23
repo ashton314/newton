@@ -18,7 +18,7 @@ defmodule Newton.Factory do
   def answer_factory do
     %Answer{
       points_marked: 0,
-      text: Faker.Lorem.sentence()
+      text: Faker.StarWars.character()
     }
   end
 
