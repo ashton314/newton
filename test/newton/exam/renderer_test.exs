@@ -63,8 +63,6 @@ defmodule Newton.Exam.RendererTest do
     test "exam.tex file exists and has correct contents" do
       exam = Factory.insert(:exam)
 
-      IO.inspect(exam, label: "exam")
-
       base_dir = Application.fetch_env!(:newton, :exam_folder_base)
       exam_dir = Path.join(base_dir, exam.id)
 
@@ -77,8 +75,16 @@ defmodule Newton.Exam.RendererTest do
       assert File.exists?(exam_dir)
       assert File.exists?(Path.join(exam_dir, "exam.tex"))
 
+      # Ok, check file contents
+      exam_cont = File.read!(Path.join(exam_dir, "exam.tex"))
+
+      for q <- exam.questions do
+        assert exam_cont =~ q.text
+        assert exam_cont =~ q.name
+      end
+
       # Cleanup
-      # File.rm_rf!(exam_dir)
+      File.rm_rf!(exam_dir)
     end
 
     test "exam.tex renders ok with known good questions"
