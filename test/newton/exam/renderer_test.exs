@@ -104,6 +104,11 @@ defmodule Newton.Exam.RendererTest do
       assert File.exists?(Path.join(exam_dir, "exam.tex"))
       assert File.exists?(Path.join(exam_dir, "exam.pdf"))
 
+      exam_dir
+      |> Renderer.zip_dir(Path.join(base_dir, "#{exam.id}.zip"))
+
+      assert File.exists?(Path.join(base_dir, "#{exam.id}.zip"))
+
       # Cleanup
       File.rm_rf!(exam_dir)
     end

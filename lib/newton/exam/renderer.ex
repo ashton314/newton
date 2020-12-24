@@ -131,11 +131,48 @@ defmodule Newton.Exam.Renderer do
     case System.cmd("make", [], cd: exam_root, env: [{"LATEX_FLAGS", "-halt-on-error"}]) do
       {_output, 0} ->
         Logger.info("Make ran without problems; exam built in #{exam_root}")
+
+        Logger.info("Cleaning up aux latex files...")
+
+        case System.cmd("make", ["clean"], cd: exam_root) do
+          {_, 0} ->
+            Logger.info("Cleaning up aux latex files... done.")
+
+          {err, err_code} ->
+            Logger.warn("Unable to cleanup aux files! (#{err_code})\n#{err}")
+        end
+
         exam_root
 
       {err, err_code} ->
         Logger.warn("Make command did not succeed; exited with #{err_code}; Output:\n#{err}")
         exam_root
     end
+  end
+
+  @doc """
+  Zip a directory `exam_root` into `dest`.
+  """
+  @spec zip_dir(exam_root :: Path.t(), dest :: Path.t()) :: :ok
+  def zip_dir(exam_root, dest) do
+    exam_root
+    |> gather_file_entries
+    |> Enum.map(&Zstream.entry(&1, File.stream!(&1)))
+    |> Zstream.zip()
+    |> Stream.into(File.stream!(dest))
+    |> Stream.run()
+  end
+
+  @doc """
+  List all files under a given folder in a flat list.
+
+  Essentially like running `find dir -type f -print`.
+  """
+  @spec gather_file_entries(dir :: Path.t()) :: [Path.t()]
+  def gather_file_entries(dir) do
+    all_files = File.ls!(dir) |> Enum.map(&Path.join(dir, &1))
+
+    Enum.reject(all_files, &File.dir?(&1)) ++
+      Enum.flat_map(Enum.filter(all_files, &File.dir?(&1)), &gather_file_entries/1)
   end
 end
