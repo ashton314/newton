@@ -111,6 +111,7 @@ defmodule Newton.Exam.RendererTest do
 
       # Cleanup
       File.rm_rf!(exam_dir)
+      File.rm_rf!(Path.join(base_dir, "#{exam.id}.zip"))
     end
 
     test "failed rendering just produces a zip file with no .pdf inside"
