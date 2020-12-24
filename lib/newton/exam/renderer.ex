@@ -34,12 +34,37 @@ defmodule Newton.Exam.Renderer do
   )
 
   @doc """
-  Puts all the files for an exam together
+  Given an exam, turn it into a PDF and zip it up.
+
+  Returns an `:ok` tuple with the path to the file, or
+  `{:error, "error message"}`.
   """
+  @spec compile_exam(exam :: Exam.t()) :: {:ok, Path.t()} | {:error, String.t()}
   def compile_exam(%Exam{} = exam) do
     exam = Repo.preload(exam, :questions)
 
-    IO.inspect(exam, label: "exam")
+    exam_name =
+      exam.name
+      |> (fn n -> Regex.replace(~r/[^[:alnum:] ]/, n, "") end).()
+      |> (fn n -> Regex.replace(~r/\s/, n, "_") end).()
+
+    base_dir = Application.fetch_env!(:newton, :exam_folder_base)
+    zip_file = Path.join(base_dir, "#{exam_name}.zip")
+
+    try do
+      exam
+      |> ensure_exam_dir!()
+      |> populate_assets!()
+      |> format_exam!(exam)
+      |> run_make!()
+      |> zip_dir(zip_file)
+
+      {:ok, zip_file}
+    rescue
+      e ->
+        Logger.error("Error rendering exam: #{inspect(e)}")
+        {:error, "Error rendering exam: #{inspect(e)}"}
+    end
   end
 
   @doc """

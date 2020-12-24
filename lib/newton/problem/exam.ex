@@ -17,6 +17,8 @@ defmodule Newton.Problem.Exam do
     timestamps()
   end
 
+  @type t :: %__MODULE__{}
+
   @doc false
   def changeset(exam, attrs) do
     exam
