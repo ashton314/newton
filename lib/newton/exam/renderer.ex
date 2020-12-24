@@ -155,9 +155,14 @@ defmodule Newton.Exam.Renderer do
   """
   @spec zip_dir(exam_root :: Path.t(), dest :: Path.t()) :: :ok
   def zip_dir(exam_root, dest) do
+    # Function to name the entry
+    entry_name = &Path.join(Path.basename(dest, ".zip"), Path.relative_to(&1, exam_root))
+
     exam_root
     |> gather_file_entries
-    |> Enum.map(&Zstream.entry(&1, File.stream!(&1)))
+    # Trim off the exam_root from the entry so we don't get a messy
+    # zip file
+    |> Enum.map(&Zstream.entry(entry_name.(&1), File.stream!(&1)))
     |> Zstream.zip()
     |> Stream.into(File.stream!(dest))
     |> Stream.run()
