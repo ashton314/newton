@@ -10,8 +10,8 @@ LATEX_ENGINE = <%= latex_engine %>
 # successful and unsuccessful builds.
 
 exam.pdf: exam.tex
-	($(LATEX_ENGINE) $(LATEX_FLAGS) exam.tex && (if [[ $(LATEX_CLEANUP_AUX) ]]; then make clean; fi)) \
-	|| (if [[ $(LATEX_CLEANUP_AUX) ]]; then rm -f exam.pdf; make clean; fi)
+	($(LATEX_ENGINE) $(LATEX_FLAGS) exam.tex && (if [[ -n "${LATEX_CLEANUP_AUX}" ]]; then make clean; fi)) \
+	|| (if [[ -n "${LATEX_CLEANUP_AUX}" ]]; then rm -f exam.pdf; make clean; fi)
 
 .PHONY: clean
 clean:

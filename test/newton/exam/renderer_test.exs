@@ -54,7 +54,7 @@ defmodule Newton.Exam.RendererTest do
       latex_program = Application.fetch_env!(:newton, :latex_program)
 
       # Make sure README got populated correclty
-      assert File.read!(Path.join(exam_dir, "README.txt")) =~ "defaults to #{latex_program}"
+      assert File.read!(Path.join(exam_dir, "README.txt")) =~ "defaults to `#{latex_program}`"
 
       # Cleanup
       File.rm_rf!(exam_dir)
