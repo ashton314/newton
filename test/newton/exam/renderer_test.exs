@@ -114,10 +114,34 @@ defmodule Newton.Exam.RendererTest do
       File.rm_rf!(Path.join(base_dir, "#{exam.id}.zip"))
     end
 
-    test "failed rendering just produces a zip file with no .pdf inside"
+    test "failed rendering doesn't produce a .pdf" do
+      question = Factory.insert(:question, text: "Bad question with unmatched $ boom!")
+      exam = Factory.insert(:exam, questions: [question])
+
+      base_dir = Application.fetch_env!(:newton, :exam_folder_base)
+      exam_dir = Path.join(base_dir, exam.id)
+
+      # Render!
+      exam
+      |> Renderer.ensure_exam_dir!()
+      |> Renderer.populate_assets!()
+      |> Renderer.format_exam!(exam)
+      |> Renderer.run_make!()
+
+      assert File.exists?(exam_dir)
+      assert File.exists?(Path.join(exam_dir, "exam.tex"))
+      refute File.exists?(Path.join(exam_dir, "exam.pdf"))
+    end
+  end
+
+  describe "compile_exam" do
+    test "happy case"
+
+    test "exam with failed build"
   end
 
   describe "image assets" do
+    # Skipped; to be implemented by future developers
     @describetag :skip
     test "resources/ folder populated with subfolders for each question in exam"
 

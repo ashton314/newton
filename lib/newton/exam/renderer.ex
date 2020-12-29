@@ -153,7 +153,7 @@ defmodule Newton.Exam.Renderer do
   """
   @spec run_make!(exam_root :: Path.t()) :: Path.t()
   def run_make!(exam_root) do
-    case System.cmd("make", [], cd: exam_root, env: [{"LATEX_FLAGS", "-halt-on-error"}]) do
+    case System.cmd("make", [], cd: exam_root, env: [{"LATEX_FLAGS", "-halt-on-error"}, {"LATEX_CLEANUP_AUX", "true"}]) do
       {_output, 0} ->
         Logger.info("Make ran without problems; exam built in #{exam_root}")
 
