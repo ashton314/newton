@@ -34,6 +34,11 @@ config :newton, Newton.GarbageCollector,
   collect_every: 5 * 60,
   max_age: 5 * 60
 
+# Pow
+config :newton, :pow,
+  user: Newton.Users.User,
+  repo: Newton.Repo
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
