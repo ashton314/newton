@@ -46,7 +46,7 @@ defmodule LatexRenderer do
       LatexRendering.Supervisor,
       {Task,
        fn ->
-         Logger.debug("[LatexRenderer] spawned render task #{inspect(self())}")
+         # Logger.debug("[LatexRenderer] spawned render task #{inspect(self())}")
          callback.(format_image(str, opts))
        end}
     )
@@ -61,7 +61,7 @@ defmodule LatexRenderer do
       LatexRendering.Supervisor,
       {Task,
        fn ->
-         Logger.debug("[LatexRenderer] spawned render task #{inspect(self())}")
+         # Logger.debug("[LatexRenderer] spawned render task #{inspect(self())}")
          callback.(format_string(str))
        end}
     )
@@ -74,16 +74,16 @@ defmodule LatexRenderer do
   @spec format_image(str :: String.t(), opts :: Keyword.t()) ::
           {:ok, String.t()} | {:error, String.t()}
   def format_image(str, opts \\ []) do
-    Logger.debug("format_opts called; this is process #{inspect(self())}")
+    # Logger.debug("format_opts called; this is process #{inspect(self())}")
     base_dir = Application.fetch_env!(:newton, :latex_cache)
 
     with {:ok, token} <- format_string(str, opts),
          :ok <- make_image(Path.join([base_dir, token, "#{@filename_base}.pdf"])) do
-      Logger.debug("Successfully built: #{token}")
+      # Logger.debug("Successfully built: #{token}")
       {:ok, token}
     else
       {:eexist, token} ->
-        Logger.debug("Already exists, token #{token}")
+        # Logger.debug("Already exists, token #{token}")
         {:ok, token}
 
       err ->
@@ -98,16 +98,16 @@ defmodule LatexRenderer do
   @spec format_string(str :: String.t(), opts :: Keyword.t()) ::
           {:ok, String.t()} | {:error, String.t()}
   def format_string(str, opts \\ []) do
-    Logger.debug("format_string called; this is process #{inspect(self())}")
+    # Logger.debug("format_string called; this is process #{inspect(self())}")
 
     with {:ok, tmp, token} <- create_tmp(str, Keyword.get(opts, :dir)),
          file <- Path.join(tmp, "#{@filename_base}.tex"),
          :ok <- File.write(file, str) do
-      Logger.debug("format_string finished; returning token #{token}")
+      # Logger.debug("format_string finished; returning token #{token}")
       run_latex(file, token)
     else
       {:eexist, token} ->
-        Logger.debug("Already exists, token #{token}")
+        # Logger.debug("Already exists, token #{token}")
         {:ok, token}
 
       err ->
@@ -154,10 +154,10 @@ defmodule LatexRenderer do
   end
 
   def make_image(path) do
-    Logger.debug("Converting #{inspect(path)} into a PNG")
+    # Logger.debug("Converting #{inspect(path)} into a PNG")
     {dir, file} = split_at_file(path)
     base_file = Path.basename(file, ".pdf")
-    Logger.debug("Converting #{base_file} for question #{dir}")
+    # Logger.debug("Converting #{base_file} for question #{dir}")
 
     # "-density",
     # "3000x3000",
@@ -206,7 +206,7 @@ defmodule LatexRenderer do
       :ok
     else
       {:exists?, true} ->
-        Logger.debug("Bypassing conversion for #{dir}/#{base_file}.png because it's already there")
+        # Logger.debug("Bypassing conversion for #{dir}/#{base_file}.png because it's already there")
 
         :ok
 
@@ -224,7 +224,7 @@ defmodule LatexRenderer do
   def run_latex(path, token) do
     {dir, file} = split_at_file(path)
     base_file = Path.basename(file, ".tex")
-    Logger.debug("Running xelatex on #{path}")
+    # Logger.debug("Running xelatex on #{path}")
 
     latex_program = Application.fetch_env!(:newton, :latex_program)
 
