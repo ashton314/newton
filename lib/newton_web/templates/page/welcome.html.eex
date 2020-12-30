@@ -1,0 +1,15 @@
+<div class="jumbotron">
+    <h1 class="display-4 brand-font">Newton</h1>
+
+    <p class="lead">
+	Welcome to <span class="brand-font">Newton</span>, a library of math problems typeset with LaTeX, along with some tools for managing the library and building exams.
+    </p>
+
+    <hr>
+
+    <div class="row justify-content-around">
+	<div class="col-auto">
+	    <a href="/questions" class="btn btn-outline-primary btn-lg">Admin Tools <svg class="primary" width="30" height="30" fill="none"><use xlink:href="images/icons/dist/feather-sprite.svg#chevron-right"></use> </svg> </a>
+	</div>
+    </div>
+</div>

@@ -24,7 +24,7 @@ defmodule NewtonWeb.Router do
   scope "/", NewtonWeb do
     pipe_through :browser
 
-    live "/", PageLive, :index
+    get "/", PageController, :index
 
     live "/stats", StatsLive
 

@@ -113,6 +113,10 @@
     overflow-y: scroll;
 }
 
+.brand-font {
+    font-family: "Megrim", "Inter UI", -apple-system;
+}
+
 .navbar-brand {
     font-family: "Megrim", "Inter UI", -apple-system;
     font-size: 38px;
@@ -128,4 +132,17 @@
 
 .modal-heading {
     width: calc(100% - 20px);
+}
+
+.jumbotron {
+    background-color: lighten($card-bg, 10%);
+    margin-top: 5em;
+}
+
+a > svg.primary {
+    stroke: #007bff;
+}
+
+a:hover > svg.primary {
+    stroke: #f0fbff;
 }
