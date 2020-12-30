@@ -35,6 +35,7 @@ defmodule Newton.MixProject do
     [
       {:phoenix, "~> 1.5.0"},
       {:phoenix_ecto, "~> 4.1"},
+      {:pow, "~> 1.0.21"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_live_view, "~> 0.15"},

@@ -8,7 +8,6 @@ defmodule Newton.Problem.Comment do
     field :resolved, :boolean, default: false
     field :text, :string
     field :question_id, :binary_id
-    field :user_id, :binary_id
 
     timestamps()
   end
