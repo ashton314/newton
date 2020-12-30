@@ -25,9 +25,6 @@
       <th>Course code</th>
       <th>Course name</th>
       <th>Exam date</th>
-      <th>Stamp</th>
-      <th>Barcode</th>
-
       <th></th>
     </tr>
   </thead>
@@ -38,13 +35,10 @@
         <td><%= exam.course_code %></td>
         <td><%= exam.course_name %></td>
         <td><%= exam.exam_date %></td>
-        <td><%= exam.stamp %></td>
-        <td><%= exam.barcode %></td>
 
         <td>
-          <span><%= live_redirect "Show", to: Routes.exam_show_path(@socket, :show, exam) %></span>
-          <span><%= live_patch "Edit", to: Routes.exam_index_path(@socket, :edit, exam) %></span>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: exam.id, data: [confirm: "Are you sure?"] %></span>
+          <span><%= live_redirect "Edit", class: "btn btn-sm btn-outline-success", to: Routes.exam_show_path(@socket, :show, exam) %></span>
+          <span><%= link "Delete", class: "btn btn-sm btn-outline-danger", to: "#", phx_click: "delete", phx_value_id: exam.id, data: [confirm: "Are you sure?"] %></span>
         </td>
       </tr>
     <% end %>
