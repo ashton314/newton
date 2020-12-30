@@ -131,13 +131,41 @@ defmodule Newton.Exam.RendererTest do
       assert File.exists?(exam_dir)
       assert File.exists?(Path.join(exam_dir, "exam.tex"))
       refute File.exists?(Path.join(exam_dir, "exam.pdf"))
+
+      # Cleanup
+      File.rm_rf!(exam_dir)
     end
   end
 
   describe "compile_exam" do
-    test "happy case"
+    test "happy case" do
+      exam = Factory.insert(:exam, name: "test exam")
 
-    test "exam with failed build"
+      base_dir = Application.fetch_env!(:newton, :exam_folder_base)
+      exam_dir = Path.join(base_dir, exam.id)
+      exam_zip = Path.join(base_dir, "test_exam.zip")
+
+      assert {:ok, ^exam_zip} = Renderer.compile_exam(exam)
+
+      # Cleanup
+      File.rm_rf!(exam_dir)
+      File.rm_rf!(exam_zip)
+    end
+
+    test "exam with failed build" do
+      question = Factory.insert(:question, text: "Bad question with unmatched $ boom!")
+      exam = Factory.insert(:exam, questions: [question], name: "test exam")
+
+      base_dir = Application.fetch_env!(:newton, :exam_folder_base)
+      exam_dir = Path.join(base_dir, exam.id)
+      exam_zip = Path.join(base_dir, "test_exam.zip")
+
+      assert {:ok, ^exam_zip} = Renderer.compile_exam(exam)
+
+      # Cleanup
+      File.rm_rf!(exam_dir)
+      File.rm_rf!(exam_zip)
+    end
   end
 
   describe "image assets" do
