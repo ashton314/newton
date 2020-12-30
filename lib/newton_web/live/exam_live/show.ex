@@ -165,9 +165,10 @@ defmodule NewtonWeb.ExamLive.Show do
   end
 
   def handle_info({:download_ready, path}, socket) do
-    IO.inspect(path, label: "got path to download")
-
-    {:noreply, assign(socket, download_loading: false)}
+    socket = assign(socket, download_loading: false)
+    base = Application.fetch_env!(:newton, :exam_folder_base)
+    path = Path.relative_to(path, base)
+    {:noreply, push_redirect(socket, to: Routes.download_path(NewtonWeb.Endpoint, :download, path: path))}
   end
 
   def handle_info({:download_failed, err}, socket) do

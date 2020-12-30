@@ -17,8 +17,9 @@
             <div class="col-auto">
 		<%= if @download_loading do %>
 		    <span class="text-muted">Download requested <div class="spinner-border text-primary" role="status" style="height: 1rem; width: 1rem;"><span class="sr-only">Download Requested.</span></div></span>
+		<% else %>
+		    <button class="btn btn-link" type="button" phx-click="download-exam"><%= icon(@socket, "download", color: "#207dfe") %></button>
 		<% end %>
-		<button class="btn btn-link" type="button" phx-click="download-exam"><%= icon(@socket, "download", color: "#207dfe") %></button>
                 <%= live_patch icon(@socket, "edit", color: "#209d3e"), to: Routes.exam_show_path(@socket, :edit, @exam), class: "btn btn-link", role: "button" %>
             </div>
         </div>

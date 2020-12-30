@@ -50,6 +50,8 @@ defmodule NewtonWeb.Router do
     live "/questions/:id/show/edit", QuestionLive.Show, :edit
 
     # Exam CRUD
+    get "/exams/download", DownloadController, :download
+
     live "/exams", ExamLive.Index, :index
     live "/exams/new", ExamLive.Index, :new
     live "/exams/:id/edit", ExamLive.Index, :edit
