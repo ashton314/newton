@@ -5,6 +5,7 @@ defmodule NewtonWeb.ExamLive.Show do
   require Logger
   alias Newton.Problem
   alias Newton.Exam
+  alias Newton.Exam.Renderer
   alias Newton.QuestionPage
   alias NewtonWeb.QuestionLive
 
@@ -79,6 +80,19 @@ defmodule NewtonWeb.ExamLive.Show do
   end
 
   def handle_event("download-exam", _, socket) do
+    lv = self()
+    exam = socket.assigns.exam
+
+    Task.start(fn ->
+      case Renderer.compile_exam(exam) do
+        {:ok, path} ->
+          send(lv, {:download_ready, path})
+
+        {:error, message} ->
+          send(lv, {:download_failed, message})
+      end
+    end)
+
     {:noreply, assign(socket, download_loading: true)}
   end
 
@@ -148,6 +162,21 @@ defmodule NewtonWeb.ExamLive.Show do
 
     {:noreply,
      assign(socket, loading: false, all_questions: filtered, next_page: np, previous_page: pp, total_count: tc)}
+  end
+
+  def handle_info({:download_ready, path}, socket) do
+    IO.inspect(path, label: "got path to download")
+
+    {:noreply, assign(socket, download_loading: false)}
+  end
+
+  def handle_info({:download_failed, err}, socket) do
+    IO.inspect(err, label: "got error in download!")
+
+    {:noreply,
+     socket
+     |> put_flash(:error, "Error: Couldn't render exam for download; check server logs")
+     |> push_redirect(to: Routes.exam_show_path(socket, :show, socket.assigns.exam))}
   end
 
   defp request_image_render(question) do

@@ -27,7 +27,7 @@ defmodule Newton.Exam.Renderer do
   )
 
   EEx.function_from_file(
-    :defp,
+    :def,
     :layout_exam,
     Path.join(@common_asset_root, "exam.tex.eex"),
     [:exam, :mc_questions, :fr_questions, :bl_questions]
@@ -136,13 +136,14 @@ defmodule Newton.Exam.Renderer do
   """
   @spec format_exam!(exam_root :: Path.t(), exam :: Exam.t()) :: Path.t()
   def format_exam!(exam_root, %Exam{} = exam) do
-    exam = Repo.preload(exam, :questions)
+    exam = Repo.preload(exam, questions: [:answers])
 
     mc_questions = Enum.filter(exam.questions, &(&1.type == "multiple_choice"))
     fr_questions = Enum.filter(exam.questions, &(&1.type == "free_response"))
     bl_questions = Enum.filter(exam.questions, &(&1.type == "fill_in_the_blank"))
 
     exam_content = layout_exam(exam, mc_questions, fr_questions, bl_questions)
+
     File.write!(Path.join(exam_root, "exam.tex"), exam_content)
 
     exam_root
@@ -176,7 +177,7 @@ defmodule Newton.Exam.Renderer do
   end
 
   @doc """
-  Zip a directory `exam_root` into `dest`.
+  Zip a directory `exam_root` into `dest`. Delete `exam_root` when done.
   """
   @spec zip_dir(exam_root :: Path.t(), dest :: Path.t()) :: :ok
   def zip_dir(exam_root, dest) do
@@ -191,6 +192,10 @@ defmodule Newton.Exam.Renderer do
     |> Zstream.zip()
     |> Stream.into(File.stream!(dest))
     |> Stream.run()
+
+    File.rm_rf!(exam_root)
+
+    :ok
   end
 
   @doc """
