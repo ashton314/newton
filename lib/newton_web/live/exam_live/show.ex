@@ -39,7 +39,8 @@ defmodule NewtonWeb.ExamLive.Show do
      |> assign(:exam_questions, exam_questions)
      |> assign(:all_questions, all_questions)
      |> assign(:loading, false)
-     |> assign(:downloaod_loading, false)
+     |> assign(:download_loading, false)
+     |> assign(:download_url, false)
      |> assign(:query, "")}
   end
 
@@ -165,10 +166,15 @@ defmodule NewtonWeb.ExamLive.Show do
   end
 
   def handle_info({:download_ready, path}, socket) do
-    socket = assign(socket, download_loading: false)
     base = Application.fetch_env!(:newton, :exam_folder_base)
     path = Path.relative_to(path, base)
-    {:noreply, push_redirect(socket, to: Routes.download_path(NewtonWeb.Endpoint, :download, path: path))}
+
+    socket =
+      socket
+      |> assign(download_loading: false)
+      |> assign(download_url: Routes.download_path(NewtonWeb.Endpoint, :download, path: path))
+
+    {:noreply, socket}
   end
 
   def handle_info({:download_failed, err}, socket) do
