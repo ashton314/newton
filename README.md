@@ -89,22 +89,6 @@ This will create a container named `ashton314/newton`.
 
 ### Deploying
 
-Fire up the database
-
-    docker-compose up -d db
-
-That should create the database container with a persistent volume
-attached to it. (This means that you can stop the database and restart
-it and all your data will still be there. For more information see the
-`docker volume` command.)
-
-If you need to run migrations, run this command next:
-
-    docker-compose run app bin/newton eval "Newton.Release.migrate"
-
-That will run all the migrations to ensure that the database is
-up-to-date.
-
 Finally, start up the app:
 
     sudo docker run --network="host" --env-file .envrc -d ashton314/newton
@@ -114,6 +98,17 @@ use a Postgres instance as defined to work with `docker-compose`. Run
 with:
 
     docker-compose up -d
+
+If you need to run migrations, run this command next:
+
+    docker exec <container-name> bin/newton eval "Newton.Release.migrate"
+
+Or, if you're using docker-compose to run Postgres as well, run:
+
+    docker-compose run app bin/newton eval "Newton.Release.migrate"
+
+That will run all the migrations to ensure that the database is
+up-to-date.
 
 ## Development
 

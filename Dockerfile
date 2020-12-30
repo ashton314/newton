@@ -41,6 +41,7 @@ RUN mix do compile, release
 
 FROM alpine:3.9 AS app
 RUN apk add --no-cache openssl ncurses-libs texlive-full texlive-xetex imagemagick
+RUN apk add --no-cache make
 
 WORKDIR /app
 
