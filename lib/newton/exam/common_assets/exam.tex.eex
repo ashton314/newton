@@ -81,18 +81,15 @@ completely for the the correct answer.} \vspace{.2in}
 
 \shufflegroup{multiple}
 \insertgroup{multiple}
-
-
+<%= if length(fr_questions) > 0 do %>
 \nextpage
 \noindent \emph{{\bf Part II:} Free response: Write your answer in the space provided. Answers not placed in this space will be ignored.}
  \bigskip
-
-
 <%= for fr_question <- fr_questions do %>
   <%= Newton.Problem.Render.layout_question_for_exam(fr_question) %>
   \nextpage
 <% end %>
-
+<% end %>
 } <%# Closes "\onecopy{1}{" %>
 
 <%= if length(bl_questions) > 0 do %>
