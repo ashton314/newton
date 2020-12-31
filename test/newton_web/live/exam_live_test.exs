@@ -37,12 +37,12 @@ defmodule NewtonWeb.ExamLiveTest do
   describe "Index" do
     setup [:create_exam]
 
-    # test "lists all exams", %{conn: conn, exam: exam} do
-    #   {:ok, _index_live, html} = live(conn, Routes.exam_index_path(conn, :index))
+    test "lists all exams", %{conn: conn, exam: exam} do
+      {:ok, _index_live, html} = live(conn, Routes.exam_index_path(conn, :index))
 
-    #   assert html =~ "Listing Exams"
-    #   assert html =~ exam.barcode
-    # end
+      assert html =~ "Listing Exams"
+      assert html =~ exam.name
+    end
 
     # @tag :skip
     # test "saves new exam", %{conn: conn} do
@@ -67,6 +67,7 @@ defmodule NewtonWeb.ExamLiveTest do
     #   assert html =~ "some barcode"
     # end
 
+    # This tested the modal updating the exam
     # test "updates exam in listing", %{conn: conn, exam: exam} do
     #   {:ok, index_live, _html} = live(conn, Routes.exam_index_path(conn, :index))
 
