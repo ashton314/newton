@@ -9,8 +9,8 @@ defmodule Newton.ProblemTest do
   describe "paged_questions/1" do
     setup do
       # Insert 100 test questions
-      for _ <- 1..100 do
-        Factory.insert(:question)
+      for i <- 1..100 do
+        Factory.insert(:question, ref_chapter: floor(i / 20), ref_section: floor(i / 5))
       end
 
       :ok
@@ -48,7 +48,12 @@ defmodule Newton.ProblemTest do
           |> Enum.map(&Factory.gimme_a_word/1)
           |> Enum.join(" ")
 
-        Factory.insert(:question, tags: tags, text: text)
+        Factory.insert(:question,
+          tags: tags,
+          text: text,
+          ref_chapter: "#{floor(i / 20)}",
+          ref_section: "#{floor(i / 5)}"
+        )
       end
 
       :ok
@@ -115,6 +120,46 @@ defmodule Newton.ProblemTest do
     test "no matches when text is not present" do
       assert %{results: [], next_page: nil, previous_page: nil} =
                Problem.paged_questions(QuestionPage.new("this_is_not_an_element [tag2]"))
+    end
+
+    test "find with one section" do
+      assert %{results: res, next_page: _np, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("{2}", page_length: 100))
+
+      assert length(res) == 20
+    end
+
+    test "find with one section and chapter; both match" do
+      assert %{results: res, next_page: _np, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("{2.10}", page_length: 100))
+
+      assert length(res) == 5
+    end
+
+    test "find with two sections" do
+      assert %{results: res, next_page: _np, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("{2} {3}", page_length: 100))
+
+      assert length(res) == 40
+    end
+
+    test "find with two sections, one with chapter" do
+      assert %{results: res, next_page: _np, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("{3} {2.10}", page_length: 100))
+
+      assert length(res) == 25
+
+      assert %{results: res, next_page: _np, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("{2.10} {3}", page_length: 100))
+
+      assert length(res) == 25
+    end
+
+    test "find with two sections and chapters; correct mapping" do
+      assert %{results: res, next_page: _np, previous_page: nil} =
+               Problem.paged_questions(QuestionPage.new("{2.10} {3.14}", page_length: 100))
+
+      assert length(res) == 10
     end
   end
 
