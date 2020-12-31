@@ -33,6 +33,34 @@ defmodule Newton.Exam.Renderer do
     [:exam, :mc_questions, :fr_questions, :bl_questions]
   )
 
+  EEx.function_from_file(
+    :defp,
+    :layout_automultiplechoice,
+    Path.join(@common_asset_root, "automultiplechoice.sty.eex"),
+    []
+  )
+
+  EEx.function_from_file(
+    :defp,
+    :layout_bophook,
+    Path.join(@common_asset_root, "bophook.sty.eex"),
+    []
+  )
+
+  EEx.function_from_file(
+    :defp,
+    :layout_byuexamheader,
+    Path.join(@common_asset_root, "byuexamheader.sty.eex"),
+    []
+  )
+
+  EEx.function_from_file(
+    :defp,
+    :layout_tabletgrader,
+    Path.join(@common_asset_root, "tabletgrader.sty.eex"),
+    []
+  )
+
   @doc """
   Given an exam, turn it into a PDF and zip it up.
 
@@ -117,13 +145,18 @@ defmodule Newton.Exam.Renderer do
     readme_cont = layout_readme(Application.fetch_env!(:newton, :latex_program))
     File.write!(Path.join(exam_root, "README.txt"), readme_cont)
 
-    # .sty latex headers
-    for sty_file <- Path.wildcard(Path.join(@common_asset_root, "*.sty")) do
-      File.cp!(
-        sty_file,
-        Path.join(exam_root, Path.basename(sty_file))
-      )
-    end
+    # Do .sty files; these are templates so they get bundled up in the release
+    automultiplechoice_cont = layout_automultiplechoice()
+    File.write!(Path.join(exam_root, "automultiplechoice.sty"), automultiplechoice_cont)
+
+    bophook_cont = layout_bophook()
+    File.write!(Path.join(exam_root, "bophook.sty"), bophook_cont)
+
+    byuexamheader_cont = layout_byuexamheader()
+    File.write!(Path.join(exam_root, "byuexamheader.sty"), byuexamheader_cont)
+
+    tabletgrader_cont = layout_tabletgrader()
+    File.write!(Path.join(exam_root, "tabletgrader.sty"), tabletgrader_cont)
 
     exam_root
   end

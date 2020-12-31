@@ -1,5 +1,0 @@
-% my %quest = %{$question};
-\begin{freequestion}{<%= $quest{id} %>}{<%= $quest{points} %>}
-    <%= $quest{text} %>
-\end{freequestion}
-
