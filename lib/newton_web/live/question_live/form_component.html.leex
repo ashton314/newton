@@ -153,13 +153,17 @@
 		<h4 class="d-inline-block">Comments</h4>
 	    </div>
 
+	    <% resolved_count = length(Enum.filter(@comments, &(&1.resolved))) %>
+
 	    <div class="col-auto">
-		<div class="custom-control custom-switch">
-		    <form phx-change="toggle-show-resolved" phx-target="<%= @myself %>">
-			<input type="checkbox" class="custom-control-input" id="show_resolved" name="show_resolved" <%= if @show_resolved, do: :checked %>>
-			<label class="custom-control-label" for="show_resolved">Show resolved</label>
-		    </form>
-		</div>
+		<%= if resolved_count > 0 do %>
+		    <div class="custom-control custom-switch">
+			<form phx-change="toggle-show-resolved" phx-target="<%= @myself %>">
+			    <input type="checkbox" class="custom-control-input" id="show_resolved" name="show_resolved" <%= if @show_resolved, do: :checked %>>
+			    <label class="custom-control-label" for="show_resolved">Show resolved</label>
+			</form>
+		    </div>
+		<% end %>
 	    </div>
 	</div>
         <hr/>
@@ -169,7 +173,6 @@
         <% end %>
 
 	<%= if ! @show_resolved do %>
-	    <% resolved_count = length(Enum.filter(@comments, &(&1.resolved))) %>
 	    <%= if resolved_count > 1 do %>
 		<p class="text-muted"><small><%= resolved_count %> resolved comments</small></p>
 	    <% end %>
