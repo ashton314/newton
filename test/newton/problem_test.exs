@@ -9,8 +9,8 @@ defmodule Newton.ProblemTest do
   describe "paged_questions/1" do
     setup do
       # Insert 100 test questions
-      for i <- 1..100 do
-        Factory.insert(:question, ref_chapter: floor(i / 20), ref_section: floor(i / 5))
+      for _ <- 1..100 do
+        Factory.insert(:question)
       end
 
       :ok

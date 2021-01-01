@@ -46,15 +46,15 @@ defmodule Newton.Problem do
       end)
 
     # Peel off the first reference for the first "where"
-    IO.inspect(query.refs, label: "query.refs")
-
     {full_query, rest_refs} =
       case query.refs do
         [] ->
           {full_query, []}
 
         [%{chapter: cpt, section: sec} | rest] ->
-          {from(q in full_query, where: q.ref_chapter == ^"#{cpt}", where: q.ref_section == ^"#{sec}"), rest}
+          # We put the keywords up here so we get the grouping right
+          filters = [ref_chapter: "#{cpt}", ref_section: "#{sec}"]
+          {from(q in full_query, where: ^filters), rest}
 
         [%{chapter: cpt} | rest] ->
           {from(q in full_query, where: q.ref_chapter == ^"#{cpt}"), rest}
@@ -63,16 +63,13 @@ defmodule Newton.Problem do
     full_query =
       Enum.reduce(rest_refs, full_query, fn
         %{chapter: cpt, section: sec}, q_acc ->
+          # We put the keywords up here so we get the grouping right
           filters = [ref_chapter: "#{cpt}", ref_section: "#{sec}"]
           from(q in q_acc, or_where: ^filters)
 
         %{chapter: cpt}, q_acc ->
           from(q in q_acc, or_where: q.ref_chapter == ^"#{cpt}")
       end)
-
-    {sql, params} = Ecto.Adapters.SQL.to_sql(:all, Repo, full_query)
-    [_, sql] = String.split(sql, ~r/WHERE/)
-    IO.puts("where query: #{sql}; #{inspect(params)}")
 
     total_count =
       from(p in full_query, select: count())
