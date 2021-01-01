@@ -161,6 +161,8 @@ defmodule NewtonWeb.ExamLive.Show do
 
     Enum.map(filtered, &request_image_render/1)
 
+    filtered = Enum.map(filtered, &Newton.Repo.preload(&1, [:comments]))
+
     {:noreply,
      assign(socket, loading: false, all_questions: filtered, next_page: np, previous_page: pp, total_count: tc)}
   end
