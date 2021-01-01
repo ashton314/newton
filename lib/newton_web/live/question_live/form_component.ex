@@ -25,6 +25,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
      |> assign_new(:answer_changeset, fn -> Answer.changeset(%Answer{}) end)
      |> assign_new(:comment_changeset, fn -> Comment.changeset(%Comment{}) end)
      |> assign_new(:comments, fn -> question.comments end)
+     |> assign_new(:show_resolved, fn -> false end)
      |> assign_new(:answers, fn -> question.answers end)
      |> assign_new(:preview_contents, fn -> prev_cont end)
      |> assign_new(:preview_state, fn -> prev_state end)
@@ -76,6 +77,12 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
       end)
 
     {:noreply, socket}
+  end
+
+  def handle_event("toggle-show-resolved", params, socket) do
+    show? = Map.get(params, "show_resolved", false)
+
+    {:noreply, assign(socket, show_resolved: show?)}
   end
 
   def handle_event("validate-answer", %{"answer" => new_answer}, socket) do

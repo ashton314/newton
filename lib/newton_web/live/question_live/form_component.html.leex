@@ -155,8 +155,10 @@
 
 	    <div class="col-auto">
 		<div class="custom-control custom-switch">
-		    <input type="checkbox" class="custom-control-input" id="customSwitch1">
-		    <label class="custom-control-label" for="customSwitch1">Show resolved</label>
+		    <form phx-change="toggle-show-resolved" phx-target="<%= @myself %>">
+			<input type="checkbox" class="custom-control-input" id="show_resolved" name="show_resolved" <%= if @show_resolved, do: :checked %>>
+			<label class="custom-control-label" for="show_resolved">Show resolved</label>
+		    </form>
 		</div>
 	    </div>
 	</div>
@@ -166,7 +168,17 @@
             <p class="text-muted">(No comments)</p>
         <% end %>
 
-        <%= for c <- @comments do %>
+	<%= if ! @show_resolved do %>
+	    <% resolved_count = length(Enum.filter(@comments, &(&1.resolved))) %>
+	    <%= if resolved_count > 1 do %>
+		<p class="text-muted"><small><%= resolved_count %> resolved comments</small></p>
+	    <% end %>
+	    <%= if resolved_count == 1 do %>
+		<p class="text-muted"><small><%= resolved_count %> resolved comment</small></p>
+	    <% end %>
+	<% end %>
+
+        <%= for c <- if @show_resolved, do: @comments, else: Enum.reject(@comments, &(&1.resolved)) do %>
             <div class="card comment-card mb-2">
 		<div class="card-body">
 		    <div class="row justify-content-between mb-1">
