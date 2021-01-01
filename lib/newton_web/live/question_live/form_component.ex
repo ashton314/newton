@@ -79,6 +79,19 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     {:noreply, socket}
   end
 
+  def handle_event("delete-comment", %{"comment-id" => cid}, socket) do
+    comment = Problem.get_comment!(cid)
+    Problem.delete_comment(comment)
+
+    socket =
+      socket
+      |> update(:comments, fn comments ->
+        Enum.reject(comments, &(&1.id == cid))
+      end)
+
+    {:noreply, socket}
+  end
+
   def handle_event("toggle-show-resolved", params, socket) do
     show? = Map.get(params, "show_resolved", false)
 

@@ -198,6 +198,11 @@
 			    <small class="text-muted"><%= pretty_date  %></small>
 			</div>
 			<div class="col-auto py-auto">
+			    <button class="btn btn-sm btn-outline-danger"
+				    data-confirm="Delete this comment?"
+				    phx-click="delete-comment"
+				    phx-value-comment-id="<%= c.id %>"
+				    phx-target="<%= @myself %>">Delete</button>
 			    <button class="btn btn-sm <%= if c.resolved, do: "btn-outline-warning", else: "btn-outline-success" %>"
 				    phx-click="toggle-resolve-comment"
 				    phx-value-comment-id="<%= c.id %>"
