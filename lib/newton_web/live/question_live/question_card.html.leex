@@ -29,7 +29,14 @@
             <% end %>
         </div>
         <div class="col-auto">
-            <h5 class="d-inline-block"><span class="badge badge-secondary ml-1">0/0 comments</span></h5>
+	    <% unresolved_count = length(Enum.reject(@question.comments, &(&1.resolved))) %>
+            <h5 class="d-inline-block">
+		<%= if unresolved_count == 0 do %>
+		    <span class="badge badge-secondary ml-1">No Outstanding Comments</span>
+		<% else %>
+		    <span class="badge badge-warning ml-1"><%= unresolved_count %> Unresolved Comments</span>
+		<% end %>
+	    </h5>
         </div>
     </div>
   </div>
