@@ -3,17 +3,9 @@
 <!-- Search field -->
 <div class="row my-3 align-items-center">
     <div class="col">
-	<form phx-change="interpret" phx-submit="search" id="search-form">
-	    <div class="input-group">
-		<input type="text" name="q" class="form-control" value="<%= @query  %>" placeholder="Search Questions" <%= if @loading, do: "readonly" %>/>
-		<div class="input-group-append">
-		    <button type="submit" class="btn btn-primary" phx-disable-with="Searching...">Search</button>
-		</div>
-	    </div>
-	</form>
 	<%= if %{normal: [], tags: [], refs: []} != @interpretation do %>
 	    <span class="text-muted">
-		Searching for questions
+		Press 'Enter' to search questions
 		<%= if length(@interpretation.normal) > 0 do %>
 		    with the words
 		    <%= for w <- @interpretation.normal do %>
@@ -38,6 +30,15 @@
 		<% end %>
 	    </span>
 	<% end %>
+
+	<form phx-change="interpret" phx-submit="search" id="search-form">
+	    <div class="input-group">
+		<input type="text" name="q" class="form-control" value="<%= @query  %>" placeholder="Search question text, [tags], and {chapter.section}" <%= if @loading, do: "readonly" %>/>
+		<div class="input-group-append">
+		    <button type="submit" class="btn btn-primary" phx-disable-with="Searching...">Search</button>
+		</div>
+	    </div>
+	</form>
 
 	<div class="row justify-content-between p-2">
 	    <div class="col-1">
