@@ -134,6 +134,11 @@
     width: calc(100% - 20px);
 }
 
+.comment-card {
+    background-color: lighten($card-bg, 5%);
+    box-shadow: 1px 2px 3px darken($card-bg, 2%);
+}
+
 .jumbotron {
     background-color: lighten($card-bg, 10%);
     margin-top: 5em;

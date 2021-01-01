@@ -148,7 +148,18 @@
     </div>
 
     <div class="col-12 col-md-7">
-        <h4>Comments</h4>
+	<div class="row justify-content-between">
+	    <div class="col-auto">
+		<h4 class="d-inline-block">Comments</h4>
+	    </div>
+
+	    <div class="col-auto">
+		<div class="custom-control custom-switch">
+		    <input type="checkbox" class="custom-control-input" id="customSwitch1">
+		    <label class="custom-control-label" for="customSwitch1">Show resolved</label>
+		</div>
+	    </div>
+	</div>
         <hr/>
 
         <%= if Enum.count(@comments) == 0 do %>
@@ -156,17 +167,51 @@
         <% end %>
 
         <%= for c <- @comments do %>
-            <div class="question-comment">
-                <p><%= c.text %></p>
+            <div class="card comment-card mb-2">
+		<div class="card-body">
+		    <div class="row justify-content-between mb-1">
+			<div class="col-auto" style="line-height: 1em">
+			    <%
+			    # Format the date
+			    {:ok, pretty_date} =
+			      c.inserted_at
+			        |> Timex.to_datetime(:utc)
+			        |> Timex.to_datetime("America/Denver")
+			        |> Timex.format("%e %b %Y, %l:%M %P", :strftime)
+			    %>
+			    <small class="text-muted">(Admin)</small><br>
+			    <small class="text-muted"><%= pretty_date  %></small>
+			</div>
+			<div class="col-auto py-auto">
+			    <button class="btn btn-sm btn-outline-success" phx-click="resolve-comment" phx-value-comment-id="<%= c.id %>" phx-target="<%= @myself %>">Resolve</button>
+			</div>
+		    </div>
+                    <%= c.text %>
+		</div>
             </div>
         <% end %>
+
+	<hr/>
+
+	<div class="row">
+	    <div class="new-comment-form col">
+                <%= f = form_for @comment_changeset, "#",
+                id: "new-comment-form",
+                phx_target: @myself,
+                phx_submit: "add-comment" %>
+
+                <div class="form-group">
+                    <%= textarea f, :text, class: "form-control", placeholder: "New comment", rows: 3 %>
+                </div>
+
+		<div class="row">
+		    <div class="col-auto ml-auto">
+			<%= submit "Comment", phx_disable_with: "Saving...", class: "btn btn-info", form: "new-comment-form" %>
+		    </div>
+		</div>
+		
+                </form>
+	    </div>
+	</div>
     </div>
 </div>
-
-  <%# label f, :tags %>
-  <%# multiple_select f, :tags, ["Option 1": "option1", "Option 2": "option2"] %>
-  <%# error_tag f, :tags %>
-
-  <%# label f, :archived %>
-  <%# checkbox f, :archived %>
-  <%# error_tag f, :archived %>

@@ -5,6 +5,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
 
   alias Newton.Problem
   alias Newton.Problem.Answer
+  alias Newton.Problem.Comment
   alias NewtonWeb.QuestionLive.TagSuggestion
 
   @impl true
@@ -22,6 +23,7 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
      |> assign_new(:question, fn -> question end)
      |> assign_new(:changeset, fn -> Problem.change_question(question) end)
      |> assign_new(:answer_changeset, fn -> Answer.changeset(%Answer{}) end)
+     |> assign_new(:comment_changeset, fn -> Comment.changeset(%Comment{}) end)
      |> assign_new(:comments, fn -> question.comments end)
      |> assign_new(:answers, fn -> question.answers end)
      |> assign_new(:preview_contents, fn -> prev_cont end)
@@ -42,6 +44,29 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     validated_question = Ecto.Changeset.apply_changes(socket.assigns.changeset)
 
     request_render(validated_question)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("add-comment", %{"comment" => new_comment}, socket) do
+    comment_cs = Comment.changeset(%Comment{}, new_comment)
+
+    if comment_cs.valid? do
+      {:ok, new_comment} = Problem.create_comment(Map.put(new_comment, "question_id", socket.assigns.id))
+
+      socket =
+        socket
+        |> assign(:comment_changeset, Comment.changeset(%Comment{}))
+        |> update(:comments, fn comments -> comments ++ [new_comment] end)
+
+      {:noreply, socket}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_event("resolve-comment", %{"comment-id" => cid}, socket) do
+    IO.inspect(cid, label: "cid")
 
     {:noreply, socket}
   end

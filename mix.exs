@@ -50,6 +50,7 @@ defmodule Newton.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:ex_machina, "~> 2.4", only: :test},
       {:faker, "~> 0.14", only: :test},
+      {:timex, "~> 3.0"},
       {:zstream, "~> 0.5.2"}
     ]
   end
