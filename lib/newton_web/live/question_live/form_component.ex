@@ -65,8 +65,15 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     end
   end
 
-  def handle_event("resolve-comment", %{"comment-id" => cid}, socket) do
-    IO.inspect(cid, label: "cid")
+  def handle_event("toggle-resolve-comment", %{"comment-id" => cid}, socket) do
+    comment = Problem.get_comment!(cid)
+    {:ok, new_comment} = Problem.update_comment(comment, %{resolved: !comment.resolved})
+
+    socket =
+      socket
+      |> update(:comments, fn comments ->
+        Enum.map(comments, &if(&1.id == new_comment.id, do: new_comment, else: &1))
+      end)
 
     {:noreply, socket}
   end

@@ -183,7 +183,10 @@
 			    <small class="text-muted"><%= pretty_date  %></small>
 			</div>
 			<div class="col-auto py-auto">
-			    <button class="btn btn-sm btn-outline-success" phx-click="resolve-comment" phx-value-comment-id="<%= c.id %>" phx-target="<%= @myself %>">Resolve</button>
+			    <button class="btn btn-sm <%= if c.resolved, do: "btn-outline-warning", else: "btn-outline-success" %>"
+				    phx-click="toggle-resolve-comment"
+				    phx-value-comment-id="<%= c.id %>"
+				    phx-target="<%= @myself %>"><%= if c.resolved, do: "Unresolve", else: "Resolve" %></button>
 			</div>
 		    </div>
                     <%= c.text %>
