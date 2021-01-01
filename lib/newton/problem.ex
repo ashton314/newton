@@ -75,7 +75,7 @@ defmodule Newton.Problem do
       from(p in full_query, select: count())
       |> Repo.one()
 
-    paginated_query = from(q in full_query, limit: ^page_length, offset: ^offset)
+    paginated_query = from(q in full_query, limit: ^page_length, offset: ^offset, order_by: q.inserted_at)
 
     questions =
       paginated_query
