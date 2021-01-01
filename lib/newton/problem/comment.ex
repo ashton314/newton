@@ -4,6 +4,7 @@ defmodule Newton.Problem.Comment do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
+  @derive {Jason.Encoder, except: [:__struct__, :__meta__]}
   schema "comments" do
     field :resolved, :boolean, default: false
     field :text, :string

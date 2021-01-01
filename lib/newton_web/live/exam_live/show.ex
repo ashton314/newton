@@ -18,7 +18,7 @@ defmodule NewtonWeb.ExamLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    exam = Exam.get_exam!(id) |> Newton.Repo.preload([:questions])
+    exam = Exam.get_exam!(id) |> Newton.Repo.preload(questions: [:comments])
     exam_questions = exam.questions
     all_questions = []
 
@@ -55,7 +55,7 @@ defmodule NewtonWeb.ExamLive.Show do
         update(socket, :exam_questions, fn qs -> Enum.filter(qs, &(&1.id != id)) end)
       else
         # Add it
-        q = Problem.get_question!(id)
+        q = Problem.get_question!(id) |> Newton.Repo.preload([:comments])
         update(socket, :exam_questions, fn qs -> [q | qs] end)
       end
 

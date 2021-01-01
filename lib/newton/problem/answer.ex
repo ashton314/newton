@@ -5,6 +5,7 @@ defmodule Newton.Problem.Answer do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
+  @derive {Jason.Encoder, except: [:__struct__, :__meta__, :question]}
   schema "answers" do
     field :display, :boolean, default: false
     field :points_marked, :integer, default: 0
