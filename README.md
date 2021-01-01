@@ -18,13 +18,14 @@ persist so that they can easily be ammended.
 There are several features missing from Newton that the old system
 included. Some of the not-quite-there features include:
 
- - Comments on questions
  - Image resources for questions
  - Statistics on test results
- - Export and backup facilities
 
 Once these features are added, we will have exceeded parity with the
 old system.
+
+In the mean time, these deficiencies can be compensated with the
+comment system and by implementing images a TikZ directives.
 
 ## Technical Overview
 
@@ -122,3 +123,38 @@ To start your Phoenix server:
  - Start Phoenix endpoint with `mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+
+## Data Export
+
+You can export the database of questions and exams represented as
+JSON. If you're running Newton in a container as a release, use:
+
+    docker exec <container-name> bin/newton eval "Newton.Release.db_dump_pretty"
+
+Otherwise, just call `Newton.Release.db_dump_pretty()` interactively.
+
+## Force Image Render
+
+You can clear out the cache of question images and force a render by
+calling:
+
+    docker exec <container-name> bin/newton eval "Newton.Release.force_preview_rerender"
+
+This will interactively prompt for confirmation to flush the image
+cache and start anew.
+
+For a non-interactive version, use the
+`Newton.Release.hard_force_preview_rerender` function.
+
+## References
+
+#### Source Code
+
+The source for Newton is hosted on [GitHub](https://github.com); you
+can view the repository here:
+
+https://github.com/ashton314/newton
+
+#### Author
+
+Ashton Wiersdorf <https://github.com/ashton314>

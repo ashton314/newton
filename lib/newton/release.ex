@@ -35,6 +35,66 @@ defmodule Newton.Release do
     Application.load(@app)
   end
 
+  def force_preview_rerender() do
+    base_dir = Application.fetch_env!(:newton, :latex_cache)
+    files = File.ls!(base_dir)
+
+    IO.puts("This operation will remove #{length(files)} files from #{base_dir}; proceed? [yes/No] ")
+
+    if String.trim(IO.read(:line)) == "yes" do
+      IO.puts("Flushing image preview...")
+      hard_force_preview_rerender()
+    else
+      IO.puts("Aborted")
+    end
+  end
+
+  def hard_force_preview_rerender() do
+    base_dir = Application.fetch_env!(:newton, :latex_cache)
+    files = File.ls!(base_dir)
+
+    # Clear out the entire cache
+    for f <- files do
+      IO.puts("Removed cache for #{f}")
+
+      File.rm_rf(Path.join(base_dir, f))
+    end
+
+    # Rerender all images
+    for q <- Problem.list_questions() do
+      IO.puts("\n\nRequesting render for #{q.id}...")
+
+      me = self()
+
+      Problem.Render.render_image_preview(
+        q,
+        fn
+          {:ok, _tok} -> send(me, :proceed)
+          {:error, mess} -> send(me, {:error, mess})
+        end
+      )
+
+      # This forces us to go one at a time
+      receive do
+        :proceed ->
+          IO.puts("\nSuccessfully rendered #{q.id}")
+
+        {:error, e} ->
+          IO.puts("\nError for #{q.id}: #{inspect(e)}")
+      end
+    end
+  end
+
+  @doc """
+  Dump data pretty-formatted
+  """
+  def db_dump_pretty() do
+    case db_dump(pretty: true) do
+      {:ok, json} -> IO.puts(json)
+      {:error, e} -> IO.puts("Error: #{inspect(e)}")
+    end
+  end
+
   @doc """
   Dump the set of questions in JSON format
 
