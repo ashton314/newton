@@ -49,6 +49,9 @@ while (my $q_dir = readdir $dirh) {
   if ($q_dir =~ /^(?:S|\d+)-(\d+)-(\d+)/) {
     ($q{ref_chapter}, $q{ref_section}) = ($1, $2);
   }
+  elsif ($q_dir =~ /^(?:S|\d+)-(\d+)/) {
+    $q{ref_chapter} = $1;
+  }
 
   # Grab metadata
   ($res, $m) = read_head("$source/$q_dir/meta");
@@ -57,6 +60,8 @@ while (my $q_dir = readdir $dirh) {
   override(\%q, 'points', $v->{data}->{point_value});
   $q{type} = $v->{data}->{type};
   $q{type} =~ s/-/_/g;
+
+  $q{name} = $q_dir;
 
   push @{$q{comments}}, { inserted_at => $v->{timestamp},
 			  text => "Author: " . ($v->{data}->{author} || "Anonymous") };
@@ -110,13 +115,30 @@ while (my $q_dir = readdir $dirh) {
 	text => $com->{author} . ":\n" . $com->{text} };
   }
 
+  # Warn about unimported images
+  opendir my $resourceh, "$source/$q_dir/resources"
+    or do { warn "Question $q_dir has no resources; skipping"; next };
+
+  while (my $resource = readdir $resourceh) {
+    next if $resource =~ /^\./;
+    next if -d "$source/$q_dir/resources/$resource";
+
+    warn "Unimported file $q_dir/$resource; adding comment";
+    push @{$q{comments}},
+      { text => "IMPORT SCRIPT:\n MISSING IMAGE RESOURCE NAMED '$resource'" };
+
+    push @{$q{tags}}, "MISSING_PNG_IMPORT";
+  }
+
+  closedir $resourceh;
+
   push @questions, \%q;
   say STDERR "Working on question $q_dir...done.\n";
 }
 
 closedir $dirh;
 
-my %archive = (questions => \@questions);
+my %archive = (questions => \@questions, exams => []);
 
 say j \%archive;
 
