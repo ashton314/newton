@@ -38,7 +38,7 @@ defmodule Newton.Release do
   @doc """
   The **Big Red Button.** Delete every question and exam.
 
-  Must be called with `"yes I want to delete every question and exam in the database"` as argument to work.
+  Must call with `"yes I want to delete every question and exam in the database"` as argument to work.
   """
   def force_drop_everything("yes I want to delete every question and exam in the database") do
     for q <- Problem.list_questions() do
@@ -65,7 +65,8 @@ defmodule Newton.Release do
       if cs.valid? do
         Repo.insert(cs)
       else
-        IO.puts("Error with question #{q}: #{inspect(cs)}")
+        IO.puts("Error with question #{inspect(q)}: #{inspect(cs)}")
+        Process.sleep(1000)
       end
     end
 

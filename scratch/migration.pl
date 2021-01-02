@@ -84,6 +84,9 @@ while (my $q_dir = readdir $dirh) {
   do { warn $m; next } unless $res;
   $v = decode_json $m;
   for my $ans (@{$v->{data}}) {
+    chomp(my $a_text = $ans->{text});
+    next if $a_text eq '';
+
     push @{$q{answers}},
       {
        inserted_at => $v->{timestamp},
