@@ -3,23 +3,34 @@ defmodule Newton.Application do
   # for more information on OTP Applications
   @moduledoc false
 
+  @app :newton
+
   use Application
 
   def start(_type, _args) do
-    children = [
-      # Start the Ecto repository
-      Newton.Repo,
-      # Start the Telemetry supervisor
-      NewtonWeb.Telemetry,
-      # Start the PubSub system
-      {Phoenix.PubSub, name: Newton.PubSub},
-      # Start the Endpoint (http/https)
-      NewtonWeb.Endpoint,
-      Newton.GarbageCollector,
-      # Start a worker by calling: Newton.Worker.start_link(arg)
-      # {Newton.Worker, arg}
-      {DynamicSupervisor, strategy: :one_for_one, name: LatexRendering.Supervisor}
-    ]
+    children =
+      if Application.get_env(@app, :minimal) do
+        [
+          # Start the Ecto repository
+          Newton.Repo,
+          {DynamicSupervisor, strategy: :one_for_one, name: LatexRendering.Supervisor}
+        ]
+      else
+        [
+          # Start the Ecto repository
+          Newton.Repo,
+          # Start the Telemetry supervisor
+          NewtonWeb.Telemetry,
+          # Start the PubSub system
+          {Phoenix.PubSub, name: Newton.PubSub},
+          # Start the Endpoint (http/https)
+          NewtonWeb.Endpoint,
+          Newton.GarbageCollector,
+          # Start a worker by calling: Newton.Worker.start_link(arg)
+          # {Newton.Worker, arg}
+          {DynamicSupervisor, strategy: :one_for_one, name: LatexRendering.Supervisor}
+        ]
+      end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
