@@ -18,7 +18,17 @@ config :newton, NewtonWeb.Endpoint,
     port: String.to_integer(System.get_env("PORT") || "4000"),
     transport_options: [socket_opts: [:inet6]]
   ],
-  secret_key_base: secret_key_base
+  secret_key_base: secret_key_base,
+  force_ssl: [rewrite_on: [:x_forwarded_proto], hsts: true],
+  url: [host: System.get_env("APP_HOSTNAME"), port: 443],
+  https: [
+    :inet6,
+    port: 443,
+    cipher_suite: :strong,
+    keyfile: System.get_env("SSL_KEY_PATH"),
+    certfile: System.get_env("SSL_CERT_PATH")
+  ],
+  cache_static_manifest: "priv/static/cache_manifest.json"
 
 # ## Using releases (Elixir v1.9+)
 #
