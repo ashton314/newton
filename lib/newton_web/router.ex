@@ -11,6 +11,16 @@ defmodule NewtonWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :auth do
+    plug :do_auth
+  end
+
+  defp do_auth(conn, _opts) do
+    username = System.fetch_env!("AUTH_USERNAME")
+    password = System.fetch_env!("AUTH_PASSWORD")
+    Plug.BasicAuth.basic_auth(conn, username: username, password: password)
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -18,29 +28,30 @@ defmodule NewtonWeb.Router do
   scope "/" do
     pipe_through :browser
 
+    get "/", NewtonWeb.PageController, :index
+
     pow_routes()
   end
 
   scope "/", NewtonWeb do
     pipe_through :browser
-
-    get "/", PageController, :index
+    pipe_through :auth
 
     live "/stats", StatsLive
 
-    # Class CRUD
-    live "/classes", ClassLive.Index, :index
-    live "/classes/new", ClassLive.Index, :new
-    live "/classes/:id/edit", ClassLive.Index, :edit
-    live "/classes/:id", ClassLive.Show, :show
-    live "/classes/:id/show/edit", ClassLive.Show, :edit
+    # # Class CRUD
+    # live "/classes", ClassLive.Index, :index
+    # live "/classes/new", ClassLive.Index, :new
+    # live "/classes/:id/edit", ClassLive.Index, :edit
+    # live "/classes/:id", ClassLive.Show, :show
+    # live "/classes/:id/show/edit", ClassLive.Show, :edit
 
-    # User CRUD
-    live "/users", UserLive.Index, :index
-    live "/users/new", UserLive.Index, :new
-    live "/users/:id/edit", UserLive.Index, :edit
-    live "/users/:id", UserLive.Show, :show
-    live "/users/:id/show/edit", UserLive.Show, :edit
+    # # User CRUD
+    # live "/users", UserLive.Index, :index
+    # live "/users/new", UserLive.Index, :new
+    # live "/users/:id/edit", UserLive.Index, :edit
+    # live "/users/:id", UserLive.Show, :show
+    # live "/users/:id/show/edit", UserLive.Show, :edit
 
     # Question CRUD
     live "/questions", QuestionLive.Index, :index
