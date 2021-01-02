@@ -65,7 +65,24 @@ defmodule Newton.Release do
     end
 
     # Handle exams
-    exams = json["exams"]
+    for e <- json["exams"] do
+      cs = Problem.Exam.restore_changeset(e)
+
+      if cs.valid? do
+        {:ok, exam} = Repo.insert(cs)
+
+        # Hydrate question mapping
+        try do
+          questions = Enum.map(e["questions"], &Problem.get_question!/1)
+          Exam.update_exam_questions(exam, questions)
+        catch
+          Ecto.NoResultsError = err ->
+            IO.puts("Error with exam #{e}: missing question: #{err}")
+        end
+      else
+        IO.puts("Error with exam #{e}: #{inspect(cs)}")
+      end
+    end
   end
 
   def force_preview_rerender() do

@@ -2,6 +2,8 @@ defmodule Newton.Problem.Exam do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias __MODULE__
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "exams" do
@@ -24,6 +26,13 @@ defmodule Newton.Problem.Exam do
     exam
     |> cast(attrs, [:name, :course_code, :course_name, :exam_date, :stamp, :barcode])
     |> validate_required([:name, :course_code, :course_name, :exam_date, :stamp, :barcode])
+  end
+
+  @doc false
+  def restore_changeset(attrs) do
+    %Exam{}
+    |> cast(attrs, [:name, :course_code, :course_name, :exam_date, :stamp, :barcode, :inserted_at, :updated_at, :id])
+    |> validate_required([:name])
   end
 
   # Changeset for modifying the many-to-many relation
