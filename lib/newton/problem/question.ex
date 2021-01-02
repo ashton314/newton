@@ -3,6 +3,8 @@ defmodule Newton.Problem.Question do
   import Ecto.Changeset
   alias Newton.Problem
 
+  alias __MODULE__
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "questions" do
@@ -24,10 +26,12 @@ defmodule Newton.Problem.Question do
     timestamps()
   end
 
+  @safe_fields [:name, :text, :tags, :type, :last_edit_hash, :archived, :ref_chapter, :ref_section]
+
   @doc false
   def changeset(question, attrs) do
     question
-    |> cast(attrs, [:name, :text, :tags, :type, :last_edit_hash, :archived, :ref_chapter, :ref_section])
+    |> cast(attrs, @safe_fields)
     |> validate_required([:text, :type, :name])
     |> validate_inclusion(:type, ~w(multiple_choice free_response fill_in_blank))
   end
@@ -39,5 +43,13 @@ defmodule Newton.Problem.Question do
     |> changeset(attrs)
     |> cast_assoc(:answers, with: &Problem.Answer.changeset/2)
     |> cast_assoc(:comments, with: &Problem.Comment.changeset/2)
+  end
+
+  # used for inserting direclty from a backup
+  def restore_changeset(attrs) do
+    %Question{}
+    |> cast(attrs, @safe_fields ++ ~w(id inserted_at updated_at)a)
+    |> cast_assoc(:answers, with: &Problem.Answer.restore_changeset/2)
+    |> cast_assoc(:comments, with: &Problem.Comment.restore_changeset/2)
   end
 end

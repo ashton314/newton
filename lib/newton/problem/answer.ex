@@ -23,4 +23,10 @@ defmodule Newton.Problem.Answer do
     |> cast(attrs, [:text, :display, :points_marked, :points_unmarked, :question_id])
     |> validate_required([:text])
   end
+
+  def restore_changeset(answer, attrs \\ %{}) do
+    answer
+    |> cast(attrs, [:text, :display, :points_marked, :points_unmarked, :question_id, :inserted_at, :updated_at, :id])
+    |> validate_required([:text])
+  end
 end

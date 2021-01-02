@@ -35,6 +35,39 @@ defmodule Newton.Release do
     Application.load(@app)
   end
 
+  def force_drop_everything("yes I want to delete every question and exam in the database") do
+    for q <- Problem.list_questions() do
+      Problem.delete_question(q)
+    end
+
+    for e <- Exam.list_exams() do
+      Exam.delete_exam(e)
+    end
+
+    :ok
+  end
+
+  def import_backup(filename) do
+    json =
+      filename
+      |> File.read!()
+      |> Jason.decode!()
+
+    # Handle questions
+    for q <- json["questions"] do
+      cs = Problem.Question.restore_changeset(q)
+
+      if cs.valid? do
+        Repo.insert(cs)
+      else
+        IO.puts("Error with question #{q}: #{inspect(cs)}")
+      end
+    end
+
+    # Handle exams
+    exams = json["exams"]
+  end
+
   def force_preview_rerender() do
     base_dir = Application.fetch_env!(:newton, :latex_cache)
     files = File.ls!(base_dir)

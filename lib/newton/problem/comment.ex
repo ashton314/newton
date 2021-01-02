@@ -19,4 +19,11 @@ defmodule Newton.Problem.Comment do
     |> cast(attrs, [:text, :resolved, :question_id])
     |> validate_required([:text])
   end
+
+  @doc false
+  def restore_changeset(comment, attrs \\ %{}) do
+    comment
+    |> cast(attrs, [:text, :resolved, :question_id, :inserted_at, :updated_at, :id])
+    |> validate_required([:text])
+  end
 end
