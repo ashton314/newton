@@ -22,7 +22,7 @@ defmodule NewtonWeb.ExamLive.Show do
     exam_questions = exam.questions
     all_questions = []
 
-    Enum.map(all_questions, &request_image_render/1)
+    Enum.map(exam_questions, &request_image_render/1)
 
     send(self(), {:search, "", @default_page_length, 0})
 
