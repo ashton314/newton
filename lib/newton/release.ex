@@ -35,6 +35,11 @@ defmodule Newton.Release do
     Application.load(@app)
   end
 
+  @doc """
+  The **Big Red Button.** Delete every question and exam.
+
+  Must be called with `"yes I want to delete every question and exam in the database"` as argument to work.
+  """
   def force_drop_everything("yes I want to delete every question and exam in the database") do
     for q <- Problem.list_questions() do
       Problem.delete_question(q)
