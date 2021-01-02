@@ -146,6 +146,10 @@ cache and start anew.
 For a non-interactive version, use the
 `Newton.Release.hard_force_preview_rerender` function.
 
+## Security
+
+Newton just uses a simple [Basic Auth](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication) [Plug](https://hexdocs.pm/plug/Plug.BasicAuth.html) for simple password-based authentication. Newton has the [Pow](https://powauth.com/) framework installed, should a role-based authentication system be required in the future.
+
 ## References
 
 #### Source Code
