@@ -36,13 +36,19 @@ defmodule Newton.Release do
     Application.load(@app)
   end
 
+  defp start_app do
+    load_app()
+    Application.put_env(@app, :minimal, true)
+    Application.ensure_all_started(@app)
+  end
+
   @doc """
   The **Big Red Button.** Delete every question and exam.
 
   Must call with `"yes I want to delete every question and exam in the database"` as argument to work.
   """
   def force_drop_everything("yes I want to delete every question and exam in the database") do
-    load_app()
+    start_app()
 
     for q <- Problem.list_questions() do
       Problem.delete_question(q)
@@ -56,7 +62,7 @@ defmodule Newton.Release do
   end
 
   def import_backup(filename) do
-    load_app()
+    start_app()
 
     json =
       filename
@@ -97,7 +103,7 @@ defmodule Newton.Release do
   end
 
   def force_preview_rerender() do
-    load_app()
+    start_app()
 
     base_dir = Application.fetch_env!(:newton, :latex_cache)
     files = File.ls!(base_dir)
@@ -113,7 +119,7 @@ defmodule Newton.Release do
   end
 
   def hard_force_preview_rerender() do
-    load_app()
+    start_app()
 
     base_dir = Application.fetch_env!(:newton, :latex_cache)
     files = File.ls!(base_dir)
@@ -154,7 +160,7 @@ defmodule Newton.Release do
   Dump data pretty-formatted
   """
   def db_dump_pretty() do
-    load_app()
+    start_app()
 
     case db_dump(pretty: true) do
       {:ok, json} -> IO.puts(json)
@@ -169,7 +175,7 @@ defmodule Newton.Release do
   """
   @spec db_dump(opts :: Keyword.t()) :: {:ok, String.t()} | {:error, Jason.EncodeError.t() | Exception.t()}
   def db_dump(opts \\ []) do
-    load_app()
+    start_app()
 
     questions =
       Problem.list_questions()
