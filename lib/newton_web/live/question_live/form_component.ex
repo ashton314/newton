@@ -160,6 +160,14 @@ defmodule NewtonWeb.QuestionLive.FormComponent do
     {:noreply, socket}
   end
 
+  def handle_event("remove-tag", %{"tag" => doomed_tag}, socket) do
+    socket =
+      socket
+      |> update(:tags, fn tags -> List.delete(tags, doomed_tag) end)
+
+    {:noreply, socket}
+  end
+
   def handle_event("add-tag", %{"new_tag" => new_tag}, socket) do
     socket =
       socket
