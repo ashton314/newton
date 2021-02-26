@@ -424,6 +424,15 @@ defmodule Newton.ProblemTest do
       tag
     end
 
+    test "colorize/1 works when no entry in db" do
+      assert Problem.colorize("not_in_db") == "#0000FF"
+    end
+
+    test "colorize/1 works when we do have a tag with color" do
+      tag = tag_fixture()
+      assert Problem.colorize(tag.name) == tag.color
+    end
+
     test "list_tags/0 returns all tags" do
       tag = tag_fixture()
       assert Problem.list_tags() == [tag]

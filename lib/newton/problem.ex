@@ -6,6 +6,7 @@ defmodule Newton.Problem do
   import Ecto.Query, warn: false
   import Ecto.Query.API, only: [fragment: 1], warn: false
   alias Newton.Repo
+  alias Newton.Problem.Tag
 
   alias __MODULE__
   alias Newton.Problem.Question
@@ -110,6 +111,21 @@ defmodule Newton.Problem do
   """
   def list_questions(_query_string) do
     Repo.all(Question)
+  end
+
+  @doc """
+  Returns a color in hex for a tag
+  """
+  @spec colorize(tag_name :: String.t()) :: String.t()
+  def colorize(tag_name) do
+    from(t in Tag,
+      where: t.name == ^tag_name
+    )
+    |> Repo.one()
+    |> case do
+      nil -> "#0000FF"
+      %Tag{color: color_string} -> color_string
+    end
   end
 
   @doc """
